@@ -68,6 +68,10 @@ func writeConfigFile(s Session, url string, configPath string) {
 }
 
 func readConfigFile(configPath string) *Config {
+  if _, err := os.Stat(configPath); os.IsNotExist(err) {
+    panic("No config file existed at "+configPath+". You need to `nelson login` before running other commands.")
+  }
+
   b, err := ioutil.ReadFile(configPath)
   if err != nil {
       panic(err)

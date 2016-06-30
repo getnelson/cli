@@ -25,3 +25,4 @@ _testmain.go
 bin/*
 */.DS_Store
 .fsw.yml
+.DS_Store
