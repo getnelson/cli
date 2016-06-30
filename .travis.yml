@@ -6,4 +6,7 @@ go:
 install:
   - go get github.com/constabulary/gb/...
 
-script: gb build
+script:
+  - gb test -v
+  - GOOS=linux GOARCH=amd64 CGO_ENABLED=0 gb build # 64 bit linux
+  - GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 gb build # 64 bit OSX
