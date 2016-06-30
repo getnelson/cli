@@ -86,7 +86,7 @@ func parseConfigYaml(yamlAsBytes []byte) *Config {
 
 func defaultConfigPath() string {
   targetDir := os.Getenv("HOME")+"/.nelson"
-  os.Mkdir(targetDir, 0644)
+  os.Mkdir(targetDir, 0775)
   return targetDir + "/config.yml"
 }
 
@@ -94,7 +94,7 @@ func defaultConfigPath() string {
 func writeConfigFile(s Session, url string, configPath string) {
   yamlConfig := generateConfigYaml(s,url)
 
-  err := ioutil.WriteFile(configPath, []byte(yamlConfig), 0644)
+  err := ioutil.WriteFile(configPath, []byte(yamlConfig), 0755)
   if err != nil {
     panic(err)
   }

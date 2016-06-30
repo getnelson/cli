@@ -19,14 +19,18 @@ $ nelson login
 # for testing with a local server, you can do:
 $ nelson login --disable-tls nelson.local:9000
 
+# list the available nelson regions
+$ nelson region list
+
 TODO
 
-$ nelson region list
 $ nelson region inspect <arg>
 
 $ nelson unit list --region us-west-2
 $ nelson unit inspect 1234
 
+
+$ nelson dpl list --unit howdy-batch-0.3
 $ nelson dpl inspect 1234
 $ nelson dpl replay 1234
 
