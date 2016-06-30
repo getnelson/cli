@@ -44,7 +44,7 @@ func createSession(client *gorequest.SuperAgent, githubToken string, baseURL str
   ver := CreateSessionRequest { AccessToken: githubToken }
   url := baseURL+"/auth/github"
   _, bytes, errs := client.
-      SetDebug(true).
+      // SetDebug(true).
       Post(url).
       Send(ver).
       EndBytes()
