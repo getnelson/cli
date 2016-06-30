@@ -3,19 +3,25 @@ package main
 import (
   "os"
   "fmt"
+  "strings"
   "gopkg.in/urfave/cli.v1"
+  "github.com/parnurzeal/gorequest"
 )
+
+// https://github.com/urfave/cli#exit-code
 
 func main() {
   app := cli.NewApp()
+  http := gorequest.New()
 
   app.Commands = []cli.Command{
     {
-      Name:    "add",
-      Aliases: []string{"a"},
-      Usage:   "add a task to the list",
+      Name:    "login",
+      Usage:   "login to nelson",
       Action:  func(c *cli.Context) error {
-        fmt.Println("added task: ", c.Args().First())
+        user_token := strings.TrimSpace(c.Args().First())
+        login(http, user_token)
+        fmt.Println("Sucsessfully logged in!")
         return nil
       },
     },

@@ -2,9 +2,21 @@
 	"version": 0,
 	"dependencies": [
 		{
+			"importpath": "github.com/mattn/go-runewidth",
+			"repository": "https://github.com/mattn/go-runewidth",
+			"revision": "d6bea18f789704b5f83375793155289da36a3c7f",
+			"branch": "master"
+		},
+		{
 			"importpath": "github.com/moul/http2curl",
 			"repository": "https://github.com/moul/http2curl",
 			"revision": "b1479103caacaa39319f75e7f57fc545287fca0d",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/olekukonko/tablewriter",
+			"repository": "https://github.com/olekukonko/tablewriter",
+			"revision": "daf2955e742cf123959884fdff4685aa79b63135",
 			"branch": "master"
 		},
 		{
