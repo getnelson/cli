@@ -10,7 +10,7 @@ script:
   - gb test -v
   - GOOS=$TARGET_PLATFORM GOARCH=amd64 CGO_ENABLED=0 gb build
   - tar -zcvf $TAR_NAME bin/nelson-$TARGET_PLATFORM-amd64
-  - curl -v -u $NEXUS_CREDENTIALS --upload-file $TAR_NAME $NEXUS_URL
+  - curl -u $NEXUS_CREDENTIALS --upload-file $TAR_NAME $NEXUS_URL
 
 matrix:
   include:
