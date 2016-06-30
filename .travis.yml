@@ -18,8 +18,10 @@ script:
 
 matrix:
   include:
-    - env: TARGET_PLATFORM=linux
-    - env: TARGET_PLATFORM=darwin
+    - go: 1.6
+      env: TARGET_PLATFORM=linux
+    - go: 1.6
+      env: TARGET_PLATFORM=darwin
 
 env:
   global:
