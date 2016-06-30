@@ -5,7 +5,18 @@
 Command line client for the Nelson deployment API
 
 ```
+IMPLEMENTED
+
+# fully explicit login
+$ nelson login --token 1f3f3f3f3 nelson.yourdomain.com
+
+# read token from environment variable GITHUB_TOKEN, explicit host
+$ nelson login nelson.yourdomain.com
+
+# read token from env var GITHUB_TOKEN and host from NELSON_ADDR
 $ nelson login
+
+TODO
 
 $ nelson dc inspect us-west-2
 
