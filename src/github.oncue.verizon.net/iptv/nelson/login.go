@@ -19,12 +19,16 @@ type Session struct {
   ExpiresAt int64 `json:"expires_at"`
 }
 
-func login(client *gorequest.SuperAgent, githubToken string, nelsonHost string, disableTLS bool) bool {
+///////////////////////////// CLI ENTRYPOINT ////////////////////////////////
+
+func Login(client *gorequest.SuperAgent, githubToken string, nelsonHost string, disableTLS bool) bool {
   baseURL := createEndpointURL(nelsonHost, !disableTLS)
   sess := createSession(client, githubToken, baseURL)
   writeConfigFile(sess, baseURL, defaultConfigPath())
   return true
 }
+
+///////////////////////////// INTERNALS ////////////////////////////////
 
 func createEndpointURL(host string, useTLS bool) string {
   u := "://"+host

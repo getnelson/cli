@@ -21,8 +21,10 @@ $ nelson login --disable-tls nelson.local:9000
 
 TODO
 
-$ nelson dc inspect us-west-2
+$ nelson region list
+$ nelson region inspect <arg>
 
+$ nelson unit list --region us-west-2
 $ nelson unit inspect 1234
 
 $ nelson dpl inspect 1234

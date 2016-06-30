@@ -55,38 +55,30 @@ func main() {
 
         // fmt.Println("token: ", userGithubToken)
         // fmt.Println("host: ", host)
-        login(http, userGithubToken, host, disableTLS)
+        Login(http, userGithubToken, host, disableTLS)
         fmt.Println("Sucsessfully logged in to " + host)
         return nil
       },
     },
     {
-      Name:    "complete",
-      Aliases: []string{"c"},
-      Usage:   "complete a task on the list",
-      Action:  func(c *cli.Context) error {
-        fmt.Println("completed task: ", c.Args().First())
-        return nil
-      },
-    },
-    {
-      Name:        "template",
-      Aliases:     []string{"t"},
-      Usage:       "options for task templates",
+      Name:        "region",
+      Usage:       "control nelson regions",
       Subcommands: []cli.Command{
         {
-          Name:  "add",
-          Usage: "add a new template",
+          Name:  "list",
+          Usage: "list the available regions",
           Action: func(c *cli.Context) error {
-            fmt.Println("new task template: ", c.Args().First())
+
+            ListRegions(http, LoadDefaultConfig())
+
             return nil
           },
         },
         {
-          Name:  "remove",
-          Usage: "remove an existing template",
+          Name:  "inspect",
+          Usage: "show details about a specified region",
           Action: func(c *cli.Context) error {
-            fmt.Println("removed task template: ", c.Args().First())
+            fmt.Println("inspecting region: ", c.Args().First())
             return nil
           },
         },

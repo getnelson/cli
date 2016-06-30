@@ -4,13 +4,21 @@ import (
   "os"
   // "fmt"
   "log"
+  "time"
   // "github.com/parnurzeal/gorequest"
   "io/ioutil"
   // "encoding/json"
   "gopkg.in/yaml.v2"
+  "net/http"
 )
 
-/////////////////////////////// CONFIG YAML ////////////////////////////////////
+///////////////////////////// CLI ENTRYPOINT //////////////////////////////////
+
+func LoadDefaultConfig() *Config {
+  return readConfigFile(defaultConfigPath())
+}
+
+////////////////////////////// CONFIG YAML ///////////////////////////////////
 
 type Config struct {
   Endpoint string `yaml:endpoint`
@@ -20,6 +28,31 @@ type Config struct {
 type ConfigSession struct {
   Token string `yaml:"token"`
   ExpiresAt int64 `yaml:"expires_at"`
+}
+
+func (c *Config) GetAuthCookie() *http.Cookie {
+  expire := time.Now().AddDate(0, 0, 1)
+  cookie := &http.Cookie {
+    Name: "nelson.session",
+    Value: "'"+c.ConfigSession.Token+"'",
+    Path: "/",
+    Domain: "nelson-beta.oncue.verizon.net",
+    Expires: expire,
+    RawExpires: expire.Format(time.UnixDate),
+    MaxAge: 86400,
+    Secure: true,
+    HttpOnly: false,
+  }
+
+  return cookie
+
+  // return &http.Cookie {
+  //   Name: "nelson.session",
+  //   Value: c.ConfigSession.Token,
+  //   MaxAge: int(c.ConfigSession.ExpiresAt),
+  //   Secure: true,
+  //   HttpOnly: false,
+  // }
 }
 
 func generateConfigYaml(s Session, url string) string {
@@ -78,10 +111,3 @@ func readConfigFile(configPath string) *Config {
   }
   return parseConfigYaml(b)
 }
-
-// func loadConfigFile(path string) { //Config
-//   b, err := ioutil.ReadFile("input.txt")
-//   if err != nil {
-//     panic(err)
-//   }
-// }
