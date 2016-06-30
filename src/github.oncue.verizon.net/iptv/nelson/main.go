@@ -21,6 +21,7 @@ func main() {
   http := gorequest.New()
 
   var userGithubToken string
+  var disableTLS bool
 
   app.Commands = []cli.Command{
     {
@@ -33,6 +34,10 @@ func main() {
           Usage:  "your github personal access token",
           EnvVar: "GITHUB_TOKEN",
           Destination: &userGithubToken,
+        },
+        cli.BoolFlag {
+          Name:  "disable-tls",
+          Destination: &disableTLS,
         },
       },
       Action:  func(c *cli.Context) error {
@@ -50,7 +55,7 @@ func main() {
 
         // fmt.Println("token: ", userGithubToken)
         // fmt.Println("host: ", host)
-        login(http, userGithubToken, host)
+        login(http, userGithubToken, host, disableTLS)
         fmt.Println("Sucsessfully logged in to " + host)
         return nil
       },

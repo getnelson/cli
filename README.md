@@ -16,6 +16,9 @@ $ nelson login nelson.yourdomain.com
 # read token from env var GITHUB_TOKEN and host from NELSON_ADDR
 $ nelson login
 
+# for testing with a local server, you can do:
+$ nelson login --disable-tls nelson.local:9000
+
 TODO
 
 $ nelson dc inspect us-west-2

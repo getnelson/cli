@@ -2,6 +2,7 @@ package main
 
 import (
   "os"
+  "fmt"
   "log"
   "github.com/parnurzeal/gorequest"
   "io/ioutil"
@@ -18,19 +19,33 @@ type Session struct {
   ExpiresAt int64 `json:"expires_at"`
 }
 
-func login(client *gorequest.SuperAgent, githubToken string, nelsonHost string) bool {
-  sess := createSession(client, githubToken, nelsonHost)
-  createConfigFile(sess)
+func login(client *gorequest.SuperAgent, githubToken string, nelsonHost string, disableTLS bool) bool {
+  baseURL := createEndpointURL(nelsonHost, !disableTLS)
+
+  fmt.Println(">>> ", baseURL)
+
+  sess := createSession(client, githubToken, baseURL)
+  createConfigFile(sess, baseURL)
   return true
 }
 
-/* TODO: any error handling here... would be nice */
-func createSession(client *gorequest.SuperAgent, githubToken string, nelsonHost string) Session {
-  ver := CreateSessionRequest { AccessToken: githubToken }
+func createEndpointURL(host string, useTLS bool) string {
+  u := "://"+host
+  if(useTLS){
+    return "https"+u
+  } else {
+    return "http"+u
+  }
+}
 
+/* TODO: any error handling here... would be nice */
+func createSession(client *gorequest.SuperAgent, githubToken string, baseURL string) Session {
+  ver := CreateSessionRequest { AccessToken: githubToken }
+  url := baseURL+"/auth/github"
+  fmt.Println("~~~~~~~~~~~~ ", url)
   _, bytes, errs := client.
       SetDebug(true).
-      Post("https://"+nelsonHost+"/auth/github").
+      Post(url).
       Send(ver).
       EndBytes()
 
@@ -47,23 +62,25 @@ func createSession(client *gorequest.SuperAgent, githubToken string, nelsonHost 
   return result
 }
 
-type YamlConfig struct {
-  YamlSession `yaml:"session"`
+type Config struct {
+  Endpoint string `yaml:endpoint`
+  ConfigSession `yaml:"session"`
 }
 
-type YamlSession struct {
+type ConfigSession struct {
   Token string `yaml:"token"`
   ExpiresAt int64 `yaml:"expires_at"`
 }
 
 // returns Unit, no error handling. YOLO
-func createConfigFile(s Session) {
+func createConfigFile(s Session, url string) {
   targetDir := os.Getenv("HOME") + "/.nelson"
   os.Mkdir(targetDir, 0644)
   path := targetDir + "/config.yml"
 
-  temp := &YamlConfig {
-      YamlSession: YamlSession {
+  temp := &Config {
+      Endpoint: url,
+      ConfigSession: ConfigSession {
         Token: s.SessionToken,
         ExpiresAt: s.ExpiresAt,
       },
@@ -74,8 +91,14 @@ func createConfigFile(s Session) {
     log.Fatalf("error: %v", err)
   }
 
-  err = ioutil.WriteFile(path, []byte(string(d)), 0644)
+  yamlConfig := "---\n"+string(d)
+
+  err = ioutil.WriteFile(path, []byte(yamlConfig), 0644)
   if err != nil {
     panic(err)
   }
 }
+
+// func loadConfigFile(path string) Config {
+
+// }
