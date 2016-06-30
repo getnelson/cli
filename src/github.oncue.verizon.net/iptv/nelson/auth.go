@@ -1,13 +1,13 @@
 package main
 
 import (
-  "os"
-  "fmt"
-  "log"
+  // "os"
+  // "fmt"
+  // "log"
   "github.com/parnurzeal/gorequest"
-  "io/ioutil"
+  // "io/ioutil"
   "encoding/json"
-  "gopkg.in/yaml.v2"
+  // "gopkg.in/yaml.v2"
 )
 
 type CreateSessionRequest struct {
@@ -21,11 +21,8 @@ type Session struct {
 
 func login(client *gorequest.SuperAgent, githubToken string, nelsonHost string, disableTLS bool) bool {
   baseURL := createEndpointURL(nelsonHost, !disableTLS)
-
-  fmt.Println(">>> ", baseURL)
-
   sess := createSession(client, githubToken, baseURL)
-  createConfigFile(sess, baseURL)
+  writeConfigFile(sess, baseURL, defaultConfigPath())
   return true
 }
 
@@ -42,7 +39,6 @@ func createEndpointURL(host string, useTLS bool) string {
 func createSession(client *gorequest.SuperAgent, githubToken string, baseURL string) Session {
   ver := CreateSessionRequest { AccessToken: githubToken }
   url := baseURL+"/auth/github"
-  fmt.Println("~~~~~~~~~~~~ ", url)
   _, bytes, errs := client.
       SetDebug(true).
       Post(url).
@@ -61,44 +57,3 @@ func createSession(client *gorequest.SuperAgent, githubToken string, baseURL str
 
   return result
 }
-
-type Config struct {
-  Endpoint string `yaml:endpoint`
-  ConfigSession `yaml:"session"`
-}
-
-type ConfigSession struct {
-  Token string `yaml:"token"`
-  ExpiresAt int64 `yaml:"expires_at"`
-}
-
-// returns Unit, no error handling. YOLO
-func createConfigFile(s Session, url string) {
-  targetDir := os.Getenv("HOME") + "/.nelson"
-  os.Mkdir(targetDir, 0644)
-  path := targetDir + "/config.yml"
-
-  temp := &Config {
-      Endpoint: url,
-      ConfigSession: ConfigSession {
-        Token: s.SessionToken,
-        ExpiresAt: s.ExpiresAt,
-      },
-    }
-
-  d, err := yaml.Marshal(&temp)
-  if err != nil {
-    log.Fatalf("error: %v", err)
-  }
-
-  yamlConfig := "---\n"+string(d)
-
-  err = ioutil.WriteFile(path, []byte(yamlConfig), 0644)
-  if err != nil {
-    panic(err)
-  }
-}
-
-// func loadConfigFile(path string) Config {
-
-// }
