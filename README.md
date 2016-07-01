@@ -19,8 +19,11 @@ $ nelson login
 # for testing with a local server, you can do:
 $ nelson login --disable-tls nelson.local:9000
 
-# list the available nelson regions
-$ nelson region list
+# list the available nelson datacenters
+$ nelson datacenter list
+
+# just an alias for the above
+$ nelson dc list
 
 # show the deployment log for a given deployment id
 $ nelson stack fs 1234
@@ -33,15 +36,15 @@ $ nelson stack redeploy 1234
 
 TODO
 
-$ nelson region inspect <arg>
+$ nelson datacenter inspect <arg>
 
-# show you the units deployed in a given region
-$ nelson unit list --region us-west-2
+# show you the units deployed in a given datacenter
+$ nelson unit list --datacenter us-west-2
 
 # inspect a specific unit; showing dependencies and crap
 $ nelson unit inspect howdy-batch-0.3
 
-# list me all the deployments, in all regions for this unit name
+# list me all the deployments, in all datacenters for this unit name
 $ nelson stack list --unit howdy-batch-0.3
 
 # inspect a very specific deployment

@@ -6,7 +6,7 @@ import (
   "github.com/parnurzeal/gorequest"
 )
 
-type Region struct {
+type Datacenter struct {
   Name string `json:"name"`
   Namespaces []Namespace `json:"namespaces"`
 }
@@ -26,13 +26,13 @@ func ListRegions(http *gorequest.SuperAgent, cfg *Config){
     panic(errs)
   }
 
-  var regions []Region
-  if err := json.Unmarshal(bytes, &regions); err != nil {
+  var datacenters []Datacenter
+  if err := json.Unmarshal(bytes, &datacenters); err != nil {
     panic(err)
   }
 
   var tabulized = [][]string {}
-  for _,r := range regions {
+  for _,r := range datacenters {
     namespace := ""
     for i,ns := range r.Namespaces {
       if(i == 0){

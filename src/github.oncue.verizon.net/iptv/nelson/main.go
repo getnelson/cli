@@ -64,14 +64,15 @@ func main() {
         return nil
       },
     },
-    ////////////////////////////// REGION //////////////////////////////////
+    ////////////////////////////// DATACENTER //////////////////////////////////
     {
-      Name:        "region",
-      Usage:       "Set of commands for working with Nelson regions",
+      Name:        "datacenter",
+      Aliases:     []string{"dc"},
+      Usage:       "Set of commands for working with Nelson datacenters",
       Subcommands: []cli.Command{
         {
           Name:  "list",
-          Usage: "List all the available regions",
+          Usage: "List all the available datacenters",
           Action: func(c *cli.Context) error {
             ListRegions(http, LoadDefaultConfig())
             return nil
@@ -79,9 +80,9 @@ func main() {
         },
         {
           Name:  "inspect",
-          Usage: "Dispaly details about a specified region",
+          Usage: "Dispaly details about a specified datacenter",
           Action: func(c *cli.Context) error {
-            fmt.Println("inspecting region: ", c.Args().First())
+            fmt.Println("inspecting datacenter: ", c.Args().First())
             return nil
           },
         },
@@ -94,12 +95,12 @@ func main() {
       Subcommands: []cli.Command{
         {
           Name:  "list",
-          Usage: "list the available regions",
+          Usage: "list the available units",
           Flags: []cli.Flag {
             cli.StringFlag{
-              Name:   "region, r",
+              Name:   "datacenter, d",
               Value:  "",
-              Usage:  "Restrict list of units to a particular region",
+              Usage:  "Restrict list of units to a particular datacenter",
               Destination: &selectedRegion,
             },
           },
@@ -112,7 +113,7 @@ func main() {
           Name:  "inspect",
           Usage: "Display details about a logical unit",
           Action: func(c *cli.Context) error {
-            fmt.Println("inspecting region: ", c.Args().First())
+            fmt.Println("inspecting unit: ", c.Args().First())
             return nil
           },
         },
