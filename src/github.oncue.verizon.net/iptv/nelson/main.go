@@ -163,6 +163,15 @@ func main() {
         },
       },
     },
+    ////////////////////////////// WHOAMI //////////////////////////////////
+    {
+      Name:    "whoami",
+      Usage:   "ask nelson who you are currently logged in as",
+      Action:  func(c *cli.Context) error {
+        WhoAmI(http, LoadDefaultConfig())
+        return nil
+      },
+    },
   }
 
   app.Run(os.Args)

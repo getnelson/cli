@@ -22,6 +22,12 @@ $ nelson login --disable-tls nelson.local:9000
 # list the available nelson regions
 $ nelson region list
 
+# show the deployment log for a given deployment id
+$ nelson stack fs 1234
+
+# display the current user information
+$ nelson whoami
+
 TODO
 
 $ nelson region inspect <arg>
@@ -40,9 +46,6 @@ $ nelson stack inspect 1234
 
 # redeploy a very specific deployment id
 $ nelson stack redeploy 1234
-
-# show the deployment log for a given deployment id
-$ nelson stack fs 1234
 
 ```
 
