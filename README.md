@@ -28,6 +28,9 @@ $ nelson stack fs 1234
 # display the current user information
 $ nelson whoami
 
+# redeploy a very specific deployment id
+$ nelson stack redeploy 1234
+
 TODO
 
 $ nelson region inspect <arg>
@@ -43,9 +46,6 @@ $ nelson stack list --unit howdy-batch-0.3
 
 # inspect a very specific deployment
 $ nelson stack inspect 1234
-
-# redeploy a very specific deployment id
-$ nelson stack redeploy 1234
 
 ```
 

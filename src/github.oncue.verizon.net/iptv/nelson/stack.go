@@ -2,10 +2,29 @@ package main
 
 import (
   "fmt"
+  "errors"
   "strconv"
   "encoding/json"
   "github.com/parnurzeal/gorequest"
 )
+
+/////////////////// REDEPLOYMENT ///////////////////
+
+func Redeploy(id int, http *gorequest.SuperAgent, cfg *Config) (str string, err []error){
+  idAsStr := strconv.Itoa(id)
+  r, body, errs := AugmentRequest(
+    http.Post(cfg.Endpoint+"/v1/redeploy/"+idAsStr+""), cfg).SetDebug(false).EndBytes()
+
+  if (r.StatusCode / 100 != 2){
+    resp := string(body[:])
+    errs = append(errs, errors.New("bad response from Nelson server"))
+    return resp, errs
+  } else {
+    return "Redeployment requested.", errs
+  }
+}
+
+/////////////////// DEPLOYMENT LOG ///////////////////
 
 type StackLog struct {
   Content []string `json:"content"`

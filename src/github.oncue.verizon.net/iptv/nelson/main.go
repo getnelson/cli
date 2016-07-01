@@ -148,6 +148,25 @@ func main() {
           },
         },
         {
+          Name:  "redeploy",
+          Usage: "Trigger a redeployment for a specific stack",
+          Action: func(c *cli.Context) error {
+            i64, err := strconv.ParseInt(c.Args().First(), 10, 16)
+            if err != nil {
+              return cli.NewExitError("The supplied argument was not a parsable integer", 1)
+            }
+
+            r,e := Redeploy(int(i64), http, LoadDefaultConfig())
+
+            if e != nil {
+              return cli.NewExitError("Unable to request a redeploy. Response was:\n"+r, 1)
+            } else {
+              fmt.Println("===>> "+r)
+            }
+            return nil
+          },
+        },
+        {
           Name:  "fs",
           Usage: "Fetch the deployment log for a given stack",
           Action: func(c *cli.Context) error {
