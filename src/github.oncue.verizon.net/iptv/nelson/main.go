@@ -67,11 +67,11 @@ func main() {
     ////////////////////////////// REGION //////////////////////////////////
     {
       Name:        "region",
-      Usage:       "control nelson regions",
+      Usage:       "Set of commands for working with Nelson regions",
       Subcommands: []cli.Command{
         {
           Name:  "list",
-          Usage: "list the available regions",
+          Usage: "List all the available regions",
           Action: func(c *cli.Context) error {
             ListRegions(http, LoadDefaultConfig())
             return nil
@@ -79,7 +79,7 @@ func main() {
         },
         {
           Name:  "inspect",
-          Usage: "show details about a specified region",
+          Usage: "Dispaly details about a specified region",
           Action: func(c *cli.Context) error {
             fmt.Println("inspecting region: ", c.Args().First())
             return nil
@@ -90,7 +90,7 @@ func main() {
     ////////////////////////////// UNITS //////////////////////////////////
     {
       Name:        "unit",
-      Usage:       "control nelson units",
+      Usage:       "Set of commands to obtain details about logical deployment units",
       Subcommands: []cli.Command{
         {
           Name:  "list",
@@ -99,7 +99,7 @@ func main() {
             cli.StringFlag{
               Name:   "region, r",
               Value:  "",
-              Usage:  "only list units in a particular region",
+              Usage:  "Restrict list of units to a particular region",
               Destination: &selectedRegion,
             },
           },
@@ -110,7 +110,7 @@ func main() {
         },
         {
           Name:  "inspect",
-          Usage: "show details about a specified unit",
+          Usage: "Display details about a logical unit",
           Action: func(c *cli.Context) error {
             fmt.Println("inspecting region: ", c.Args().First())
             return nil
@@ -121,7 +121,7 @@ func main() {
     ////////////////////////////// STACK //////////////////////////////////
     {
       Name:        "stack",
-      Usage:       "get specific information about a given stack",
+      Usage:       "Set of commands to obtain details about deployed stacks",
       Subcommands: []cli.Command{
         {
           Name:  "list",
@@ -130,7 +130,7 @@ func main() {
             cli.StringFlag{
               Name:   "unit, u",
               Value:  "",
-              Usage:  "only list stakcs for a specified unit prefix",
+              Usage:  "Only list stacks that match a specified unit prefix",
               Destination: &selectedUnitPrefix,
             },
           },
@@ -141,7 +141,7 @@ func main() {
         },
         {
           Name:  "inspect",
-          Usage: "show current status and details about a specified stack",
+          Usage: "Display the current status and details about a specific stack",
           Action: func(c *cli.Context) error {
             fmt.Println("inspecting stack: ", c.Args().First())
             return nil
@@ -149,7 +149,7 @@ func main() {
         },
         {
           Name:  "fs",
-          Usage: "get the log for a given deployment",
+          Usage: "Fetch the deployment log for a given stack",
           Action: func(c *cli.Context) error {
 
             i64, err := strconv.ParseInt(c.Args().First(), 10, 16)
@@ -166,7 +166,7 @@ func main() {
     ////////////////////////////// WHOAMI //////////////////////////////////
     {
       Name:    "whoami",
-      Usage:   "ask nelson who you are currently logged in as",
+      Usage:   "Ask nelson who you are currently logged in as",
       Action:  func(c *cli.Context) error {
         WhoAmI(http, LoadDefaultConfig())
         return nil
