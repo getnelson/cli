@@ -26,13 +26,23 @@ TODO
 
 $ nelson region inspect <arg>
 
+# show you the units deployed in a given region
 $ nelson unit list --region us-west-2
-$ nelson unit inspect 1234
 
+# inspect a specific unit; showing dependencies and crap
+$ nelson unit inspect howdy-batch-0.3
 
-$ nelson dpl list --unit howdy-batch-0.3
-$ nelson dpl inspect 1234
-$ nelson dpl replay 1234
+# list me all the deployments, in all regions for this unit name
+$ nelson stack list --unit howdy-batch-0.3
+
+# inspect a very specific deployment
+$ nelson stack inspect 1234
+
+# redeploy a very specific deployment id
+$ nelson stack redeploy 1234
+
+# show the deployment log for a given deployment id
+$ nelson stack fs 1234
 
 ```
 

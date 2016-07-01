@@ -20,10 +20,14 @@ func main() {
 
   http := gorequest.New()
 
+  // switches for the cli
   var userGithubToken string
   var disableTLS bool
+  var selectedRegion string
+  var selectedUnitPrefix string
 
-  app.Commands = []cli.Command{
+  app.Commands = []cli.Command {
+    ////////////////////////////// LOGIN //////////////////////////////////
     {
       Name:    "login",
       Usage:   "login to nelson",
@@ -60,6 +64,7 @@ func main() {
         return nil
       },
     },
+    ////////////////////////////// REGION //////////////////////////////////
     {
       Name:        "region",
       Usage:       "control nelson regions",
@@ -68,9 +73,7 @@ func main() {
           Name:  "list",
           Usage: "list the available regions",
           Action: func(c *cli.Context) error {
-
             ListRegions(http, LoadDefaultConfig())
-
             return nil
           },
         },
@@ -79,6 +82,82 @@ func main() {
           Usage: "show details about a specified region",
           Action: func(c *cli.Context) error {
             fmt.Println("inspecting region: ", c.Args().First())
+            return nil
+          },
+        },
+      },
+    },
+    ////////////////////////////// UNITS //////////////////////////////////
+    {
+      Name:        "unit",
+      Usage:       "control nelson units",
+      Subcommands: []cli.Command{
+        {
+          Name:  "list",
+          Usage: "list the available regions",
+          Flags: []cli.Flag {
+            cli.StringFlag{
+              Name:   "region, r",
+              Value:  "",
+              Usage:  "only list units in a particular region",
+              Destination: &selectedRegion,
+            },
+          },
+          Action: func(c *cli.Context) error {
+            fmt.Println("Not Implemented")
+            return nil
+          },
+        },
+        {
+          Name:  "inspect",
+          Usage: "show details about a specified unit",
+          Action: func(c *cli.Context) error {
+            fmt.Println("inspecting region: ", c.Args().First())
+            return nil
+          },
+        },
+      },
+    },
+    ////////////////////////////// STACK //////////////////////////////////
+    {
+      Name:        "stack",
+      Usage:       "get specific information about a given stack",
+      Subcommands: []cli.Command{
+        {
+          Name:  "list",
+          Usage: "list the available stacks",
+          Flags: []cli.Flag {
+            cli.StringFlag{
+              Name:   "unit, u",
+              Value:  "",
+              Usage:  "only list stakcs for a specified unit prefix",
+              Destination: &selectedUnitPrefix,
+            },
+          },
+          Action: func(c *cli.Context) error {
+            fmt.Println("Not Implemented")
+            return nil
+          },
+        },
+        {
+          Name:  "inspect",
+          Usage: "show current status and details about a specified stack",
+          Action: func(c *cli.Context) error {
+            fmt.Println("inspecting stack: ", c.Args().First())
+            return nil
+          },
+        },
+        {
+          Name:  "fs",
+          Usage: "get the log for a given deployment",
+          Action: func(c *cli.Context) error {
+
+            i64, err := strconv.ParseInt(c.Args().First(), 10, 16)
+            if err != nil {
+              return cli.NewExitError("The supplied argument was not a parsable integer", 1)
+            }
+
+            GetDeploymentLog(int(i64), http, LoadDefaultConfig())
             return nil
           },
         },
