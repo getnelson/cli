@@ -76,7 +76,7 @@ func main() {
           Name:  "list",
           Usage: "List all the available datacenters",
           Action: func(c *cli.Context) error {
-            ListRegions(http, LoadDefaultConfig())
+            ListDatacenters(http, LoadDefaultConfig())
             return nil
           },
         },
@@ -119,7 +119,16 @@ func main() {
             },
           },
           Action: func(c *cli.Context) error {
-            fmt.Println("Not Implemented")
+            if len(selectedDatacenter) > 0 {
+              us, errs := ListUnits(selectedDatacenter, http, LoadDefaultConfig())
+              if(errs != nil){
+                return cli.NewExitError("Unable to list units", 1)
+              } else {
+                PrintListUnits(us)
+              }
+            } else {
+              return cli.NewExitError("Missing --datacenter flag; cannot list units for all datacenters in one request.", 1)
+            }
             return nil
           },
         },

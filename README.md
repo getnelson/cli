@@ -34,12 +34,12 @@ $ nelson whoami
 # redeploy a very specific deployment id
 $ nelson stack redeploy 1234
 
+# show you the units deployed in a given datacenter
+$ nelson unit list --datacenter us-west-2
+
 TODO
 
 $ nelson datacenter inspect <arg>
-
-# show you the units deployed in a given datacenter
-$ nelson unit list --datacenter us-west-2
 
 # inspect a specific unit; showing dependencies and crap
 $ nelson unit inspect howdy-batch-0.3

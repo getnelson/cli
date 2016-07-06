@@ -15,12 +15,13 @@ func AugmentRequest(c *gorequest.SuperAgent, cfg *Config) *gorequest.SuperAgent 
   return c.
     AddCookie(cfg.GetAuthCookie()).
     Set("Content-type","application/json").
-    Timeout(2*time.Second)
+    Timeout(15*time.Second).
+    SetDebug(false)
 }
 
 func RenderTableToStdout(headers []string, data [][]string){
   table := tablewriter.NewWriter(os.Stdout)
-  table.SetHeader([]string{ "Region", "Namespaces" })
+  table.SetHeader(headers)
   table.SetBorders(tablewriter.Border{Left: false, Top: false, Right: false, Bottom: false})
   table.SetHeaderLine(false)
   table.SetRowLine(false)

@@ -1,7 +1,7 @@
 package main
 
 import (
-  // "time"
+  "fmt"
   "encoding/json"
   "github.com/parnurzeal/gorequest"
 )
@@ -17,17 +17,23 @@ type Namespace struct {
 
 ///////////////////////////// CLI ENTRYPOINT ////////////////////////////////
 
-func ListRegions(http *gorequest.SuperAgent, cfg *Config){
+func ListDatacenters(http *gorequest.SuperAgent, cfg *Config){
 
   _, bytes, errs := AugmentRequest(
     http.Get(cfg.Endpoint+"/v1/datacenters"), cfg).EndBytes()
 
   if (len(errs) > 0) {
+    fmt.Println(">>>>>>>>>>> bad response from the server: ")
+    for _,e := range errs {
+      fmt.Println(e)
+    }
+
     panic(errs)
   }
 
   var datacenters []Datacenter
   if err := json.Unmarshal(bytes, &datacenters); err != nil {
+    fmt.Println(">>>>>>>>>>> unable convert response to json")
     panic(err)
   }
 
