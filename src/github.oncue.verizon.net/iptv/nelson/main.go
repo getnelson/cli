@@ -23,7 +23,9 @@ func main() {
   // switches for the cli
   var userGithubToken string
   var disableTLS bool
-  var selectedRegion string
+  var selectedDatacenter string
+  var selectedNamespace string
+  var selectedStatus string
   var selectedUnitPrefix string
 
   app.Commands = []cli.Command {
@@ -101,7 +103,19 @@ func main() {
               Name:   "datacenter, d",
               Value:  "",
               Usage:  "Restrict list of units to a particular datacenter",
-              Destination: &selectedRegion,
+              Destination: &selectedDatacenter,
+            },
+            cli.StringFlag{
+              Name:   "namespace, ns",
+              Value:  "",
+              Usage:  "Restrict list of units to a particular namespace",
+              Destination: &selectedNamespace,
+            },
+            cli.StringFlag{
+              Name:   "status, s",
+              Value:  "",
+              Usage:  "Restrict list of units to a particular status. Defaults to 'active,manual'",
+              Destination: &selectedStatus,
             },
           },
           Action: func(c *cli.Context) error {
