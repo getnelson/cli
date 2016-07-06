@@ -32,9 +32,9 @@ type FeatureVersion struct {
 
 /////////////////// LIST ///////////////////
 
-func ListUnits(http *gorequest.SuperAgent, cfg *Config) (list []UnitSummary, err []error){
+func ListUnits(dc string, http *gorequest.SuperAgent, cfg *Config) (list []UnitSummary, err []error){
   r, bytes, errs := AugmentRequest(
-    http.Get(cfg.Endpoint+"/v1/datacenters/perryman/units?status=active,manual"), cfg).SetDebug(false).EndBytes()
+    http.Get(cfg.Endpoint+"/v1/datacenters/"+dc+"/units?status=active,manual"), cfg).SetDebug(false).EndBytes()
 
   if (r.StatusCode / 100 != 2){
     errs = append(errs, errors.New("bad response from Nelson server"))
