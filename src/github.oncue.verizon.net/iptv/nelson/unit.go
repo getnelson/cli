@@ -9,7 +9,7 @@ import (
 
 /*
  * {
- *   "nuid": "3fbc7381a664",
+ *   "guid": "3fbc7381a664",
  *   "namespace": "devel",
  *   "service_type": "heydiddlyho-http",
  *   "version": {
@@ -19,7 +19,7 @@ import (
  * }
  */
 type UnitSummary struct {
-  Guid string `json:"nuid"`
+  Guid string `json:"guid"`
   NamespaceRef string `json:"namespace"`
   ServiceType string `json:"service_type"`
   Version FeatureVersion `json:"version"`

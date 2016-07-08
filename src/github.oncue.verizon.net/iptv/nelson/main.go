@@ -157,9 +157,19 @@ func main() {
               Usage:  "Only list stacks that match a specified unit prefix",
               Destination: &selectedUnitPrefix,
             },
+            cli.StringFlag{
+              Name:   "datacenter, d",
+              Value:  "",
+              Usage:  "Only list stacks that reside in a given datacenter",
+              Destination: &selectedDatacenter,
+            },
           },
           Action: func(c *cli.Context) error {
-            fmt.Println("Not Implemented")
+            if len(selectedDatacenter) > 0 {
+              fmt.Println("===>> listing stacks within "+ selectedDatacenter)
+            } else {
+              return cli.NewExitError("You must suppled --datacenter in order to list stacks", 1)
+            }
             return nil
           },
         },
@@ -167,7 +177,7 @@ func main() {
           Name:  "inspect",
           Usage: "Display the current status and details about a specific stack",
           Action: func(c *cli.Context) error {
-            fmt.Println("inspecting stack: ", c.Args().First())
+            fmt.Println("Inspecting units is currently not supported.")
             return nil
           },
         },
