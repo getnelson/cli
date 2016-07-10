@@ -66,10 +66,10 @@ func ListStacks(dc string, http *gorequest.SuperAgent, cfg *Config) (list []Stac
 func PrintListStacks(stacks []Stack){
   var tabulized = [][]string {}
   for _,s := range stacks {
-    tabulized = append(tabulized,[]string{ s.Guid, s.NamespaceRef, s.StackName, s.Type, JavaEpochToDateStr(s.DeployedAt) })
+    tabulized = append(tabulized,[]string{ s.Guid, s.NamespaceRef, s.StackName, s.Type, s.Workflow, JavaEpochToDateStr(s.DeployedAt) })
   }
 
-  RenderTableToStdout([]string{ "GUID", "Namespace", "Stack", "Type", "Deployed At" }, tabulized)
+  RenderTableToStdout([]string{ "GUID", "Namespace", "Stack", "Type", "Workflow", "Deployed At" }, tabulized)
 }
 
 /////////////////// DEPLOYMENT LOG ///////////////////
