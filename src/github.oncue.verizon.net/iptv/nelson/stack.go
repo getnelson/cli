@@ -24,6 +24,54 @@ func Redeploy(id int, http *gorequest.SuperAgent, cfg *Config) (str string, err 
   }
 }
 
+/////////////////// LISTING STACKs ///////////////////
+
+/**
+ * {
+ *   "workflow": "quasar",
+ *   "guid": "67e04d28d6ab",
+ *   "stack_name": "blobstore-testsuite--0-1-55--kbqg9nff",
+ *   "deployed_at": 1467225866870,
+ *   "unit": "blobstore-testsuite",
+ *   "type": "job",
+ *   "namespace": "devel"
+ * }
+ */
+type Stack struct {
+  Workflow string `json:"workflow"`
+  Guid string `json:"guid"`
+  StackName string `json:"stack_name"`
+  DeployedAt int64 `json:"deployed_at"`
+  UnitName string `json:"unit"`
+  Type string `json:"type"`
+  NamespaceRef string `json:"namespace"`
+}
+
+func ListStacks(dc string, http *gorequest.SuperAgent, cfg *Config) (list []Stack, err []error){
+  r, bytes, errs := AugmentRequest(
+    http.Get(cfg.Endpoint+"/v1/datacenters/"+dc+"/deployments"), cfg).EndBytes()
+
+  if (r.StatusCode / 100 != 2){
+    errs = append(errs, errors.New("Bad response from Nelson server"))
+    return nil, errs
+  } else {
+    var list []Stack
+    if err := json.Unmarshal(bytes, &list); err != nil {
+      panic(err)
+    }
+    return list, errs
+  }
+}
+
+func PrintListStacks(stacks []Stack){
+  var tabulized = [][]string {}
+  for _,s := range stacks {
+    tabulized = append(tabulized,[]string{ s.Guid, s.NamespaceRef, s.StackName, s.Type, JavaEpochToDateStr(s.DeployedAt) })
+  }
+
+  RenderTableToStdout([]string{ "GUID", "Namespace", "Stack", "Type", "Deployed At" }, tabulized)
+}
+
 /////////////////// DEPLOYMENT LOG ///////////////////
 
 type StackLog struct {

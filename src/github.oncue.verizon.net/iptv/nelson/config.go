@@ -34,7 +34,7 @@ func (c *Config) GetAuthCookie() *http.Cookie {
   expire := time.Now().AddDate(0, 0, 1)
   cookie := &http.Cookie {
     Name: "nelson.session",
-    Value: "'"+c.ConfigSession.Token+"'",
+    Value: c.ConfigSession.Token,
     Path: "/",
     Domain: "nelson-beta.oncue.verizon.net",
     Expires: expire,
@@ -45,14 +45,6 @@ func (c *Config) GetAuthCookie() *http.Cookie {
   }
 
   return cookie
-
-  // return &http.Cookie {
-  //   Name: "nelson.session",
-  //   Value: c.ConfigSession.Token,
-  //   MaxAge: int(c.ConfigSession.ExpiresAt),
-  //   Secure: true,
-  //   HttpOnly: false,
-  // }
 }
 
 func generateConfigYaml(s Session, url string) string {

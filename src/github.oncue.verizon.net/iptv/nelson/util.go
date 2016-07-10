@@ -16,6 +16,7 @@ func AugmentRequest(c *gorequest.SuperAgent, cfg *Config) *gorequest.SuperAgent 
     AddCookie(cfg.GetAuthCookie()).
     Set("Content-type","application/json").
     Timeout(15*time.Second).
+    SetCurlCommand(false).
     SetDebug(false)
 }
 
@@ -31,3 +32,9 @@ func RenderTableToStdout(headers []string, data [][]string){
   table.AppendBulk(data) // Add Bulk Data
   table.Render()
 }
+
+func JavaEpochToDateStr(long int64) string {
+  t := time.Unix(0, long*int64(time.Millisecond))
+  return t.Format(time.RFC3339)
+}
+

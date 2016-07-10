@@ -167,6 +167,13 @@ func main() {
           Action: func(c *cli.Context) error {
             if len(selectedDatacenter) > 0 {
               fmt.Println("===>> listing stacks within "+ selectedDatacenter)
+              r, e := ListStacks(selectedDatacenter, http, LoadDefaultConfig())
+              if e != nil {
+                return cli.NewExitError("Unable to list stacks.", 1)
+              } else {
+                PrintListStacks(r)
+              }
+
             } else {
               return cli.NewExitError("You must suppled --datacenter in order to list stacks", 1)
             }
