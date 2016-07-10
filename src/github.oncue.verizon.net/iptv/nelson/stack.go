@@ -8,12 +8,17 @@ import (
   "github.com/parnurzeal/gorequest"
 )
 
+/////////////////// INSPECT ///////////////////
+
+// 1. get the expiration
+// 2. get the statuses
+// 3. get the generic stack information
+
 /////////////////// REDEPLOYMENT ///////////////////
 
-func Redeploy(id int, http *gorequest.SuperAgent, cfg *Config) (str string, err []error){
-  idAsStr := strconv.Itoa(id)
+func Redeploy(guid string, http *gorequest.SuperAgent, cfg *Config) (str string, err []error){
   r, body, errs := AugmentRequest(
-    http.Post(cfg.Endpoint+"/v1/redeploy/"+idAsStr+""), cfg).SetDebug(false).EndBytes()
+    http.Post(cfg.Endpoint+"/v1/deployments/"+guid+"/redeploy"), cfg).SetDebug(false).EndBytes()
 
   if (r.StatusCode / 100 != 2){
     resp := string(body[:])
