@@ -1,7 +1,7 @@
 package main
 
 import (
-  "fmt"
+  "errors"
   "encoding/json"
   "github.com/parnurzeal/gorequest"
 )
@@ -17,26 +17,23 @@ type Namespace struct {
 
 ///////////////////////////// CLI ENTRYPOINT ////////////////////////////////
 
-func ListDatacenters(http *gorequest.SuperAgent, cfg *Config){
-
-  _, bytes, errs := AugmentRequest(
+func ListDatacenters(http *gorequest.SuperAgent, cfg *Config) (list []Datacenter, err []error){
+  r, bytes, errs := AugmentRequest(
     http.Get(cfg.Endpoint+"/v1/datacenters"), cfg).EndBytes()
 
-  if (len(errs) > 0) {
-    fmt.Println(">>>>>>>>>>> bad response from the server: ")
-    for _,e := range errs {
-      fmt.Println(e)
+  if (r.StatusCode / 100 != 2){
+    errs = append(errs, errors.New("Bad response from Nelson server"))
+    return nil, errs
+  } else {
+    var list []Datacenter
+    if err := json.Unmarshal(bytes, &list); err != nil {
+      panic(err)
     }
-
-    panic(errs)
+    return list, errs
   }
+}
 
-  var datacenters []Datacenter
-  if err := json.Unmarshal(bytes, &datacenters); err != nil {
-    fmt.Println(">>>>>>>>>>> unable convert response to json")
-    panic(err)
-  }
-
+func PrintListDatacenters(datacenters []Datacenter){
   var tabulized = [][]string {}
   for _,r := range datacenters {
     namespace := ""
@@ -50,5 +47,5 @@ func ListDatacenters(http *gorequest.SuperAgent, cfg *Config){
     tabulized = append(tabulized,[]string{ r.Name, namespace })
   }
 
-  RenderTableToStdout([]string{ "Region", "Namespaces" }, tabulized)
+  RenderTableToStdout([]string{ "Datacenter", "Namespaces" }, tabulized)
 }

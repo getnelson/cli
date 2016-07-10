@@ -62,7 +62,9 @@ func main() {
 
         // fmt.Println("token: ", userGithubToken)
         // fmt.Println("host: ", host)
+        pi.Start()
         Login(http, userGithubToken, host, disableTLS)
+        pi.Stop()
         fmt.Println("Sucsessfully logged in to " + host)
         return nil
       },
@@ -77,7 +79,14 @@ func main() {
           Name:  "list",
           Usage: "List all the available datacenters",
           Action: func(c *cli.Context) error {
-            ListDatacenters(http, LoadDefaultConfig())
+            pi.Start()
+            r, e := ListDatacenters(http, LoadDefaultConfig())
+            pi.Stop()
+            if e != nil {
+              return cli.NewExitError("Unable to list datacenters.", 1)
+            } else {
+              PrintListDatacenters(r)
+            }
             return nil
           },
         },
@@ -121,7 +130,9 @@ func main() {
           },
           Action: func(c *cli.Context) error {
             if len(selectedDatacenter) > 0 {
+              pi.Start()
               us, errs := ListUnits(selectedDatacenter, http, LoadDefaultConfig())
+              pi.Stop()
               if(errs != nil){
                 return cli.NewExitError("Unable to list units", 1)
               } else {
