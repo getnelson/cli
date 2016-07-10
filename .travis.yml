@@ -3,13 +3,16 @@ language: go
 install:
   - go get github.com/constabulary/gb/...
 
+before_script:
+  - "if [ $TRAVIS_PULL_REQUEST = 'false' ]; then git checkout -qf $TRAVIS_BRANCH; fi"
+
 script:
   - export TAR_NAME=nelson-$TARGET_PLATFORM-amd64-$CLI_VERSION.tar.gz
   - gb test -v
   - GOOS=$TARGET_PLATFORM GOARCH=amd64 CGO_ENABLED=0 gb build
   - mv bin/nelson-$TARGET_PLATFORM-amd64 ./nelson
   - tar -zcvf $TAR_NAME nelson
-  - curl -u $NEXUS_CREDENTIALS --upload-file $TAR_NAME $NEXUS_URL/$TAR_NAME
+  - "if [ $TRAVIS_PULL_REQUEST = 'false' ]; then curl -u $NEXUS_CREDENTIALS --upload-file $TAR_NAME $NEXUS_URL/$TAR_NAME; fi"
 
 matrix:
   include:
