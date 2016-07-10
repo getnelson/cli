@@ -19,6 +19,7 @@ func main() {
   app.Usage = "remote control for the Nelson deployment system"
 
   http := gorequest.New()
+  pi   := ProgressIndicator()
 
   // switches for the cli
   var userGithubToken string
@@ -166,8 +167,9 @@ func main() {
           },
           Action: func(c *cli.Context) error {
             if len(selectedDatacenter) > 0 {
-              fmt.Println("===>> listing stacks within "+ selectedDatacenter)
+              pi.Start()
               r, e := ListStacks(selectedDatacenter, http, LoadDefaultConfig())
+              pi.Stop()
               if e != nil {
                 return cli.NewExitError("Unable to list stacks.", 1)
               } else {

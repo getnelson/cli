@@ -9,6 +9,7 @@ import (
   "time"
   "github.com/parnurzeal/gorequest"
   "github.com/olekukonko/tablewriter"
+  "github.com/briandowns/spinner"
 )
 
 func AugmentRequest(c *gorequest.SuperAgent, cfg *Config) *gorequest.SuperAgent {
@@ -38,3 +39,8 @@ func JavaEpochToDateStr(long int64) string {
   return t.Format(time.RFC3339)
 }
 
+func ProgressIndicator() *spinner.Spinner {
+  s := spinner.New(spinner.CharSets[9], 100*time.Millisecond)
+  s.Color("green")
+  return s
+}
