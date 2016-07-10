@@ -205,12 +205,9 @@ func main() {
           Name:  "redeploy",
           Usage: "Trigger a redeployment for a specific stack",
           Action: func(c *cli.Context) error {
-            i64, err := strconv.ParseInt(c.Args().First(), 10, 16)
-            if err != nil {
-              return cli.NewExitError("The supplied argument was not a parsable integer", 1)
-            }
+            guid := c.Args().First()
 
-            r,e := Redeploy(int(i64), http, LoadDefaultConfig())
+            r,e := Redeploy(guid, http, LoadDefaultConfig())
 
             if e != nil {
               return cli.NewExitError("Unable to request a redeploy. Response was:\n"+r, 1)
@@ -231,6 +228,28 @@ func main() {
             }
 
             GetDeploymentLog(int(i64), http, LoadDefaultConfig())
+            return nil
+          },
+        },
+      },
+    },
+    ////////////////////////////// SYSTEM //////////////////////////////////
+    {
+      Name:    "system",
+      Usage:   "A set of operations to query Nelson to see what options are available",
+      Subcommands: []cli.Command{
+        {
+          Name:  "cleanup-policies",
+          Usage: "list the available cleanup policies",
+          Action: func(c *cli.Context) error {
+            pi.Start()
+            policies, e := ListCleanupPolicies(http, LoadDefaultConfig())
+            pi.Stop()
+            if e != nil {
+              return cli.NewExitError("Unable to list the cleanup policies at this time.", 1)
+            } else {
+              PrintCleanupPolicies(policies)
+            }
             return nil
           },
         },
