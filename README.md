@@ -4,9 +4,9 @@
 
 ## Getting Started
 
-Installing and using the client is super easy: 
+Installing and using the client is super easy:
 
-1. Download the latest release from [the nexus](http://nexus.oncue.verizon.net/nexus/content/groups/internal/verizon/inf/nelson/cli/) 
+1. Download the latest release from [the nexus](http://nexus.oncue.verizon.net/nexus/content/groups/internal/verizon/inf/nelson/cli/)
 2. Stuff it into your $PATH (e.g. `/usr/local/bin`)
 3. Make it executable `sudo chmod +x /usr/local/bin/nelson`)
 
@@ -31,25 +31,25 @@ $ nelson login nelson.yourdomain.com
 $ nelson login
 
 # for testing with a local server, you can do:
-$ nelson login --disable-tls nelson.local:9000
+$ nelson login --disable-tls --token 1f3f3f3f3 nelson.local:9000
 
 # list the available nelson datacenters
-$ nelson datacenter list
+$ nelson datacenters list
 
 # just an alias for the above
-$ nelson dc list
+$ nelson dcs list
 
 # show the deployment log for a given deployment id
-$ nelson stack fs 1234
+$ nelson stacks fs 1234
 
 # display the current user information
 $ nelson whoami
 
 # redeploy a very specific deployment id
-$ nelson stack redeploy 1234
+$ nelson stacks redeploy 1234
 
 # show you the units deployed in a given datacenter
-$ nelson unit list --datacenter us-west-2
+$ nelson units list --datacenter us-west-2
 ```
 
 The following commands are currently being developed:
@@ -58,20 +58,23 @@ The following commands are currently being developed:
 $ nelson datacenter inspect <arg>
 
 # inspect a specific unit; showing dependencies and crap
-$ nelson unit inspect howdy-batch-0.3
+$ nelson units inspect howdy-batch-0.3
 
 # list me all the deployments, in all datacenters for this unit name
-$ nelson stack list --unit howdy-batch-0.3
+$ nelson stacks list --unit howdy-batch-0.3
 
 # inspect a very specific deployment
-$ nelson stack inspect 1234
+$ nelson stacks inspect 1234
+
+# list the workflows availabe in the remote nelson
+$ nelson workflows inspect --type job quasar
 
 ```
 
 ## Development
 
 
-1. `brew install go` - install the Go programming language: 
+1. `brew install go` - install the Go programming language:
 1. `go get https://getgb.io/` - instal the `gb` build tool
 1. `go get https://github.com/codeskyblue/fswatch` - install `fswatch` so we can do continous compilation
 1. `alias fswatch="$GOPATH/bin/fswatch"
