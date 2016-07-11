@@ -10,6 +10,8 @@ import (
   "github.com/parnurzeal/gorequest"
 )
 
+var globalEnableDebug bool
+
 func main() {
   year, _, _ := time.Now().Date()
   app := cli.NewApp()
@@ -28,6 +30,14 @@ func main() {
   var selectedNamespace string
   var selectedStatus string
   var selectedUnitPrefix string
+
+  app.Flags = []cli.Flag {
+    cli.BoolFlag{
+      Name: "debug",
+      Usage: "Enable debug mode on the network requests",
+      Destination: &globalEnableDebug,
+    },
+  }
 
   app.Commands = []cli.Command {
     ////////////////////////////// LOGIN //////////////////////////////////
@@ -182,6 +192,7 @@ func main() {
               r, e := ListStacks(selectedDatacenter, http, LoadDefaultConfig())
               pi.Stop()
               if e != nil {
+                PrintTerminalErrors(e)
                 return cli.NewExitError("Unable to list stacks.", 1)
               } else {
                 PrintListStacks(r)

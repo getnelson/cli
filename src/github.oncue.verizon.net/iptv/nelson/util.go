@@ -19,7 +19,7 @@ func AugmentRequest(c *gorequest.SuperAgent, cfg *Config) *gorequest.SuperAgent 
     Set("Content-type","application/json").
     Timeout(15*time.Second).
     SetCurlCommand(false).
-    SetDebug(false)
+    SetDebug(globalEnableDebug)
 }
 
 func RenderTableToStdout(headers []string, data [][]string){
