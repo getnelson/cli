@@ -14,7 +14,7 @@ func main() {
   year, _, _ := time.Now().Date()
   app := cli.NewApp()
   app.Name = "nelson-cli"
-  app.Version = "v0.1"
+  app.Version = "v0.2"
   app.Copyright = "© "+strconv.Itoa(year)+" Verizon Labs"
   app.Usage = "remote control for the Nelson deployment system"
 
@@ -221,13 +221,12 @@ func main() {
           Name:  "fs",
           Usage: "Fetch the deployment log for a given stack",
           Action: func(c *cli.Context) error {
-
-            i64, err := strconv.ParseInt(c.Args().First(), 10, 16)
-            if err != nil {
-              return cli.NewExitError("The supplied argument was not a parsable integer", 1)
+            guid := c.Args().First()
+            if len(guid) > 0 {
+              GetDeploymentLog(guid, http, LoadDefaultConfig())
+            } else {
+              return cli.NewExitError("You must specify which stack you would like to redeploy.", 1)
             }
-
-            GetDeploymentLog(int(i64), http, LoadDefaultConfig())
             return nil
           },
         },

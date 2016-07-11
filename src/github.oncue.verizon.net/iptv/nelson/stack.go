@@ -3,7 +3,6 @@ package main
 import (
   "fmt"
   "errors"
-  "strconv"
   "encoding/json"
   "github.com/parnurzeal/gorequest"
 )
@@ -85,10 +84,9 @@ type StackLog struct {
 }
 
 // v1/deployments/:id/log
-func GetDeploymentLog(id int, http *gorequest.SuperAgent, cfg *Config){
-  idAsStr := strconv.Itoa(id)
+func GetDeploymentLog(guid string, http *gorequest.SuperAgent, cfg *Config){
   _, bytes, errs := AugmentRequest(
-    http.Get(cfg.Endpoint+"/v1/deployments/"+idAsStr+"/log"), cfg).EndBytes()
+    http.Get(cfg.Endpoint+"/v1/deployments/"+guid+"/log"), cfg).EndBytes()
 
   if (len(errs) > 0) {
     panic(errs)
@@ -99,7 +97,7 @@ func GetDeploymentLog(id int, http *gorequest.SuperAgent, cfg *Config){
     panic(err)
   }
 
-  fmt.Println("===>> logs for deployment "+ idAsStr)
+  fmt.Println("===>> logs for stack "+ guid)
 
   for _,l := range logs.Content {
     fmt.Println(l)
