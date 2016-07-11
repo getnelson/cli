@@ -246,6 +246,7 @@ func main() {
             policies, e := ListCleanupPolicies(http, LoadDefaultConfig())
             pi.Stop()
             if e != nil {
+              PrintTerminalErrors(e)
               return cli.NewExitError("Unable to list the cleanup policies at this time.", 1)
             } else {
               PrintCleanupPolicies(policies)

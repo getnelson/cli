@@ -22,15 +22,20 @@ func ListCleanupPolicies(http *gorequest.SuperAgent, cfg *Config) (list []Cleanu
   r, bytes, errs := AugmentRequest(
     http.Get(cfg.Endpoint+"/v1/cleanup-policies"), cfg).SetDebug(false).EndBytes()
 
-  if (r.StatusCode / 100 != 2){
-    errs = append(errs, errors.New("Unxpected response from Nelson server ["+strconv.Itoa(r.StatusCode)+"]"))
-    return nil, errs
-  } else {
-    var list []CleanupPolicy
-    if err := json.Unmarshal(bytes, &list); err != nil {
-      panic(err)
+  if r != nil {
+    if (r.StatusCode / 100 != 2){
+      codeAsStr := strconv.Itoa(r.StatusCode)
+      errs = append(errs, errors.New("Unxpected response from Nelson server ["+codeAsStr+"]"))
+      return nil, errs
+    } else {
+      var list []CleanupPolicy
+      if err := json.Unmarshal(bytes, &list); err != nil {
+        panic(err)
+      }
+      return list, errs
     }
-    return list, errs
+  } else {
+    return nil, errs
   }
 }
 

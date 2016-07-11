@@ -58,8 +58,9 @@ $ nelson system cleanup-policies
 The following commands are currently being developed:
 
 ```
-# list the available workflows
-$ nelson system workflows
+
+# list the workflows availabe in the remote nelson
+$ nelson workflows inspect --type job quasar
 
 $ nelson datacenter inspect <arg>
 
@@ -71,9 +72,6 @@ $ nelson stacks list --unit howdy-batch-0.3
 
 # inspect a very specific deployment
 $ nelson stacks inspect b8ff485a0306
-
-# list the workflows availabe in the remote nelson
-$ nelson workflows inspect --type job quasar
 
 ```
 

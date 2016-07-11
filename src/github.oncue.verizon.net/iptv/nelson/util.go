@@ -6,6 +6,7 @@ package main
 
 import (
   "os"
+  "fmt"
   "time"
   "github.com/parnurzeal/gorequest"
   "github.com/olekukonko/tablewriter"
@@ -43,4 +44,14 @@ func ProgressIndicator() *spinner.Spinner {
   s := spinner.New(spinner.CharSets[9], 100*time.Millisecond)
   s.Color("green")
   return s
+}
+
+func PrintTerminalErrors(errs []error){
+  for i, j := 0, len(errs)-1; i < j; i, j = i+1, j-1 {
+    errs[i], errs[j] = errs[j], errs[i]
+  }
+
+  for _,e := range errs {
+    fmt.Println(e)
+  }
 }
