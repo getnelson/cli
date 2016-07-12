@@ -254,7 +254,7 @@ func main() {
                 return cli.NewExitError("Unable to deprecate unit+version series. Response was:\n"+r, 1)
               }
             } else {
-              return cli.NewExitError("Required unit and/or version inputs were not valid", 1)
+              return cli.NewExitError("Required --unit and/or --version inputs were not valid", 1)
             }
             return nil
           },
