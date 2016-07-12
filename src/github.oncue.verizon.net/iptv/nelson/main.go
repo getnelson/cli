@@ -272,12 +272,13 @@ func main() {
       Usage:   "Ask nelson who you are currently logged in as",
       Action:  func(c *cli.Context) error {
         pi.Start()
-        sr, e := WhoAmI(http, LoadDefaultConfig())
+        cfg := LoadDefaultConfig()
+        sr, e := WhoAmI(http, cfg)
         pi.Stop()
         if e != nil {
           return cli.NewExitError("Unable to list stacks.", 1)
         } else {
-          fmt.Println("===>> Currently logged in as "+sr.User.Name)
+          fmt.Println("===>> Currently logged in as "+sr.User.Name+" @ "+cfg.Endpoint)
         }
         return nil
       },
