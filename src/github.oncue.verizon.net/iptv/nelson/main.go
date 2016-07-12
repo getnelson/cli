@@ -30,6 +30,7 @@ func main() {
   var selectedNamespace string
   var selectedStatus string
   var selectedUnitPrefix string
+  var selectedVersion string
 
   app.Flags = []cli.Flag {
     cli.BoolFlag{
@@ -224,6 +225,36 @@ func main() {
               return cli.NewExitError("Unable to request a redeploy. Response was:\n"+r, 1)
             } else {
               fmt.Println("===>> "+r)
+            }
+            return nil
+          },
+        },
+        {
+          Name:  "deprecate",
+          Usage: "Deprecate a unit/version combination (and all patch series)",
+          Flags: []cli.Flag {
+            cli.StringFlag{
+              Name:   "unit, u",
+              Value:  "",
+              Usage:  "The unit you want to deprecate",
+              Destination: &selectedUnitPrefix,
+            },
+            cli.StringFlag{
+              Name:   "version, v",
+              Value:  "",
+              Usage:  "The feature version series you want to deprecate",
+              Destination: &selectedVersion,
+            },
+          },
+          Action: func(c *cli.Context) error {
+            if len(selectedUnitPrefix) > 0 && len(selectedVersion) > 0 {
+              req := DeprecationRequest { ServiceType: selectedUnitPrefix, Version: selectedVersion }
+              r,e := Deprecate(req, http, LoadDefaultConfig())
+              if e != nil {
+                return cli.NewExitError("Unable to deprecate unit+version series. Response was:\n"+r, 1)
+              }
+            } else {
+              return cli.NewExitError("Required unit and/or version inputs were not valid", 1)
             }
             return nil
           },

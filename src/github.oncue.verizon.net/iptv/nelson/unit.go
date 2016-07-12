@@ -34,7 +34,7 @@ type FeatureVersion struct {
 
 func ListUnits(dc string, http *gorequest.SuperAgent, cfg *Config) (list []UnitSummary, err []error){
   r, bytes, errs := AugmentRequest(
-    http.Get(cfg.Endpoint+"/v1/datacenters/"+dc+"/units?status=active,manual"), cfg).SetDebug(false).EndBytes()
+    http.Get(cfg.Endpoint+"/v1/datacenters/"+dc+"/units?status=active,manual"), cfg).EndBytes()
 
   if (r.StatusCode / 100 != 2){
     errs = append(errs, errors.New("bad response from Nelson server"))

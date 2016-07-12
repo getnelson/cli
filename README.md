@@ -53,6 +53,10 @@ $ nelson units list --datacenter us-west-2
 
 # list the available clean policies on this remote nelson
 $ nelson system cleanup-policies
+
+# deprecate a specific unit and feature version
+$ nelson stack deprecate --unit foo --version 1.2
+
 ```
 
 The following commands are currently being developed:

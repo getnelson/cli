@@ -13,11 +13,37 @@ import (
 // 2. get the statuses
 // 3. get the generic stack information
 
+/////////////////// DEPRECATION ///////////////////
+
+/*
+ * {
+ *   "service_type": "heydiddlyho-http",
+ *   "version": "1.2"
+ * }
+ */
+type DeprecationRequest struct {
+  ServiceType string `json:"service_type"`
+  Version string `json:"version"`
+}
+
+func Deprecate(req DeprecationRequest, http *gorequest.SuperAgent, cfg *Config) (str string, err []error){
+  r, body, errs := AugmentRequest(
+    http.Post(cfg.Endpoint+"/v1/deployments/deprecate"), cfg).Send(req).EndBytes()
+
+  if (r.StatusCode / 100 != 2){
+    resp := string(body[:])
+    errs = append(errs, errors.New("Unexpected response from Nelson server"))
+    return resp, errs
+  } else {
+    return "Requested deprecation of "+req.ServiceType+" "+req.Version+".", errs
+  }
+}
+
 /////////////////// REDEPLOYMENT ///////////////////
 
 func Redeploy(guid string, http *gorequest.SuperAgent, cfg *Config) (str string, err []error){
   r, body, errs := AugmentRequest(
-    http.Post(cfg.Endpoint+"/v1/deployments/"+guid+"/redeploy"), cfg).SetDebug(false).EndBytes()
+    http.Post(cfg.Endpoint+"/v1/deployments/"+guid+"/redeploy"), cfg).EndBytes()
 
   if (r.StatusCode / 100 != 2){
     resp := string(body[:])

@@ -20,7 +20,7 @@ type CleanupPolicy struct {
 
 func ListCleanupPolicies(http *gorequest.SuperAgent, cfg *Config) (list []CleanupPolicy, err []error){
   r, bytes, errs := AugmentRequest(
-    http.Get(cfg.Endpoint+"/v1/cleanup-policies"), cfg).SetDebug(false).EndBytes()
+    http.Get(cfg.Endpoint+"/v1/cleanup-policies"), cfg).EndBytes()
 
   if r != nil {
     if (r.StatusCode / 100 != 2){
