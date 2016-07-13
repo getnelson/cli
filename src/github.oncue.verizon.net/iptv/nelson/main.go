@@ -248,10 +248,22 @@ func main() {
           },
           Action: func(c *cli.Context) error {
             if len(selectedUnitPrefix) > 0 && len(selectedVersion) > 0 {
-              req := DeprecationRequest { ServiceType: selectedUnitPrefix, Version: selectedVersion }
+              splitVersion := strings.Split(selectedVersion, ".")
+              mjr, _ := strconv.Atoi(splitVersion[0])
+              min, _ := strconv.Atoi(splitVersion[1])
+              ver := FeatureVersion {
+                Major: mjr,
+                Minor: min,
+              }
+              req := DeprecationRequest {
+                ServiceType: selectedUnitPrefix,
+                Version: ver,
+              }
               r,e := Deprecate(req, http, LoadDefaultConfig())
               if e != nil {
                 return cli.NewExitError("Unable to deprecate unit+version series. Response was:\n"+r, 1)
+              } else {
+                fmt.Println("===>> Deprecated "+selectedUnitPrefix+" "+selectedVersion)
               }
             } else {
               return cli.NewExitError("Required --unit and/or --version inputs were not valid", 1)

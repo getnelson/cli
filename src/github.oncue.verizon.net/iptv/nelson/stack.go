@@ -3,6 +3,7 @@ package main
 import (
   "fmt"
   "errors"
+  "strconv"
   "encoding/json"
   "github.com/parnurzeal/gorequest"
 )
@@ -18,12 +19,15 @@ import (
 /*
  * {
  *   "service_type": "heydiddlyho-http",
- *   "version": "1.2"
+ *   "version":{
+ *     "major":1,
+ *     "minor":33
+ *   }
  * }
  */
 type DeprecationRequest struct {
   ServiceType string `json:"service_type"`
-  Version string `json:"version"`
+  Version FeatureVersion `json:"version"`
 }
 
 func Deprecate(req DeprecationRequest, http *gorequest.SuperAgent, cfg *Config) (str string, err []error){
@@ -35,7 +39,7 @@ func Deprecate(req DeprecationRequest, http *gorequest.SuperAgent, cfg *Config) 
     errs = append(errs, errors.New("Unexpected response from Nelson server"))
     return resp, errs
   } else {
-    return "Requested deprecation of "+req.ServiceType+" "+req.Version+".", errs
+    return "Requested deprecation of "+req.ServiceType+" "+strconv.Itoa(req.Version.Major)+"."+strconv.Itoa(req.Version.Minor), errs
   }
 }
 
