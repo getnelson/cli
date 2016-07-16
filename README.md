@@ -55,7 +55,10 @@ $ nelson units list --datacenter us-west-2
 $ nelson system cleanup-policies
 
 # deprecate a specific unit and feature version
-$ nelson stack deprecate --unit foo --version 1.2
+$ nelson stacks deprecate --unit foo --version 1.2
+
+# inspect a very specific deployment
+$ nelson stacks inspect b8ff485a0306
 
 ```
 
@@ -73,9 +76,6 @@ $ nelson units inspect howdy-batch-0.3
 
 # list me all the deployments, in all datacenters for this unit name
 $ nelson stacks list --unit howdy-batch-0.3
-
-# inspect a very specific deployment
-$ nelson stacks inspect b8ff485a0306
 
 ```
 

@@ -209,7 +209,20 @@ func main() {
           Name:  "inspect",
           Usage: "Display the current status and details about a specific stack",
           Action: func(c *cli.Context) error {
-            fmt.Println("Inspecting units is currently not supported.")
+            guid := c.Args().First()
+            if len(guid) > 0 {
+              pi.Start()
+              r, e := InspectStack(guid, http, LoadDefaultConfig())
+              pi.Stop()
+              if e != nil {
+                PrintTerminalErrors(e)
+                return cli.NewExitError("Unable to inspect stacks '"+guid+"'.", 1)
+              } else {
+                PrintInspectStack(r)
+              }
+            } else {
+              return cli.NewExitError("You must supply a GUID of the stack you want to inspect.", 1)
+            }
             return nil
           },
         },
