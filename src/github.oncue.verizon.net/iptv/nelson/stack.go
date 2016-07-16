@@ -49,7 +49,7 @@ type StackSummary struct {
   UnitName string `json:"unit"`
   Type string `json:"type"`
   NamespaceRef string `json:"namespace"`
-  Expiration int64 `json:"deployed_at"`
+  Expiration int64 `json:"expiration"`
   Statuses []StackStatus `json:"statuses"`
 }
 
