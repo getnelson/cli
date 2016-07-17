@@ -101,14 +101,6 @@ func main() {
             return nil
           },
         },
-        {
-          Name:  "inspect",
-          Usage: "Dispaly details about a specified datacenter",
-          Action: func(c *cli.Context) error {
-            fmt.Println("inspecting datacenter: ", c.Args().First())
-            return nil
-          },
-        },
       },
     },
     ////////////////////////////// UNITS //////////////////////////////////

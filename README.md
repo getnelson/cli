@@ -69,8 +69,6 @@ The following commands are currently being developed:
 # list the workflows availabe in the remote nelson
 $ nelson workflows inspect --type job quasar
 
-$ nelson datacenter inspect <arg>
-
 # inspect a specific unit; showing dependencies and crap
 $ nelson units inspect howdy-batch-0.3
 
