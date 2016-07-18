@@ -5,6 +5,7 @@ import (
   "errors"
   "strconv"
   "encoding/json"
+  "github.com/fatih/color"
   "github.com/parnurzeal/gorequest"
 )
 
@@ -24,21 +25,49 @@ type StackStatus struct {
 }
 
 /*
+ *   "dependencies": {
+ *     "outbound": [
+ *      ...
+ *     ],
+ *     "inbound": []
+ *   },
+ */
+type StackDependencies struct {
+  Outbound []Stack `json:"outbound"`
+  Inbound []Stack `json:"inbound"`
+}
+
+/*
  * {
- *   "workflow": "quasar",
- *   "guid": "b8ff485a0306",
- *   "stack_name": "howdy-batch--0-38-131--35s2gfqc",
- *   "deployed_at": 1467144100546,
- *   "unit": "howdy-batch",
- *   "type": "job",
- *   "expiration": 1468353700590,
+ *   "workflow": "pulsar",
+ *   "guid": "e4184c271bb9",
  *   "statuses": [
  *     {
- *       "timestamp": "2016-06-28T20:02:34.449Z",
- *       "message": "instructing perryman's chronos to handle job container",
- *       "status": "deploying"
- *     }
- *   ]
+ *       "timestamp": "2016-07-14T22:30:22.358Z",
+ *       "message": "inventory-inventory deployed to perryman",
+ *       "status": "active"
+ *     },
+ *     ...
+ *   ],
+ *   "stack_name": "inventory-inventory--2-0-11--8gufie2b",
+ *   "deployed_at": 1468535384221,
+ *   "unit": "inventory-inventory",
+ *   "type": "service",
+ *   "expiration": 1469928212871,
+ *   "dependencies": {
+ *     "outbound": [
+ *       {
+ *         "workflow": "manual",
+ *         "guid": "1a69395e919d",
+ *         "stack_name": "dev-iptv-cass-dev--4-8-4--mtq2odqzndc0mg",
+ *         "deployed_at": 1468518896093,
+ *         "unit": "dev-iptv-cass-dev",
+ *         "type": "service"
+ *       }
+ *     ],
+ *     "inbound": []
+ *   },
+ *   "namespace": "devel"
  * }
  */
 type StackSummary struct {
@@ -51,6 +80,7 @@ type StackSummary struct {
   NamespaceRef string `json:"namespace"`
   Expiration int64 `json:"expiration"`
   Statuses []StackStatus `json:"statuses"`
+  Dependencies StackDependencies `json:"dependencies"`
 }
 
 func InspectStack(guid string, http *gorequest.SuperAgent, cfg *Config) (result StackSummary, err []error){
@@ -71,7 +101,7 @@ func InspectStack(guid string, http *gorequest.SuperAgent, cfg *Config) (result 
 }
 
 func PrintInspectStack(s StackSummary){
-  //// stack information
+  //>>>>>>>>>>> status history
   var tabulized = [][]string {}
   tabulized = append(tabulized, []string{ "GUID:", s.Guid })
   tabulized = append(tabulized, []string{ "STACK NAME:", s.StackName })
@@ -80,19 +110,37 @@ func PrintInspectStack(s StackSummary){
   tabulized = append(tabulized, []string{ "TYPE:", s.Type })
   tabulized = append(tabulized, []string{ "DEPLOYED AT:", JavaEpochToDateStr(s.DeployedAt) })
   tabulized = append(tabulized, []string{ "EXPIRES AT:", JavaEpochToDateStr(s.Expiration) })
-
   fmt.Println("===>> Stack Information")
   RenderTableToStdout([]string{ "Paramater", "Value" }, tabulized)
 
-  //// status history
+  //>>>>>>>>>>> dependency information
+
+  green  := color.New(color.FgGreen).SprintFunc()
+  yellow := color.New(color.FgYellow).SprintFunc()
+
+  fmt.Println("") // give us a new line for spacing
+  fmt.Println("===>> Dependencies")
+  var dependencies = [][]string {}
+
+  if len(s.Dependencies.Outbound) != 0 {
+    for _,w := range s.Dependencies.Outbound {
+      dependencies = append(dependencies,[]string{ w.Guid, w.StackName, w.Type, w.Workflow, JavaEpochToDateStr(w.DeployedAt), yellow("OUTBOUND") })
+    }
+  }
+  if len(s.Dependencies.Inbound) != 0 {
+    for _,w := range s.Dependencies.Inbound {
+      dependencies = append(dependencies,[]string{ w.Guid, w.StackName, w.Type, w.Workflow, JavaEpochToDateStr(w.DeployedAt), green("INBOUND") })
+    }
+  }
+  RenderTableToStdout([]string{ "GUID", "Stack", "Type", "Workflow", "Deployed At", "Direction" }, dependencies)
+
+  //>>>>>>>>>>> status history
   fmt.Println("") // give us a new line for spacing
   fmt.Println("===>> Status History")
-
   var statuslines = [][]string {}
   for _,o := range s.Statuses {
     statuslines = append(statuslines,[]string{ o.Status, o.Timestamp, o.Message })
   }
-
   RenderTableToStdout([]string{ "Status", "Timestamp", "Message" }, statuslines)
 }
 
@@ -160,7 +208,7 @@ type Stack struct {
   DeployedAt int64 `json:"deployed_at"`
   UnitName string `json:"unit"`
   Type string `json:"type"`
-  NamespaceRef string `json:"namespace"`
+  NamespaceRef string `json:"namespace,omitempty"`
 }
 
 func ListStacks(dc string, http *gorequest.SuperAgent, cfg *Config) (list []Stack, err []error){
