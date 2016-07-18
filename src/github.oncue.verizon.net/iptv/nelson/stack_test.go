@@ -85,7 +85,6 @@ func TestStackSummaryJsonUnmarshaling(t *testing.T) {
   var result StackSummary
   err := json.Unmarshal([]byte(fixture), &result)
 
-  t.Log(len(result.Dependencies.Outbound))
   t.Log(result.Dependencies.Outbound)
 
   if len(result.Dependencies.Outbound) != 1 {

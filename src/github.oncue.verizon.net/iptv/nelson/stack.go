@@ -2,10 +2,10 @@ package main
 
 import (
   "fmt"
-  "github.com/fatih/color"
   "errors"
   "strconv"
   "encoding/json"
+  "github.com/fatih/color"
   "github.com/parnurzeal/gorequest"
 )
 
