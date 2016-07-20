@@ -59,6 +59,6 @@ func PrintTerminalErrors(errs []error){
 }
 
 func IsValidGUID(in string) bool {
-  match, _ := regexp.MatchString(`[a-z0-9]{12}`, in)
-  return len(in) == 12 && match == true
+  match, _ := regexp.MatchString(`^[a-z0-9]{12,12}$`, in)
+  return match
 }
