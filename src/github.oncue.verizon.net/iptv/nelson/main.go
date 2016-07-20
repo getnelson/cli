@@ -4,6 +4,7 @@ import (
   "os"
   "fmt"
   "time"
+  "regexp"
   "strings"
   "strconv"
   "gopkg.in/urfave/cli.v1"
@@ -19,6 +20,7 @@ func main() {
   app.Version = "v0.2"
   app.Copyright = "© "+strconv.Itoa(year)+" Verizon Labs"
   app.Usage = "remote control for the Nelson deployment system"
+  app.EnableBashCompletion = true
 
   http := gorequest.New()
   pi   := ProgressIndicator()
@@ -253,22 +255,27 @@ func main() {
           },
           Action: func(c *cli.Context) error {
             if len(selectedUnitPrefix) > 0 && len(selectedVersion) > 0 {
-              splitVersion := strings.Split(selectedVersion, ".")
-              mjr, _ := strconv.Atoi(splitVersion[0])
-              min, _ := strconv.Atoi(splitVersion[1])
-              ver := FeatureVersion {
-                Major: mjr,
-                Minor: min,
-              }
-              req := DeprecationRequest {
-                ServiceType: selectedUnitPrefix,
-                Version: ver,
-              }
-              r,e := Deprecate(req, http, LoadDefaultConfig())
-              if e != nil {
-                return cli.NewExitError("Unable to deprecate unit+version series. Response was:\n"+r, 1)
+              match, _ := regexp.MatchString("(\\d+)\\.(\\d+)", selectedVersion)
+              if (match == true) {
+                splitVersion := strings.Split(selectedVersion, ".")
+                mjr, _ := strconv.Atoi(splitVersion[0])
+                min, _ := strconv.Atoi(splitVersion[1])
+                ver := FeatureVersion {
+                  Major: mjr,
+                  Minor: min,
+                }
+                req := DeprecationRequest {
+                  ServiceType: selectedUnitPrefix,
+                  Version: ver,
+                }
+                r,e := Deprecate(req, http, LoadDefaultConfig())
+                if e != nil {
+                  return cli.NewExitError("Unable to deprecate unit+version series. Response was:\n"+r, 1)
+                } else {
+                  fmt.Println("===>> Deprecated "+selectedUnitPrefix+" "+selectedVersion)
+                }
               } else {
-                fmt.Println("===>> Deprecated "+selectedUnitPrefix+" "+selectedVersion)
+                return cli.NewExitError("You must supply a feature version of the format XXX.XXX, e.g. 2.3, 4.56, 1.7", 1)
               }
             } else {
               return cli.NewExitError("Required --unit and/or --version inputs were not valid", 1)
