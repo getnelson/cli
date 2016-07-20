@@ -12,12 +12,13 @@ import (
 )
 
 var globalEnableDebug bool
+var globalBuildVersion string
 
 func main() {
   year, _, _ := time.Now().Date()
   app := cli.NewApp()
   app.Name = "nelson-cli"
-  app.Version = "v0.2"
+  app.Version = CurrentVersion()
   app.Copyright = "© "+strconv.Itoa(year)+" Verizon Labs"
   app.Usage = "remote control for the Nelson deployment system"
   app.EnableBashCompletion = true

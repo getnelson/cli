@@ -9,6 +9,7 @@ import (
   "fmt"
   "time"
   "regexp"
+  "runtime"
   "github.com/parnurzeal/gorequest"
   "github.com/olekukonko/tablewriter"
   "github.com/briandowns/spinner"
@@ -18,6 +19,7 @@ func AugmentRequest(c *gorequest.SuperAgent, cfg *Config) *gorequest.SuperAgent 
   return c.
     AddCookie(cfg.GetAuthCookie()).
     Set("Content-type","application/json").
+    Set("User-Agent", "Nelson CLI ("+runtime.GOOS+"); "+CurrentVersion()).
     Timeout(15*time.Second).
     SetCurlCommand(false).
     SetDebug(globalEnableDebug)
@@ -61,4 +63,12 @@ func PrintTerminalErrors(errs []error){
 func IsValidGUID(in string) bool {
   match, _ := regexp.MatchString(`^[a-z0-9]{12,12}$`, in)
   return match
+}
+
+func CurrentVersion() string {
+  if len(globalBuildVersion) == 0 {
+    return "devel"
+  } else {
+    return "v"+globalBuildVersion
+  }
 }

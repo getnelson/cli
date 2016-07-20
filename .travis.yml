@@ -9,7 +9,7 @@ before_script:
 script:
   - export TAR_NAME=nelson-$TARGET_PLATFORM-amd64-$CLI_VERSION.tar.gz
   - gb test -v
-  - GOOS=$TARGET_PLATFORM GOARCH=amd64 CGO_ENABLED=0 gb build
+  - GOOS=$TARGET_PLATFORM GOARCH=amd64 CGO_ENABLED=0 gb build -ldflags '-X main.globalBuildVersion=$TRAVIS_BUILD_NUMBER'
   - mv bin/nelson-$TARGET_PLATFORM-amd64 ./nelson
   - tar -zcvf $TAR_NAME nelson
   - "if [ $TRAVIS_PULL_REQUEST = 'false' ]; then curl -u $NEXUS_CREDENTIALS --upload-file $TAR_NAME $NEXUS_URL/$TAR_NAME; fi"
