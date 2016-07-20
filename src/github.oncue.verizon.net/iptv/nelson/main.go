@@ -192,7 +192,6 @@ func main() {
               } else {
                 PrintListStacks(r)
               }
-
             } else {
               return cli.NewExitError("You must suppled --datacenter in order to list stacks", 1)
             }
@@ -204,7 +203,7 @@ func main() {
           Usage: "Display the current status and details about a specific stack",
           Action: func(c *cli.Context) error {
             guid := c.Args().First()
-            if len(guid) > 0 {
+            if len(guid) > 0 && IsValidGUID(guid) {
               pi.Start()
               r, e := InspectStack(guid, http, LoadDefaultConfig())
               pi.Stop()
@@ -215,7 +214,7 @@ func main() {
                 PrintInspectStack(r)
               }
             } else {
-              return cli.NewExitError("You must supply a GUID of the stack you want to inspect.", 1)
+              return cli.NewExitError("You must supply a valid GUID for the stack you want to inspect.", 1)
             }
             return nil
           },
@@ -225,13 +224,16 @@ func main() {
           Usage: "Trigger a redeployment for a specific stack",
           Action: func(c *cli.Context) error {
             guid := c.Args().First()
+            if IsValidGUID(guid) {
+              r,e := Redeploy(guid, http, LoadDefaultConfig())
 
-            r,e := Redeploy(guid, http, LoadDefaultConfig())
-
-            if e != nil {
-              return cli.NewExitError("Unable to request a redeploy. Response was:\n"+r, 1)
+              if e != nil {
+                return cli.NewExitError("Unable to request a redeploy. Response was:\n"+r, 1)
+              } else {
+                fmt.Println("===>> "+r)
+              }
             } else {
-              fmt.Println("===>> "+r)
+              return cli.NewExitError("You must specify a valid GUID reference in order to redeploy a stack.", 1)
             }
             return nil
           },
@@ -285,13 +287,14 @@ func main() {
         },
         {
           Name:  "fs",
+          Aliases: []string{"logs"},
           Usage: "Fetch the deployment log for a given stack",
           Action: func(c *cli.Context) error {
             guid := c.Args().First()
-            if len(guid) > 0 {
+            if len(guid) > 0 && IsValidGUID(guid) {
               GetDeploymentLog(guid, http, LoadDefaultConfig())
             } else {
-              return cli.NewExitError("You must specify which stack you would like to redeploy.", 1)
+              return cli.NewExitError("You must specify a valid GUID for the stack you wish to view logs for.", 1)
             }
             return nil
           },

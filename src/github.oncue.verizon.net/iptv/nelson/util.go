@@ -8,6 +8,7 @@ import (
   "os"
   "fmt"
   "time"
+  "regexp"
   "github.com/parnurzeal/gorequest"
   "github.com/olekukonko/tablewriter"
   "github.com/briandowns/spinner"
@@ -55,4 +56,9 @@ func PrintTerminalErrors(errs []error){
   for _,e := range errs {
     fmt.Println(e)
   }
+}
+
+func IsValidGUID(in string) bool {
+  match, _ := regexp.MatchString("[a-z0-9]{12}", in)
+  return match
 }
