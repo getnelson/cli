@@ -65,6 +65,11 @@ func IsValidGUID(in string) bool {
   return match
 }
 
+func isValidCommaDelimitedList(str string) bool {
+  match, _ := regexp.MatchString(`^([a-z0-9\\-]+,?)+$`, str)
+  return match
+}
+
 func CurrentVersion() string {
   if len(globalBuildVersion) == 0 {
     return "devel"

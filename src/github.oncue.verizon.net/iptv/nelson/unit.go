@@ -32,9 +32,26 @@ type FeatureVersion struct {
 
 /////////////////// LIST ///////////////////
 
-func ListUnits(dc string, http *gorequest.SuperAgent, cfg *Config) (list []UnitSummary, err []error){
+func ListUnits(delimitedDcs string, delimitedNamespaces string, delimitedStatuses string, http *gorequest.SuperAgent, cfg *Config) (list []UnitSummary, err []error){
+  uri := "/v1/units?"
+  // set the datacenters if specified
+  if (isValidCommaDelimitedList(delimitedDcs)){
+    uri = uri+"dc="+delimitedDcs+"&"
+  }
+  if (isValidCommaDelimitedList(delimitedStatuses)){
+    uri = uri+"status="+delimitedStatuses+"&"
+  } else {
+    // if the user didnt specify statuses, they probally only want active units.
+    uri = uri+"status=active,warming,manual,deprecated&"
+  }
+  if (isValidCommaDelimitedList(delimitedNamespaces)){
+    uri = uri+"ns="+delimitedNamespaces
+  } else {
+    uri = uri+"ns=devel,qa,prod"
+  }
+
   r, bytes, errs := AugmentRequest(
-    http.Get(cfg.Endpoint+"/v1/datacenters/"+dc+"/units?status=active,manual"), cfg).EndBytes()
+    http.Get(cfg.Endpoint+uri), cfg).EndBytes()
 
   if (r.StatusCode / 100 != 2){
     errs = append(errs, errors.New("bad response from Nelson server"))
