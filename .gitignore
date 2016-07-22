@@ -24,5 +24,4 @@ _testmain.go
 *.prof
 bin/*
 */.DS_Store
-.fsw.yml
 .DS_Store
