@@ -59,23 +59,37 @@ $ nelson dcs list
 $ nelson units list --namespaces devel --datacenters us-west-2
 
 # show the units availabe in several datacenters
-nelson units list --namespaces devel --datacenters us-west-2,us-west-1
+$ nelson units list --namespaces devel --datacenters us-west-2,us-west-1
 
 # show the units availabe in all datacenters for a given namespace
-nelson units list --namespaces devel
+$ nelson units list --namespaces devel
 
 # show the units availabe in all datacenters for a given namespace and status
-nelson units list --namespaces devel --statuses deploying,active,deprecated
+$ nelson units list --namespaces devel --statuses deploying,active,deprecated
 
 # show the units that have been terminated by nelson in a given namespace
-nelson units list --namespaces devel --statues terminated
+$ nelson units list --namespaces devel --statues terminated
 
 ```
-
 
 ### Stack Operations
 
 ```
+# show the stacks deployed in a given datacenter
+$ nelson stacks list --namespaces devel --datacenters us-west-2
+
+# show the stacks availabe in several datacenters
+$ nelson stacks list --namespaces devel --datacenters us-west-2,us-west-1
+
+# show the stacks availabe in all datacenters for a given namespace
+$ nelson stacks list --namespaces devel
+
+# show the stacks availabe in all datacenters for a given namespace and status
+$ nelson stacks list --namespaces devel --statuses deploying,active,deprecated
+
+# show the stacks that have been terminated by nelson in a given namespace
+$ nelson stacks list --namespaces devel --statues terminated
+
 # redeploy a very specific deployment id
 $ nelson stacks redeploy b8ff485a0306
 

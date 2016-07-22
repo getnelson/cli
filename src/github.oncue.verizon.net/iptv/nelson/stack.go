@@ -216,9 +216,26 @@ type Stack struct {
   NamespaceRef string `json:"namespace,omitempty"`
 }
 
-func ListStacks(dc string, http *gorequest.SuperAgent, cfg *Config) (list []Stack, err []error){
+func ListStacks(delimitedDcs string, delimitedNamespaces string, delimitedStatuses string, http *gorequest.SuperAgent, cfg *Config) (list []Stack, err []error){
+  uri := "/v1/deployments?"
+  // set the datacenters if specified
+  if (isValidCommaDelimitedList(delimitedDcs)){
+    uri = uri+"dc="+delimitedDcs+"&"
+  }
+  if (isValidCommaDelimitedList(delimitedStatuses)){
+    uri = uri+"status="+delimitedStatuses+"&"
+  } else {
+    // if the user didnt specify statuses, they probally only want active units.
+    uri = uri+"status=active,warming,manual,deprecated&"
+  }
+  if (isValidCommaDelimitedList(delimitedNamespaces)){
+    uri = uri+"ns="+delimitedNamespaces
+  } else {
+    uri = uri+"ns=devel,qa,prod"
+  }
+
   r, bytes, errs := AugmentRequest(
-    http.Get(cfg.Endpoint+"/v1/datacenters/"+dc+"/deployments"), cfg).EndBytes()
+    http.Get(cfg.Endpoint+uri), cfg).EndBytes()
 
   if (r.StatusCode / 100 != 2){
     errs = append(errs, errors.New("Bad response from Nelson server"))
