@@ -9,6 +9,11 @@ import (
   "github.com/parnurzeal/gorequest"
 )
 
+/////////////////// MANUAL DEPLOYMENT ///////////////////
+
+
+
+
 /////////////////// INSPECT ///////////////////
 
 /*
