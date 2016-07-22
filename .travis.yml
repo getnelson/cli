@@ -13,7 +13,7 @@ script:
   - mv bin/nelson-$TARGET_PLATFORM-amd64 ./nelson
   - tar -zcvf $TAR_NAME nelson
   - "if [ $TRAVIS_PULL_REQUEST = 'false' ]; then curl -u $NEXUS_CREDENTIALS --upload-file $TAR_NAME $NEXUS_URL/$TAR_NAME; fi"
-  - "if [ $TRAVIS_PULL_REQUEST = 'false' ]; then echo "Download from $NEXUS_URL/$TAR_NAME"; fi"
+  - "if [ $TRAVIS_PULL_REQUEST = 'false' ]; then echo 'Download from ' $NEXUS_URL/$TAR_NAME; fi"
 
 matrix:
   include:
