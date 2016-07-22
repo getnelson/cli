@@ -116,36 +116,50 @@ func main() {
           Usage: "list the available units",
           Flags: []cli.Flag {
             cli.StringFlag{
-              Name:   "datacenter, d",
+              Name:   "datacenters, d",
               Value:  "",
               Usage:  "Restrict list of units to a particular datacenter",
               Destination: &selectedDatacenter,
             },
             cli.StringFlag{
-              Name:   "namespace, ns",
+              Name:   "namespaces, ns",
               Value:  "",
               Usage:  "Restrict list of units to a particular namespace",
               Destination: &selectedNamespace,
             },
             cli.StringFlag{
-              Name:   "status, s",
+              Name:   "statuses, s",
               Value:  "",
               Usage:  "Restrict list of units to a particular status. Defaults to 'active,manual'",
               Destination: &selectedStatus,
             },
           },
           Action: func(c *cli.Context) error {
-            if len(selectedDatacenter) > 0 {
-              pi.Start()
-              us, errs := ListUnits(selectedDatacenter, http, LoadDefaultConfig())
-              pi.Stop()
-              if(errs != nil){
-                return cli.NewExitError("Unable to list units", 1)
-              } else {
-                PrintListUnits(us)
+            if(len(selectedDatacenter) > 0){
+              if (!isValidCommaDelimitedList(selectedDatacenter)){
+                return cli.NewExitError("You supplied an argument for 'datacenters' but it was not a valid comma-delimited list.", 1)
+              }
+            }
+            if(len(selectedNamespace) > 0){
+              if (!isValidCommaDelimitedList(selectedNamespace)){
+                return cli.NewExitError("You supplied an argument for 'namespaces' but it was not a valid comma-delimited list.", 1)
               }
             } else {
-              return cli.NewExitError("Missing --datacenter flag; cannot list units for all datacenters in one request.", 1)
+              return cli.NewExitError("You must supply --namespaces or -ns argument to specify the namesapce(s) as a comma delimted form. i.e. devel,qa,prod or just devel", 1)
+            }
+            if(len(selectedStatus) > 0){
+              if (!isValidCommaDelimitedList(selectedStatus)){
+                return cli.NewExitError("You supplied an argument for 'statuses' but it was not a valid comma-delimited list.", 1)
+              }
+            }
+
+            pi.Start()
+            us, errs := ListUnits(selectedDatacenter, selectedNamespace, selectedStatus, http, LoadDefaultConfig())
+            pi.Stop()
+            if(errs != nil){
+              return cli.NewExitError("Unable to list units", 1)
+            } else {
+              PrintListUnits(us)
             }
             return nil
           },
@@ -176,25 +190,51 @@ func main() {
               Destination: &selectedUnitPrefix,
             },
             cli.StringFlag{
-              Name:   "datacenter, d",
+              Name:   "datacenters, d",
               Value:  "",
-              Usage:  "Only list stacks that reside in a given datacenter",
+              Usage:  "Restrict list of units to a particular datacenter",
               Destination: &selectedDatacenter,
+            },
+            cli.StringFlag{
+              Name:   "namespaces, ns",
+              Value:  "",
+              Usage:  "Restrict list of units to a particular namespace",
+              Destination: &selectedNamespace,
+            },
+            cli.StringFlag{
+              Name:   "statuses, s",
+              Value:  "",
+              Usage:  "Restrict list of units to a particular status. Defaults to 'active,manual'",
+              Destination: &selectedStatus,
             },
           },
           Action: func(c *cli.Context) error {
-            if len(selectedDatacenter) > 0 {
-              pi.Start()
-              r, e := ListStacks(selectedDatacenter, http, LoadDefaultConfig())
-              pi.Stop()
-              if e != nil {
-                PrintTerminalErrors(e)
-                return cli.NewExitError("Unable to list stacks.", 1)
-              } else {
-                PrintListStacks(r)
+            if(len(selectedDatacenter) > 0){
+              if (!isValidCommaDelimitedList(selectedDatacenter)){
+                return cli.NewExitError("You supplied an argument for 'datacenters' but it was not a valid comma-delimited list.", 1)
+              }
+            }
+            if(len(selectedNamespace) > 0){
+              if (!isValidCommaDelimitedList(selectedNamespace)){
+                return cli.NewExitError("You supplied an argument for 'namespaces' but it was not a valid comma-delimited list.", 1)
               }
             } else {
-              return cli.NewExitError("You must suppled --datacenter in order to list stacks", 1)
+              return cli.NewExitError("You must supply --namespaces or -ns argument to specify the namesapce(s) as a comma delimted form. i.e. devel,qa,prod or just devel", 1)
+            }
+            if(len(selectedStatus) > 0){
+              if (!isValidCommaDelimitedList(selectedStatus)){
+                return cli.NewExitError("You supplied an argument for 'statuses' but it was not a valid comma-delimited list.", 1)
+              }
+            }
+
+            pi.Start()
+            r, e := ListStacks(selectedDatacenter, selectedNamespace, selectedStatus, http, LoadDefaultConfig())
+            pi.Stop()
+            if e != nil {
+              PrintTerminalErrors(e)
+              return cli.NewExitError("Unable to list stacks.", 1)
+            } else {
+              PrintListStacks(r)
             }
             return nil
           },

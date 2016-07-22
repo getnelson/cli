@@ -20,7 +20,15 @@ Then you're ready to use the CLI. The first command you should execute after ins
 
 The below set of commands are the currently implemented set:
 
+### System Operations
+
 ```
+# display the current user information
+$ nelson whoami
+
+# list the available clean policies on this remote nelson
+$ nelson system cleanup-policies
+
 # fully explicit login
 $ nelson login --token 1f3f3f3f3 nelson.yourdomain.com
 
@@ -32,27 +40,58 @@ $ nelson login
 
 # for testing with a local server, you can do:
 $ nelson login --disable-tls --token 1f3f3f3f3 nelson.local:9000
+```
 
+### Datacenter Operations
+
+```
 # list the available nelson datacenters
 $ nelson datacenters list
 
 # just an alias for the above
 $ nelson dcs list
+```
 
-# show the deployment log for a given deployment id
-$ nelson stacks fs 02481438b432
+### Unit Operations
 
-# display the current user information
-$ nelson whoami
+```
+# show the units deployed in a given datacenter
+$ nelson units list --namespaces devel --datacenters us-west-2
+
+# show the units availabe in several datacenters
+$ nelson units list --namespaces devel --datacenters us-west-2,us-west-1
+
+# show the units availabe in all datacenters for a given namespace
+$ nelson units list --namespaces devel
+
+# show the units availabe in all datacenters for a given namespace and status
+$ nelson units list --namespaces devel --statuses deploying,active,deprecated
+
+# show the units that have been terminated by nelson in a given namespace
+$ nelson units list --namespaces devel --statues terminated
+
+```
+
+### Stack Operations
+
+```
+# show the stacks deployed in a given datacenter
+$ nelson stacks list --namespaces devel --datacenters us-west-2
+
+# show the stacks availabe in several datacenters
+$ nelson stacks list --namespaces devel --datacenters us-west-2,us-west-1
+
+# show the stacks availabe in all datacenters for a given namespace
+$ nelson stacks list --namespaces devel
+
+# show the stacks availabe in all datacenters for a given namespace and status
+$ nelson stacks list --namespaces devel --statuses deploying,active,deprecated
+
+# show the stacks that have been terminated by nelson in a given namespace
+$ nelson stacks list --namespaces devel --statues terminated
 
 # redeploy a very specific deployment id
 $ nelson stacks redeploy b8ff485a0306
-
-# show you the units deployed in a given datacenter
-$ nelson units list --datacenter us-west-2
-
-# list the available clean policies on this remote nelson
-$ nelson system cleanup-policies
 
 # deprecate a specific unit and feature version
 $ nelson stacks deprecate --unit foo --version 1.2
@@ -60,11 +99,14 @@ $ nelson stacks deprecate --unit foo --version 1.2
 # inspect a very specific deployment
 $ nelson stacks inspect b8ff485a0306
 
+# show the deployment log for a given deployment id
+$ nelson stacks fs 02481438b432
 ```
 
 The following commands are currently being developed:
 
 ```
+$ nelson stack deploy --manual
 
 # list the workflows availabe in the remote nelson
 $ nelson workflows inspect --type job quasar
