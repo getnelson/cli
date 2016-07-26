@@ -9,6 +9,7 @@ import (
   "strconv"
   "gopkg.in/urfave/cli.v1"
   "github.com/parnurzeal/gorequest"
+  "github.com/jmcvetta/randutil.git"
 )
 
 var globalEnableDebug bool
@@ -34,6 +35,11 @@ func main() {
   var selectedStatus string
   var selectedUnitPrefix string
   var selectedVersion string
+
+  var port int64
+  var serviceType string
+  var version string
+  var description string
 
   app.Flags = []cli.Flag {
     cli.BoolFlag{
@@ -275,6 +281,69 @@ func main() {
               }
             } else {
               return cli.NewExitError("You must specify a valid GUID reference in order to redeploy a stack.", 1)
+            }
+            return nil
+          },
+        },
+        {
+          Name:  "manual",
+          Usage: "Register a manual deployment",
+          Flags: []cli.Flag {
+            cli.StringFlag{
+              Name:   "datacenter, dc",
+              Value:  "",
+              Usage:  "The datacenter for the service",
+              Destination: &selectedDatacenter,
+            },
+            cli.StringFlag{
+              Name:   "namespace, ns",
+              Value:  "",
+              Usage:  "The namespace for the service",
+              Destination: &selectedNamespace,
+            },
+            cli.StringFlag{
+              Name:   "service-type, st",
+              Value:  "",
+              Usage:  "The service type for the service",
+              Destination: &serviceType,
+            },
+            cli.StringFlag{
+              Name:   "version, v",
+              Value:  "",
+              Usage:  "The version for the service",
+              Destination: &version,
+            },
+            cli.StringFlag{
+              Name:   "description, d",
+              Value:  "",
+              Usage:  "Description for the service",
+              Destination: &description,
+            },
+            cli.Int64Flag{
+              Name:   "port",
+              Value:  0,
+              Usage:  "The exposed port for the service",
+              Destination: &port,
+            },
+          },
+          Action: func(c *cli.Context) error {
+            randString, _ := randutil.AlphaString(8)
+            req := ManualDeploymentRequest{
+              Datacenter: selectedDatacenter,
+              Namespace: selectedNamespace,
+              ServiceType: serviceType,
+              Version: version,
+              Hash: strings.ToLower(randString),
+              Description: description,
+              Port:port,
+            }
+            pi.Start()
+            res, e := RegisterManualDeployment(req, http, LoadDefaultConfig())
+            pi.Stop()
+            if e != nil {
+              return cli.NewExitError("Unable to register manual deployment.", 1)
+            } else {
+              fmt.Println(res)
             }
             return nil
           },

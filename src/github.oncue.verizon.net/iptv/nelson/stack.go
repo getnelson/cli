@@ -11,8 +11,42 @@ import (
 
 /////////////////// MANUAL DEPLOYMENT ///////////////////
 
+/*
+ * {
+ *   "datacenter"`: "perryman",
+ *   "namespace"`: "stage",
+ *   "serviceType"`: "cassandra",
+ *   "version"`: "1.2.3,
+ *   "hash"`: "abcd1234",
+ *   "description"`: "a cassandra for great good",
+ *   "port"`: 1234
+ * }
+ */
+type ManualDeploymentRequest struct {
+  Datacenter  string `json:"datacenter"`
+  Namespace   string `json:"namespace"`
+  ServiceType string `json:"serviceType"`
+  Version     string `json:"version"`
+  Hash        string `json:"hash"`
+  Description string `json:"description"`
+  Port        int64 `json: "port"`
+}
 
+func RegisterManualDeployment(
+  req ManualDeploymentRequest,
+  http *gorequest.SuperAgent, cfg *Config) (string, []error) {
 
+  r, body, errs := AugmentRequest(
+    http.Post(cfg.Endpoint+"/v1/deployments"), cfg).Send(req).EndBytes()
+
+  if (r.StatusCode / 100 != 2){
+    resp := string(body[:])
+    errs = append(errs, errors.New("Unexpected response from Nelson server"))
+    return resp, errs
+  } else {
+    return "Manual stack has been registered.", errs
+  }
+}
 
 /////////////////// INSPECT ///////////////////
 
