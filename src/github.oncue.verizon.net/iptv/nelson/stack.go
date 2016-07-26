@@ -13,13 +13,13 @@ import (
 
 /*
  * {
- *   "datacenter"`: "perryman",
- *   "namespace"`: "stage",
- *   "serviceType"`: "cassandra",
- *   "version"`: "1.2.3,
- *   "hash"`: "abcd1234",
- *   "description"`: "a cassandra for great good",
- *   "port"`: 1234
+ *   "datacenter": "perryman",
+ *   "namespace": "stage",
+ *   "serviceType": "cassandra",
+ *   "version": "1.2.3,
+ *   "hash": "abcd1234",
+ *   "description": "a cassandra for great good",
+ *   "port": 1234
  * }
  */
 type ManualDeploymentRequest struct {
