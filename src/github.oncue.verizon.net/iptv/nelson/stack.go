@@ -28,8 +28,8 @@ type ManualDeploymentRequest struct {
   ServiceType string `json:"serviceType"`
   Version     string `json:"version"`
   Hash        string `json:"hash"`
+  Port        int64 `json:"port"`
   Description string `json:"description"`
-  Port        int64 `json: "port"`
 }
 
 func RegisterManualDeployment(
