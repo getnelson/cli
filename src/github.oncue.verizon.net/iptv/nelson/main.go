@@ -9,7 +9,6 @@ import (
   "strconv"
   "gopkg.in/urfave/cli.v1"
   "github.com/parnurzeal/gorequest"
-  "github.com/jmcvetta/randutil.git"
 )
 
 var globalEnableDebug bool
@@ -39,6 +38,7 @@ func main() {
   var port int64
   var serviceType string
   var version string
+  var stackHash string
   var description string
 
   app.Flags = []cli.Flag {
@@ -314,6 +314,12 @@ func main() {
               Destination: &version,
             },
             cli.StringFlag{
+              Name:   "hash",
+              Value:  "",
+              Usage:  "The hash for the stack",
+              Destination: &stackHash,
+            },
+            cli.StringFlag{
               Name:   "description, d",
               Value:  "",
               Usage:  "Description for the service",
@@ -327,13 +333,12 @@ func main() {
             },
           },
           Action: func(c *cli.Context) error {
-            randString, _ := randutil.AlphaString(8)
             req := ManualDeploymentRequest{
               Datacenter: selectedDatacenter,
               Namespace: selectedNamespace,
               ServiceType: serviceType,
               Version: version,
-              Hash: strings.ToLower(randString),
+              Hash: stackHash,
               Description: description,
               Port:port,
             }

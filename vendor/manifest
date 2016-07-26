@@ -14,12 +14,6 @@
 			"branch": "master"
 		},
 		{
-			"importpath": "github.com/jmcvetta/randutil.git",
-			"repository": "https://github.com/jmcvetta/randutil.git",
-			"revision": "2bb1b664bcff821e02b2a0644cd29c7e824d54f8",
-			"branch": "master"
-		},
-		{
 			"importpath": "github.com/mattn/go-colorable",
 			"repository": "https://github.com/mattn/go-colorable",
 			"revision": "9056b7a9f2d1f2d96498d6d146acd1f9d5ed3d59",
