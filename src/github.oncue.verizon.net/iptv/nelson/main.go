@@ -35,9 +35,8 @@ func main() {
   var selectedUnitPrefix string
   var selectedVersion string
 
-  var port int64
-  var serviceType string
-  var version string
+  var selectedPort int64
+  var selectedServiceType string
   var stackHash string
   var description string
 
@@ -305,13 +304,13 @@ func main() {
               Name:   "service-type, st",
               Value:  "",
               Usage:  "The service type for the service",
-              Destination: &serviceType,
+              Destination: &selectedServiceType,
             },
             cli.StringFlag{
               Name:   "version, v",
               Value:  "",
               Usage:  "The version for the service",
-              Destination: &version,
+              Destination: &selectedVersion,
             },
             cli.StringFlag{
               Name:   "hash",
@@ -329,26 +328,35 @@ func main() {
               Name:   "port",
               Value:  0,
               Usage:  "The exposed port for the service",
-              Destination: &port,
+              Destination: &selectedPort,
             },
           },
           Action: func(c *cli.Context) error {
-            req := ManualDeploymentRequest{
-              Datacenter: selectedDatacenter,
-              Namespace: selectedNamespace,
-              ServiceType: serviceType,
-              Version: version,
-              Hash: stackHash,
-              Description: description,
-              Port:port,
-            }
-            pi.Start()
-            res, e := RegisterManualDeployment(req, http, LoadDefaultConfig())
-            pi.Stop()
-            if e != nil {
-              return cli.NewExitError("Unable to register manual deployment.", 1)
+            if len(selectedDatacenter) > 0 && len(selectedNamespace) > 0 &&
+               len(selectedServiceType) > 0 &&
+               len(selectedVersion) > 0 &&
+               len(stackHash) > 0 &&
+               len(description) > 0 &&
+               selectedPort > 0 {
+              req := ManualDeploymentRequest{
+                Datacenter: selectedDatacenter,
+                Namespace: selectedNamespace,
+                ServiceType: selectedServiceType,
+                Version: selectedVersion,
+                Hash: stackHash,
+                Description: description,
+                Port: selectedPort,
+              }
+              pi.Start()
+              res, e := RegisterManualDeployment(req, http, LoadDefaultConfig())
+              pi.Stop()
+              if e != nil {
+                return cli.NewExitError("Unable to register manual deployment.", 1)
+              } else {
+                fmt.Println(res)
+              }
             } else {
-              fmt.Println(res)
+              return cli.NewExitError("You must specify the following switches: \n\t--datacenter <string> \n\t--namespace <string> \n\t--service-type <string> \n\t--version <string> \n\t--hash <string> \n\t--port <int>", 1)
             }
             return nil
           },
