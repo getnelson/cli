@@ -19,7 +19,7 @@ func AugmentRequest(c *gorequest.SuperAgent, cfg *Config) *gorequest.SuperAgent 
   return c.
     AddCookie(cfg.GetAuthCookie()).
     Set("Content-type","application/json").
-    Set("User-Agent", "Nelson CLI ("+runtime.GOOS+"); "+CurrentVersion()).
+    Set("User-Agent", "NelsonCLI/0.1."+globalBuildVersion+" ("+runtime.GOOS+")").
     Timeout(15*time.Second).
     SetCurlCommand(false).
     SetDebug(globalEnableDebug)
