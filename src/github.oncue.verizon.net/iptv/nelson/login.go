@@ -8,6 +8,8 @@ import (
   // "io/ioutil"
   "encoding/json"
   // "gopkg.in/yaml.v2"
+  "os"
+  "fmt"
 )
 
 type CreateSessionRequest struct {
@@ -45,7 +47,10 @@ func createSession(client *gorequest.SuperAgent, githubToken string, baseURL str
   url := baseURL+"/auth/github"
   _, bytes, errs := client.
       Post(url).
+      Set("User-Agent", UserAgentString()).
       Send(ver).
+      SetCurlCommand(false).
+      SetDebug(globalEnableDebug).
       EndBytes()
 
   if (len(errs) > 0) {
@@ -54,8 +59,9 @@ func createSession(client *gorequest.SuperAgent, githubToken string, baseURL str
 
   var result Session
   if err := json.Unmarshal(bytes, &result); err != nil {
-    //return err, nil
-    panic(err)
+    fmt.Println()
+    fmt.Println("Error: " + string(bytes))
+    os.Exit(1)
   }
 
   return result
