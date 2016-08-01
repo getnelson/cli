@@ -25,7 +25,7 @@ import (
 type ManualDeploymentRequest struct {
   Datacenter  string `json:"datacenter"`
   Namespace   string `json:"namespace"`
-  ServiceType string `json:"serviceType"`
+  ServiceType string `json:"service_type"`
   Version     string `json:"version"`
   Hash        string `json:"hash"`
   Port        int64 `json:"port"`
