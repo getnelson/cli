@@ -457,7 +457,8 @@ func main() {
         sr, e := WhoAmI(http, cfg)
         pi.Stop()
         if e != nil {
-          return cli.NewExitError("Unable to list stacks.", 1)
+          PrintTerminalErrors(e)
+          return cli.NewExitError("Unable to determine who is currently logged into Nelson.", 1)
         } else {
           fmt.Println("===>> Currently logged in as "+sr.User.Name+" @ "+cfg.Endpoint)
         }
