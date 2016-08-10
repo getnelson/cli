@@ -84,7 +84,7 @@ func main() {
         pi.Start()
         Login(http, userGithubToken, host, disableTLS)
         pi.Stop()
-        fmt.Println("Sucsessfully logged in to " + host)
+        fmt.Println("Successfully logged in to " + host)
         return nil
       },
     },
