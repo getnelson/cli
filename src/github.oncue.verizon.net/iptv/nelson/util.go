@@ -19,7 +19,7 @@ func AugmentRequest(c *gorequest.SuperAgent, cfg *Config) *gorequest.SuperAgent 
   return c.
     AddCookie(cfg.GetAuthCookie()).
     Set("Content-type","application/json").
-    Set("User-Agent", UserAgentString()).
+    Set("User-Agent", UserAgentString(globalBuildVersion)).
     Timeout(15*time.Second).
     SetCurlCommand(false).
     SetDebug(globalEnableDebug)
@@ -78,11 +78,20 @@ func CurrentVersion() string {
   }
 }
 
-func UserAgentString() string {
+func UserAgentString(globalBuildVersion string) string {
   var name = "NelsonCLI"
+  var version = getVersionForMode(globalBuildVersion)
+  return name + "/" + version + " (" + runtime.GOOS + ")"
+}
+
+// Set version to be absurdly large if we're in development mode.
+// Otherwise, use "real" version.
+// Note that we're currently hard-coding the '0.1' part of '0.1.x'.
+// We rely on the Travis build number for the 'x' part.
+func getVersionForMode(globalBuildVersion string) string {
   if len(globalBuildVersion) == 0 {
-    return name
+    return "10000.0.0"
   } else {
-    return name + "/0.1."+globalBuildVersion+" ("+runtime.GOOS+")"
+    return "0.1." + globalBuildVersion
   }
 }
