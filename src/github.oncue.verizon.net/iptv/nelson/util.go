@@ -84,13 +84,9 @@ func UserAgentString(globalBuildVersion string) string {
   return name + "/" + version + " (" + runtime.GOOS + ")"
 }
 
-// Set version to be absurdly large if we're in development mode.
-// Otherwise, use "real" version.
-// Note that we're currently hard-coding the '0.1' part of '0.1.x'.
-// We rely on the Travis build number for the 'x' part.
 func getVersionForMode(globalBuildVersion string) string {
   if len(globalBuildVersion) == 0 {
-    return "10000.0.0"
+    return "devel"
   } else {
     return "0.1." + globalBuildVersion
   }
