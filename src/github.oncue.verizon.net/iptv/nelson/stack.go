@@ -84,7 +84,7 @@ type StackDependencies struct {
  *     {
  *       "timestamp": "2016-07-14T22:30:22.358Z",
  *       "message": "inventory-inventory deployed to perryman",
- *       "status": "active"
+ *       "status": "ready"
  *     },
  *     ...
  *   ],
@@ -259,8 +259,8 @@ func ListStacks(delimitedDcs string, delimitedNamespaces string, delimitedStatus
   if (isValidCommaDelimitedList(delimitedStatuses)){
     uri = uri+"status="+delimitedStatuses+"&"
   } else {
-    // if the user didnt specify statuses, they probally only want active units.
-    uri = uri+"status=active,warming,deprecated&"
+    // if the user didnt specify statuses, they probally only want ready units.
+    uri = uri+"status=ready,warming,deprecated&"
   }
   if (isValidCommaDelimitedList(delimitedNamespaces)){
     uri = uri+"ns="+delimitedNamespaces

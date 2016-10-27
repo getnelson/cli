@@ -135,7 +135,7 @@ func main() {
             cli.StringFlag{
               Name:   "statuses, s",
               Value:  "",
-              Usage:  "Restrict list of units to a particular status. Defaults to 'active,manual'",
+              Usage:  "Restrict list of units to a particular status. Defaults to 'ready,manual'",
               Destination: &selectedStatus,
             },
           },
@@ -209,7 +209,7 @@ func main() {
             cli.StringFlag{
               Name:   "statuses, s",
               Value:  "",
-              Usage:  "Restrict list of units to a particular status. Defaults to 'active,manual'",
+              Usage:  "Restrict list of units to a particular status. Defaults to 'ready,manual'",
               Destination: &selectedStatus,
             },
           },
