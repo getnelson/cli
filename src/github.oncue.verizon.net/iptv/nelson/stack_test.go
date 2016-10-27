@@ -33,7 +33,7 @@ func TestStackSummaryJsonUnmarshaling(t *testing.T) {
     {
       "timestamp": "2016-07-14T22:30:22.358Z",
       "message": "inventory-inventory deployed to perryman",
-      "status": "active"
+      "status": "ready"
     },
     {
       "timestamp": "2016-07-14T22:30:22.310Z",

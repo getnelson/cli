@@ -56,19 +56,19 @@ $ nelson dcs list
 
 ```
 # show the units deployed in a given datacenter
-$ nelson units list --namespaces devel --datacenters us-west-2
+$ nelson units list --namespaces dev --datacenters us-west-2
 
 # show the units availabe in several datacenters
-$ nelson units list --namespaces devel --datacenters us-west-2,us-west-1
+$ nelson units list --namespaces dev --datacenters us-west-2,us-west-1
 
 # show the units availabe in all datacenters for a given namespace
-$ nelson units list --namespaces devel
+$ nelson units list --namespaces dev
 
 # show the units availabe in all datacenters for a given namespace and status
-$ nelson units list --namespaces devel --statuses deploying,active,deprecated
+$ nelson units list --namespaces dev --statuses deploying,ready,deprecated
 
 # show the units that have been terminated by nelson in a given namespace
-$ nelson units list --namespaces devel --statues terminated
+$ nelson units list --namespaces dev --statues terminated
 
 ```
 
@@ -76,19 +76,19 @@ $ nelson units list --namespaces devel --statues terminated
 
 ```
 # show the stacks deployed in a given datacenter
-$ nelson stacks list --namespaces devel --datacenters us-west-2
+$ nelson stacks list --namespaces dev --datacenters us-west-2
 
 # show the stacks availabe in several datacenters
-$ nelson stacks list --namespaces devel --datacenters us-west-2,us-west-1
+$ nelson stacks list --namespaces dev --datacenters us-west-2,us-west-1
 
 # show the stacks availabe in all datacenters for a given namespace
 $ nelson stacks list --namespaces devel
 
 # show the stacks availabe in all datacenters for a given namespace and status
-$ nelson stacks list --namespaces devel --statuses deploying,active,deprecated
+$ nelson stacks list --namespaces dev --statuses deploying,ready,deprecated
 
 # show the stacks that have been terminated by nelson in a given namespace
-$ nelson stacks list --namespaces devel --statues terminated
+$ nelson stacks list --namespaces dev --statues terminated
 
 # redeploy a very specific deployment id
 $ nelson stacks redeploy b8ff485a0306

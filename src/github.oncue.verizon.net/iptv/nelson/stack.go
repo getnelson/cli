@@ -84,7 +84,7 @@ type StackDependencies struct {
  *     {
  *       "timestamp": "2016-07-14T22:30:22.358Z",
  *       "message": "inventory-inventory deployed to perryman",
- *       "status": "active"
+ *       "status": "ready"
  *     },
  *     ...
  *   ],
@@ -201,7 +201,7 @@ type DeprecationRequest struct {
 
 func Deprecate(req DeprecationRequest, http *gorequest.SuperAgent, cfg *Config) (str string, err []error){
   r, body, errs := AugmentRequest(
-    http.Post(cfg.Endpoint+"/v1/deployments/deprecate"), cfg).Send(req).EndBytes()
+    http.Post(cfg.Endpoint+"/v1/units/deprecate"), cfg).Send(req).EndBytes()
 
   if (r.StatusCode / 100 != 2){
     resp := string(body[:])
@@ -259,8 +259,8 @@ func ListStacks(delimitedDcs string, delimitedNamespaces string, delimitedStatus
   if (isValidCommaDelimitedList(delimitedStatuses)){
     uri = uri+"status="+delimitedStatuses+"&"
   } else {
-    // if the user didnt specify statuses, they probally only want active units.
-    uri = uri+"status=active,warming,deprecated&"
+    // if the user didnt specify statuses, they probally only want ready units.
+    uri = uri+"status=ready,warming,deprecated&"
   }
   if (isValidCommaDelimitedList(delimitedNamespaces)){
     uri = uri+"ns="+delimitedNamespaces
