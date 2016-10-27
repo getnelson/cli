@@ -201,7 +201,7 @@ type DeprecationRequest struct {
 
 func Deprecate(req DeprecationRequest, http *gorequest.SuperAgent, cfg *Config) (str string, err []error){
   r, body, errs := AugmentRequest(
-    http.Post(cfg.Endpoint+"/v1/deployments/deprecate"), cfg).Send(req).EndBytes()
+    http.Post(cfg.Endpoint+"/v1/units/deprecate"), cfg).Send(req).EndBytes()
 
   if (r.StatusCode / 100 != 2){
     resp := string(body[:])
