@@ -73,3 +73,21 @@ func PrintListUnits(units []UnitSummary){
 
   RenderTableToStdout([]string{ "GUID", "Namespace", "Unit", "Version" }, tabulized)
 }
+
+/////////////////// REMOVE UNIT GRANT ///////////////////
+
+func RemoveUnitGrants(unitName string, http *gorequest.SuperAgent, cfg *Config) []error {
+  return nil
+}
+
+/////////////////// ADD UNIT GRANT ///////////////////
+
+func AddUnitGrants(unitName string, delimitedPolicies string, http *gorequest.SuperAgent, cfg *Config) []error {
+  return nil
+}
+
+/////////////////// LIST UNIT GRANTS ///////////////////
+
+func ListUnitGrants(unitName string, http *gorequest.SuperAgent, cfg *Config) (policies []string, err []error) {
+  return nil, nil
+}
