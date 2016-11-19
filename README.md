@@ -70,6 +70,14 @@ $ nelson units list --namespaces dev --statuses deploying,ready,deprecated
 # show the units that have been terminated by nelson in a given namespace
 $ nelson units list --namespaces dev --statues terminated
 
+# display the grants for a given unit
+$ nelson units grants unit-name
+
+# revoke all approved policies
+$ nelson units grants --remove unit-name
+
+# approve the following policies for use with this unit
+$ nelson units grants --policies foo,bar,baz unit-name
 ```
 
 ### Stack Operations
