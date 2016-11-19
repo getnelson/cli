@@ -3,6 +3,7 @@ package main
 import (
   "errors"
   "strconv"
+  "strings"
   "encoding/json"
   "github.com/parnurzeal/gorequest"
 )
@@ -28,6 +29,15 @@ type UnitSummary struct {
 type FeatureVersion struct {
   Major int `json:"major"`
   Minor int `json:"minor"`
+}
+
+/*
+ * {
+ *   "policies": [ "foo", "bar", "baz" ]
+ * }
+ */
+type PolicyList struct {
+  Policies []string `json:policies`
 }
 
 /////////////////// LIST ///////////////////
@@ -77,17 +87,50 @@ func PrintListUnits(units []UnitSummary){
 /////////////////// REMOVE UNIT GRANT ///////////////////
 
 func RemoveUnitGrants(unitName string, http *gorequest.SuperAgent, cfg *Config) []error {
+  r, _, errs := AugmentRequest(
+    http.Delete(cfg.Endpoint+"/v1/policies/"+unitName), cfg).EndBytes()
+
+  if (r.StatusCode / 100 != 2){
+    errs = append(errs, errors.New("Bad response from Nelson server."))
+    return errs
+  }
+
   return nil
 }
 
 /////////////////// ADD UNIT GRANT ///////////////////
 
 func AddUnitGrants(unitName string, delimitedPolicies string, http *gorequest.SuperAgent, cfg *Config) []error {
+  arr := strings.Split(delimitedPolicies, ",")
+  req := PolicyList {
+    Policies: arr,
+  }
+
+  r, _, errs := AugmentRequest(
+    http.Put(cfg.Endpoint+"/v1/policies/"+unitName), cfg).Send(req).EndBytes()
+
+  if (r.StatusCode / 100 != 2){
+    errs = append(errs, errors.New("Bad response from Nelson server."))
+    return errs
+  }
+
   return nil
 }
 
 /////////////////// LIST UNIT GRANTS ///////////////////
 
 func ListUnitGrants(unitName string, http *gorequest.SuperAgent, cfg *Config) (policies []string, err []error) {
-  return nil, nil
+  r, body, errs := AugmentRequest(
+    http.Get(cfg.Endpoint+"/v1/policies/"+unitName), cfg).EndBytes()
+
+  if (r.StatusCode / 100 != 2){
+    errs = append(errs, errors.New("Bad response from Nelson server."))
+    return nil, errs
+  } else {
+    var result PolicyList
+    if err := json.Unmarshal(body, &result); err != nil {
+      panic(err)
+    }
+    return result.Policies, errs
+  }
 }

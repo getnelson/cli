@@ -240,6 +240,7 @@ func main() {
               pi.Stop()
 
               if len(errs) != 0 {
+                fmt.Println(errs)
                 return cli.NewExitError("Unexpected error whilst trying to remove grants for '"+unitName+"'", 1)
               }
 
