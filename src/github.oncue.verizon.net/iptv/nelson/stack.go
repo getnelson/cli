@@ -91,7 +91,7 @@ type StackDependencies struct {
  *   "stack_name": "inventory-inventory--2-0-11--8gufie2b",
  *   "deployed_at": 1468535384221,
  *   "unit": "inventory-inventory",
- *   "type": "service",
+ *   "plan": "service",
  *   "expiration": 1469928212871,
  *   "dependencies": {
  *     "outbound": [
@@ -101,7 +101,7 @@ type StackDependencies struct {
  *         "stack_name": "dev-iptv-cass-dev--4-8-4--mtq2odqzndc0mg",
  *         "deployed_at": 1468518896093,
  *         "unit": "dev-iptv-cass-dev",
- *         "type": "service"
+ *         "plan": "service"
  *       }
  *     ],
  *     "inbound": []
@@ -115,7 +115,7 @@ type StackSummary struct {
   StackName string `json:"stack_name"`
   DeployedAt int64 `json:"deployed_at"`
   UnitName string `json:"unit"`
-  Type string `json:"type"`
+  Plan string `json:"plan"`
   NamespaceRef string `json:"namespace"`
   Expiration int64 `json:"expiration"`
   Statuses []StackStatus `json:"statuses"`
@@ -145,8 +145,8 @@ func PrintInspectStack(s StackSummary){
   tabulized = append(tabulized, []string{ "GUID:", s.Guid })
   tabulized = append(tabulized, []string{ "STACK NAME:", s.StackName })
   tabulized = append(tabulized, []string{ "NAMESPACE:", s.NamespaceRef })
+  tabulized = append(tabulized, []string{ "PLAN:", s.Plan })
   tabulized = append(tabulized, []string{ "WORKFLOW:", s.Workflow })
-  tabulized = append(tabulized, []string{ "TYPE:", s.Type })
   tabulized = append(tabulized, []string{ "DEPLOYED AT:", JavaEpochToDateStr(s.DeployedAt) })
   tabulized = append(tabulized, []string{ "EXPIRES AT:", JavaEpochToDateStr(s.Expiration) })
   fmt.Println("===>> Stack Information")
@@ -163,15 +163,15 @@ func PrintInspectStack(s StackSummary){
 
   if len(s.Dependencies.Outbound) != 0 {
     for _,w := range s.Dependencies.Outbound {
-      dependencies = append(dependencies,[]string{ w.Guid, w.StackName, w.Type, w.Workflow, JavaEpochToDateStr(w.DeployedAt), yellow("OUTBOUND") })
+      dependencies = append(dependencies,[]string{ w.Guid, w.StackName, w.Plan, w.Workflow, JavaEpochToDateStr(w.DeployedAt), yellow("OUTBOUND") })
     }
   }
   if len(s.Dependencies.Inbound) != 0 {
     for _,w := range s.Dependencies.Inbound {
-      dependencies = append(dependencies,[]string{ w.Guid, w.StackName, w.Type, w.Workflow, JavaEpochToDateStr(w.DeployedAt), green("INBOUND") })
+      dependencies = append(dependencies,[]string{ w.Guid, w.StackName, w.Plan, w.Workflow, JavaEpochToDateStr(w.DeployedAt), green("INBOUND") })
     }
   }
-  RenderTableToStdout([]string{ "GUID", "Stack", "Type", "Workflow", "Deployed At", "Direction" }, dependencies)
+  RenderTableToStdout([]string{ "GUID", "Stack", "Plan", "Workflow", "Deployed At", "Direction" }, dependencies)
 
   //>>>>>>>>>>> status history
   fmt.Println("") // give us a new line for spacing
@@ -236,7 +236,7 @@ func Redeploy(guid string, http *gorequest.SuperAgent, cfg *Config) (str string,
  *   "stack_name": "blobstore-testsuite--0-1-55--kbqg9nff",
  *   "deployed_at": 1467225866870,
  *   "unit": "blobstore-testsuite",
- *   "type": "job",
+ *   "plan": "fooo",
  *   "namespace": "devel"
  * }
  */
@@ -246,7 +246,7 @@ type Stack struct {
   StackName string `json:"stack_name"`
   DeployedAt int64 `json:"deployed_at"`
   UnitName string `json:"unit"`
-  Type string `json:"type"`
+  Plan string `json:"plan"`
   NamespaceRef string `json:"namespace,omitempty"`
 }
 
@@ -286,10 +286,10 @@ func ListStacks(delimitedDcs string, delimitedNamespaces string, delimitedStatus
 func PrintListStacks(stacks []Stack){
   var tabulized = [][]string {}
   for _,s := range stacks {
-    tabulized = append(tabulized,[]string{ s.Guid, s.NamespaceRef, s.StackName, s.Type, s.Workflow, JavaEpochToDateStr(s.DeployedAt) })
+    tabulized = append(tabulized,[]string{ s.Guid, s.NamespaceRef, s.StackName, s.Plan, s.Workflow, JavaEpochToDateStr(s.DeployedAt) })
   }
 
-  RenderTableToStdout([]string{ "GUID", "Namespace", "Stack", "Type", "Workflow", "Deployed At" }, tabulized)
+  RenderTableToStdout([]string{ "GUID", "Namespace", "Stack", "Plan", "Workflow", "Deployed At" }, tabulized)
 }
 
 /////////////////// DEPLOYMENT LOG ///////////////////
