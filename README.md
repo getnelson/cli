@@ -77,7 +77,7 @@ $ nelson units grants unit-name
 $ nelson units grants --remove unit-name
 
 # approve the following policies for use with this unit
-$ nelson units grants --policies foo,bar,baz unit-name
+$ nelson units grants --add --policies foo,bar,baz unit-name
 ```
 
 ### Stack Operations
