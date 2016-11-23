@@ -37,7 +37,7 @@ type FeatureVersion struct {
  * }
  */
 type PolicyList struct {
-  Policies []string `json:policies`
+  Policies []string `json:"policies"`
 }
 
 /////////////////// LIST ///////////////////
