@@ -18,7 +18,7 @@ func TestUserAgentString(t *testing.T) {
 
   // Test for released version, where global build version exists.
   var globalBuildVersion2 = "123"
-  var expectedDevelUserAgentString2 = "NelsonCLI/0.1." + globalBuildVersion2
+  var expectedDevelUserAgentString2 = "NelsonCLI/0.2." + globalBuildVersion2
   var result2 = UserAgentString(globalBuildVersion2)
   if !strings.Contains(result2, expectedDevelUserAgentString2 + " (") {
     t.Error("devel user agent string is incorrect: \n" + result2 + "\n" + expectedDevelUserAgentString2)
