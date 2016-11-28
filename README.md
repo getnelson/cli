@@ -4,11 +4,14 @@
 
 ## Getting Started
 
-Installing and using the client is super easy:
+Run `scripts/install-nelson-cli` to install the latest version of nelson-cli.  It will:
 
-1. Download the latest release from [the nexus](http://nexus.oncue.verizon.net/nexus/content/groups/internal/verizon/inf/nelson/cli/)
-2. Stuff it into your $PATH (e.g. `/usr/local/bin`)
-3. Make it executable `sudo chmod +x /usr/local/bin/nelson`)
+1. Fetch the latest version from Nexus
+2. Verify the SHA1 sum
+3. Extract the tarball
+4. Copy nelson to `/usr/local/bin/nelson`
+
+It is safe to rerun this script to keep nelson-cli current.
 
 Then you're ready to use the CLI. The first command you should execute after install is `login` which allows you to securely interact with the remote *Nelson* service. To do this, you just need to follow these steps:
 
