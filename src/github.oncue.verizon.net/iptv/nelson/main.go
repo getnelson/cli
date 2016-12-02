@@ -34,11 +34,8 @@ func main() {
   var selectedStatus string
   var selectedUnitPrefix string
   var selectedVersion string
-  var selectedGrantAdd bool
-  var selectedGrantRemove bool
   var selectedPort int64
   var selectedServiceType string
-  var selectedPolicies string
   var stackHash string
   var description string
 
@@ -176,82 +173,6 @@ func main() {
           Usage: "Display details about a logical unit",
           Action: func(c *cli.Context) error {
             fmt.Println("Currently not implemented.")
-            return nil
-          },
-        },
-        {
-          Name:  "grant",
-          Usage: "Display details about a logical unit",
-          Flags: []cli.Flag {
-            cli.BoolFlag {
-              Name:  "add",
-              Destination: &selectedGrantAdd,
-            },
-            cli.BoolFlag {
-              Name:  "remove",
-              Destination: &selectedGrantRemove,
-            },
-            cli.StringFlag{
-              Name:   "policies, p",
-              Value:  "",
-              Usage:  "Grant access to a particular set of policies.",
-              Destination: &selectedPolicies,
-            },
-          },
-          Action: func(c *cli.Context) error {
-            unitName := strings.TrimSpace(c.Args().First())
-
-            if len(unitName) <= 3 {
-              return cli.NewExitError("You must supply a valid unit name longer than 3 characters.", 1)
-            }
-
-            if selectedGrantAdd == true && selectedGrantRemove == true {
-              return cli.NewExitError("Adding and removing at the same time? Nonsense.", 1)
-            }
-
-            if selectedGrantAdd == true && selectedGrantRemove == false {
-              policies := strings.TrimSpace(selectedPolicies)
-              if isValidCommaDelimitedList(policies) {
-                pi.Start()
-                errs := AddUnitGrants(unitName, policies, http, LoadDefaultConfig())
-                pi.Stop()
-
-                if len(errs) != 0 {
-                  return cli.NewExitError("Unexpected error whilst trying to add '"+policies+"' grants for '"+unitName+"'", 1)
-                }
-              } else {
-                return cli.NewExitError("Unable to parse the supplied grant list. Should be of the form 'foo,bar,baz' - no spaces, no quotes.", 1)
-              }
-            }
-
-            if selectedGrantAdd == false && selectedGrantRemove == true {
-              pi.Start()
-              errs := RemoveUnitGrants(unitName, http, LoadDefaultConfig())
-              pi.Stop()
-
-              if len(errs) != 0 {
-                return cli.NewExitError("Unexpected error whilst trying to remove grants for '"+unitName+"'", 1)
-              }
-            }
-
-            if selectedGrantAdd == false && selectedGrantRemove == false {
-              pi.Start()
-              policies, errs := ListUnitGrants(unitName, http, LoadDefaultConfig())
-              pi.Stop()
-
-              if len(errs) != 0 {
-                fmt.Println(errs)
-                return cli.NewExitError("Unexpected error whilst trying to remove grants for '"+unitName+"'", 1)
-              }
-
-              if len(policies) != 0 {
-                fmt.Println("Found the following policies for '"+unitName+"'")
-                fmt.Println(policies)
-              } else {
-                return cli.NewExitError("'"+unitName+"' does not appear to have any policy grants.", 1)
-              }
-            }
-
             return nil
           },
         },
