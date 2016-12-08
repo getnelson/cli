@@ -10,7 +10,7 @@ import (
 /*
  * {
  *   "guid": "3fbc7381a664",
- *   "namespace": "devel",
+ *   "namespace": "dev",
  *   "service_type": "heydiddlyho-http",
  *   "version": {
  *     "major": 0,

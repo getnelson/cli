@@ -94,7 +94,7 @@ $ nelson stacks list --namespaces dev --datacenters us-west-2
 $ nelson stacks list --namespaces dev --datacenters us-west-2,us-west-1
 
 # show the stacks availabe in all datacenters for a given namespace
-$ nelson stacks list --namespaces devel
+$ nelson stacks list --namespaces dev
 
 # show the stacks availabe in all datacenters for a given namespace and status
 $ nelson stacks list --namespaces dev --statuses deploying,ready,deprecated

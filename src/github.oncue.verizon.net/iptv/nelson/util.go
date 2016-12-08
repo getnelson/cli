@@ -72,7 +72,7 @@ func isValidCommaDelimitedList(str string) bool {
 
 func CurrentVersion() string {
   if len(globalBuildVersion) == 0 {
-    return "devel"
+    return "dev"
   } else {
     return "v"+globalBuildVersion
   }
@@ -86,7 +86,7 @@ func UserAgentString(globalBuildVersion string) string {
 
 func getVersionForMode(globalBuildVersion string) string {
   if len(globalBuildVersion) == 0 {
-    return "devel"
+    return "dev"
   } else {
     return "0.2." + globalBuildVersion
   }

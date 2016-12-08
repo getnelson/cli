@@ -79,7 +79,7 @@ func TestStackSummaryJsonUnmarshaling(t *testing.T) {
     ],
     "inbound": []
   },
-  "namespace": "devel"
+  "namespace": "dev"
 }`
 
   var result StackSummary

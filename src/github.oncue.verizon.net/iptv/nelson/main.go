@@ -149,7 +149,7 @@ func main() {
                 return cli.NewExitError("You supplied an argument for 'namespaces' but it was not a valid comma-delimited list.", 1)
               }
             } else {
-              return cli.NewExitError("You must supply --namespaces or -ns argument to specify the namesapce(s) as a comma delimted form. i.e. devel,qa,prod or just devel", 1)
+              return cli.NewExitError("You must supply --namespaces or -ns argument to specify the namesapce(s) as a comma delimted form. i.e. dev,qa,prod or just dev", 1)
             }
             if(len(selectedStatus) > 0){
               if (!isValidCommaDelimitedList(selectedStatus)){
@@ -270,7 +270,7 @@ func main() {
                 return cli.NewExitError("You supplied an argument for 'namespaces' but it was not a valid comma-delimited list.", 1)
               }
             } else {
-              return cli.NewExitError("You must supply --namespaces or -ns argument to specify the namesapce(s) as a comma delimted form. i.e. devel,qa,prod or just devel", 1)
+              return cli.NewExitError("You must supply --namespaces or -ns argument to specify the namesapce(s) as a comma delimted form. i.e. dev,qa,prod or just dev", 1)
             }
             if(len(selectedStatus) > 0){
               if (!isValidCommaDelimitedList(selectedStatus)){
@@ -462,6 +462,56 @@ func main() {
           fmt.Println("===>> Currently logged in as "+sr.User.Name+" @ "+cfg.Endpoint)
         }
         return nil
+      },
+    },
+    /////////////////////////// LOADBALANCERS //////////////////////////////
+    {
+      Name:        "loadbalancers",
+      Aliases:     []string{"lbs"},
+      Usage:       "Set of commands to obtain details about available load balancers",
+      Subcommands: []cli.Command{
+        {
+          Name:  "list",
+          Usage: "list the available units",
+          Flags: []cli.Flag {
+            cli.StringFlag{
+              Name:   "datacenters, d",
+              Value:  "",
+              Usage:  "Restrict list of units to a particular datacenter",
+              Destination: &selectedDatacenter,
+            },
+            cli.StringFlag{
+              Name:   "namespaces, ns",
+              Value:  "",
+              Usage:  "Restrict list of units to a particular namespace",
+              Destination: &selectedNamespace,
+            },
+          },
+          Action: func(c *cli.Context) error {
+            if(len(selectedDatacenter) > 0){
+              if (!isValidCommaDelimitedList(selectedDatacenter)){
+                return cli.NewExitError("You supplied an argument for 'datacenters' but it was not a valid comma-delimited list.", 1)
+              }
+            }
+            if(len(selectedNamespace) > 0){
+              if (!isValidCommaDelimitedList(selectedNamespace)){
+                return cli.NewExitError("You supplied an argument for 'namespaces' but it was not a valid comma-delimited list.", 1)
+              }
+            } else {
+              return cli.NewExitError("You must supply --namespaces or -ns argument to specify the namesapce(s) as a comma delimted form. i.e. dev,qa,prod or just dev", 1)
+            }
+
+            pi.Start()
+            us, errs := ListLoadbalancers(selectedDatacenter, selectedNamespace, selectedStatus, http, LoadDefaultConfig())
+            pi.Stop()
+            if(errs != nil){
+              return cli.NewExitError("Unable to list load balancers right now. Sorry!", 1)
+            } else {
+              PrintListLoadbalancers(us)
+            }
+            return nil
+          },
+        },
       },
     },
   }

@@ -9,7 +9,7 @@ import (
 func TestUserAgentString(t *testing.T) {
   // Test for development, where global build version doesn't exist.
   var globalBuildVersion1 = ""
-  var expectedDevelUserAgentString1 = "NelsonCLI/devel"
+  var expectedDevelUserAgentString1 = "NelsonCLI/dev"
   var result1 = UserAgentString(globalBuildVersion1)
   if !strings.Contains(result1, expectedDevelUserAgentString1 + " (") {
     t.Error("devel user agent string is incorrect: \n" + result1 + "\n" + expectedDevelUserAgentString1)

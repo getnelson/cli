@@ -105,7 +105,7 @@ type StackDependencies struct {
  *     ],
  *     "inbound": []
  *   },
- *   "namespace": "devel"
+ *   "namespace": "dev"
  * }
  */
 type StackSummary struct {
@@ -207,7 +207,7 @@ func Redeploy(guid string, http *gorequest.SuperAgent, cfg *Config) (str string,
  *   "deployed_at": 1467225866870,
  *   "unit": "blobstore-testsuite",
  *   "plan": "fooo",
- *   "namespace": "devel"
+ *   "namespace": "dev"
  * }
  */
 type Stack struct {
