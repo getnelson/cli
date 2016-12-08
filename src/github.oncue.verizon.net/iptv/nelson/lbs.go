@@ -2,6 +2,7 @@ package main
 
 import (
   "errors"
+  "strconv"
   "encoding/json"
   "github.com/parnurzeal/gorequest"
 )
@@ -89,8 +90,31 @@ func ListLoadbalancers(delimitedDcs string, delimitedNamespaces string, delimite
 func PrintListLoadbalancers(lb []Loadbalancer){
   var tabulized = [][]string {}
   for _,l := range lb {
-    tabulized = append(tabulized,[]string{ l.Guid, l.Datacenter, l.NamespaceRef, l.Name })
+    routes := ""
+    for i,r := range l.Routes {
+      // 8443 ~> howdy-http@1->default
+      routes = routes + strconv.Itoa(r.LBPort)+" ~> "+r.BackendName+"@"+strconv.Itoa(r.BackendMajorVersion)+"->"+r.BackendPortReference
+
+      // if not the last element, lets bang on a comma
+      if(i == len(l.Routes)){ routes = routes + ", " }
+    }
+    tabulized = append(tabulized,[]string{ l.Guid, l.Datacenter, l.NamespaceRef, l.Name, routes })
   }
 
-  RenderTableToStdout([]string{ "GUID",  "Datacenter", "Namespace", "Name" }, tabulized)
+  RenderTableToStdout([]string{ "GUID",  "Datacenter", "Namespace", "Name", "Routes"}, tabulized)
+}
+
+//////////////////////// REMOVE ////////////////////////
+
+func RemoveLoadBalancer(guid string, http *gorequest.SuperAgent, cfg *Config) (str string, err []error){
+  r, body, errs := AugmentRequest(
+    http.Delete(cfg.Endpoint+"/v1/units/deprecate"), cfg).EndBytes()
+
+  if (r.StatusCode / 100 != 2){
+    resp := string(body[:])
+    errs = append(errs, errors.New("Unexpected response from Nelson server"))
+    return resp, errs
+  } else {
+    return "Requested removal of "+guid, errs
+  }
 }

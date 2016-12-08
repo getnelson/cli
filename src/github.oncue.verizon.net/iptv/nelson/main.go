@@ -472,18 +472,18 @@ func main() {
       Subcommands: []cli.Command{
         {
           Name:  "list",
-          Usage: "list the available units",
+          Usage: "list the available loadbalancers",
           Flags: []cli.Flag {
             cli.StringFlag{
               Name:   "datacenters, d",
               Value:  "",
-              Usage:  "Restrict list of units to a particular datacenter",
+              Usage:  "Restrict list of loadbalancers to a particular datacenter",
               Destination: &selectedDatacenter,
             },
             cli.StringFlag{
               Name:   "namespaces, ns",
               Value:  "",
-              Usage:  "Restrict list of units to a particular namespace",
+              Usage:  "Restrict list of loadbalancers to a particular namespace",
               Destination: &selectedNamespace,
             },
           },
@@ -508,6 +508,27 @@ func main() {
               return cli.NewExitError("Unable to list load balancers right now. Sorry!", 1)
             } else {
               PrintListLoadbalancers(us)
+            }
+            return nil
+          },
+        },
+        {
+          Name:  "rm",
+          Usage: "remove the specified load balancer",
+          Action: func(c *cli.Context) error {
+            guid := c.Args().First()
+            if len(guid) > 0 && IsValidGUID(guid) {
+              pi.Start()
+              r, e := InspectStack(guid, http, LoadDefaultConfig())
+              pi.Stop()
+              if e != nil {
+                PrintTerminalErrors(e)
+                return cli.NewExitError("Unable to remove loadbalancer '"+guid+"'.", 1)
+              } else {
+                PrintInspectStack(r)
+              }
+            } else {
+              return cli.NewExitError("You must supply a valid GUID for the loadbalancer you want to remove.", 1)
             }
             return nil
           },
