@@ -72,6 +72,10 @@ $ nelson units list --namespaces dev --statuses deploying,ready,deprecated
 
 # show the units that have been terminated by nelson in a given namespace
 $ nelson units list --namespaces dev --statues terminated
+
+# deprecate a specific unit and feature version
+$ nelson units deprecate --unit foo --version 1.2
+
 ```
 
 ### Stack Operations
@@ -94,9 +98,6 @@ $ nelson stacks list --namespaces dev --statues terminated
 
 # redeploy a very specific deployment id
 $ nelson stacks redeploy b8ff485a0306
-
-# deprecate a specific unit and feature version
-$ nelson stacks deprecate --unit foo --version 1.2
 
 # inspect a very specific deployment
 $ nelson stacks inspect b8ff485a0306

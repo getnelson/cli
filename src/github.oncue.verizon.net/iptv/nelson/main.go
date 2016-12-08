@@ -176,6 +176,53 @@ func main() {
             return nil
           },
         },
+        {
+          Name:  "deprecate",
+          Usage: "Deprecate a unit/version combination (and all patch series)",
+          Flags: []cli.Flag {
+            cli.StringFlag{
+              Name:   "unit, u",
+              Value:  "",
+              Usage:  "The unit you want to deprecate",
+              Destination: &selectedUnitPrefix,
+            },
+            cli.StringFlag{
+              Name:   "version, v",
+              Value:  "",
+              Usage:  "The feature version series you want to deprecate",
+              Destination: &selectedVersion,
+            },
+          },
+          Action: func(c *cli.Context) error {
+            if len(selectedUnitPrefix) > 0 && len(selectedVersion) > 0 {
+              match, _ := regexp.MatchString("(\\d+)\\.(\\d+)", selectedVersion)
+              if (match == true) {
+                splitVersion := strings.Split(selectedVersion, ".")
+                mjr, _ := strconv.Atoi(splitVersion[0])
+                min, _ := strconv.Atoi(splitVersion[1])
+                ver := FeatureVersion {
+                  Major: mjr,
+                  Minor: min,
+                }
+                req := DeprecationRequest {
+                  ServiceType: selectedUnitPrefix,
+                  Version: ver,
+                }
+                r,e := Deprecate(req, http, LoadDefaultConfig())
+                if e != nil {
+                  return cli.NewExitError("Unable to deprecate unit+version series. Response was:\n"+r, 1)
+                } else {
+                  fmt.Println("===>> Deprecated "+selectedUnitPrefix+" "+selectedVersion)
+                }
+              } else {
+                return cli.NewExitError("You must supply a feature version of the format XXX.XXX, e.g. 2.3, 4.56, 1.7", 1)
+              }
+            } else {
+              return cli.NewExitError("Required --unit and/or --version inputs were not valid", 1)
+            }
+            return nil
+          },
+        },
       },
     },
     ////////////////////////////// STACK //////////////////////////////////
@@ -356,53 +403,6 @@ func main() {
               }
             } else {
               return cli.NewExitError("You must specify the following switches: \n\t--datacenter <string> \n\t--namespace <string> \n\t--service-type <string> \n\t--version <string> \n\t--hash <string> \n\t--port <int>", 1)
-            }
-            return nil
-          },
-        },
-        {
-          Name:  "deprecate",
-          Usage: "Deprecate a unit/version combination (and all patch series)",
-          Flags: []cli.Flag {
-            cli.StringFlag{
-              Name:   "unit, u",
-              Value:  "",
-              Usage:  "The unit you want to deprecate",
-              Destination: &selectedUnitPrefix,
-            },
-            cli.StringFlag{
-              Name:   "version, v",
-              Value:  "",
-              Usage:  "The feature version series you want to deprecate",
-              Destination: &selectedVersion,
-            },
-          },
-          Action: func(c *cli.Context) error {
-            if len(selectedUnitPrefix) > 0 && len(selectedVersion) > 0 {
-              match, _ := regexp.MatchString("(\\d+)\\.(\\d+)", selectedVersion)
-              if (match == true) {
-                splitVersion := strings.Split(selectedVersion, ".")
-                mjr, _ := strconv.Atoi(splitVersion[0])
-                min, _ := strconv.Atoi(splitVersion[1])
-                ver := FeatureVersion {
-                  Major: mjr,
-                  Minor: min,
-                }
-                req := DeprecationRequest {
-                  ServiceType: selectedUnitPrefix,
-                  Version: ver,
-                }
-                r,e := Deprecate(req, http, LoadDefaultConfig())
-                if e != nil {
-                  return cli.NewExitError("Unable to deprecate unit+version series. Response was:\n"+r, 1)
-                } else {
-                  fmt.Println("===>> Deprecated "+selectedUnitPrefix+" "+selectedVersion)
-                }
-              } else {
-                return cli.NewExitError("You must supply a feature version of the format XXX.XXX, e.g. 2.3, 4.56, 1.7", 1)
-              }
-            } else {
-              return cli.NewExitError("Required --unit and/or --version inputs were not valid", 1)
             }
             return nil
           },

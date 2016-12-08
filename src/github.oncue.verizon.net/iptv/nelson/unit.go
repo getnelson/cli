@@ -82,3 +82,32 @@ func PrintListUnits(units []UnitSummary){
 
   RenderTableToStdout([]string{ "GUID", "Namespace", "Unit", "Version" }, tabulized)
 }
+
+/////////////////// DEPRECATION ///////////////////
+
+/*
+ * {
+ *   "service_type": "heydiddlyho-http",
+ *   "version":{
+ *     "major":1,
+ *     "minor":33
+ *   }
+ * }
+ */
+type DeprecationRequest struct {
+  ServiceType string `json:"service_type"`
+  Version FeatureVersion `json:"version"`
+}
+
+func Deprecate(req DeprecationRequest, http *gorequest.SuperAgent, cfg *Config) (str string, err []error){
+  r, body, errs := AugmentRequest(
+    http.Post(cfg.Endpoint+"/v1/units/deprecate"), cfg).Send(req).EndBytes()
+
+  if (r.StatusCode / 100 != 2){
+    resp := string(body[:])
+    errs = append(errs, errors.New("Unexpected response from Nelson server"))
+    return resp, errs
+  } else {
+    return "Requested deprecation of "+req.ServiceType+" "+strconv.Itoa(req.Version.Major)+"."+strconv.Itoa(req.Version.Minor), errs
+  }
+}
