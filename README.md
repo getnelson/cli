@@ -77,7 +77,7 @@ $ nelson units list --namespaces dev
 $ nelson units list --namespaces dev --statuses deploying,ready,deprecated
 
 # show the units that have been terminated by nelson in a given namespace
-$ nelson units list --namespaces dev --statues terminated
+$ nelson units list --namespaces dev --statuses terminated
 
 # deprecate a specific unit and feature version
 $ nelson units deprecate --unit foo --version 1.2
