@@ -4,14 +4,20 @@
 
 ## Getting Started
 
-Run `scripts/install-nelson-cli` to install the latest version of nelson-cli.  It will:
+If you just want to use nelson-cli, then run the following:
+
+```
+curl -GL https://is.gd/5C93hC | bash
+```
+
+This script will download and install the latest version and put it on your `$PATH`. We do not endorse piping scripts from the wire to `bash`, and you should read the script before executing the command. It will:
 
 1. Fetch the latest version from Nexus
 2. Verify the SHA1 sum
 3. Extract the tarball
 4. Copy nelson to `/usr/local/bin/nelson`
 
-It is safe to rerun this script to keep nelson-cli current.
+It is safe to rerun this script to keep nelson-cli current. If you have the source code checked out locally, you need only execute: `scripts/install-nelson-cli` to install the latest version of nelson-cli.  
 
 Then you're ready to use the CLI. The first command you should execute after install is `login` which allows you to securely interact with the remote *Nelson* service. To do this, you just need to follow these steps:
 
