@@ -149,7 +149,7 @@ func main() {
                 return cli.NewExitError("You supplied an argument for 'namespaces' but it was not a valid comma-delimited list.", 1)
               }
             } else {
-              return cli.NewExitError("You must supply --namespaces or -ns argument to specify the namesapce(s) as a comma delimted form. i.e. devel,qa,prod or just devel", 1)
+              return cli.NewExitError("You must supply --namespaces or -ns argument to specify the namesapce(s) as a comma delimted form. i.e. dev,qa,prod or just dev", 1)
             }
             if(len(selectedStatus) > 0){
               if (!isValidCommaDelimitedList(selectedStatus)){
@@ -270,7 +270,7 @@ func main() {
                 return cli.NewExitError("You supplied an argument for 'namespaces' but it was not a valid comma-delimited list.", 1)
               }
             } else {
-              return cli.NewExitError("You must supply --namespaces or -ns argument to specify the namesapce(s) as a comma delimted form. i.e. devel,qa,prod or just devel", 1)
+              return cli.NewExitError("You must supply --namespaces or -ns argument to specify the namesapce(s) as a comma delimted form. i.e. dev,qa,prod or just dev", 1)
             }
             if(len(selectedStatus) > 0){
               if (!isValidCommaDelimitedList(selectedStatus)){
