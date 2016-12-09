@@ -17,7 +17,7 @@ import (
  */
 type LoadbalancerCreate struct {
   Name string `json:"name"`
-  MajorVersion string `json:"major_version"`
+  MajorVersion int `json:"major_version"`
   Datacenter string `json:"datacenter"`
   Namespace string `json:"namespace"`
 }
@@ -116,5 +116,20 @@ func RemoveLoadBalancer(guid string, http *gorequest.SuperAgent, cfg *Config) (s
     return resp, errs
   } else {
     return "Requested removal of "+guid, errs
+  }
+}
+
+//////////////////////// CREATE ////////////////////////
+
+func CreateLoadBalancer(req LoadbalancerCreate, http *gorequest.SuperAgent, cfg *Config) (str string, err []error){
+  r, body, errs := AugmentRequest(
+    http.Post(cfg.Endpoint+"/v1/loadbalancers"), cfg).Send(req).EndBytes()
+
+  if (r.StatusCode / 100 != 2){
+    resp := string(body[:])
+    errs = append(errs, errors.New("Unexpected response from Nelson server"))
+    return resp, errs
+  } else {
+    return "Loadbalancer has been created.", errs
   }
 }

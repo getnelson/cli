@@ -536,8 +536,62 @@ func main() {
         {
           Name:  "up",
           Usage: "start a load balancer",
+          Flags: []cli.Flag {
+            cli.StringFlag{
+              Name:   "datacenter, dc",
+              Value:  "",
+              Usage:  "The datacenter for the service",
+              Destination: &selectedDatacenter,
+            },
+            cli.StringFlag{
+              Name:   "namespace, ns",
+              Value:  "",
+              Usage:  "The namespace for the service",
+              Destination: &selectedNamespace,
+            },
+            cli.StringFlag{
+              Name:   "name, n",
+              Value:  "",
+              Usage:  "The name for the loadbalancer - should include your unit name e.g. howdy-http-lb",
+              Destination: &selectedUnitPrefix,
+            },
+            cli.StringFlag{
+              Name:   "major-version, mv",
+              Value:  "",
+              Usage:  "The major version ",
+              Destination: &selectedVersion,
+            },
+          },
           Action: func(c *cli.Context) error {
-            fmt.Println(">>>>>>>>>")
+            if len(selectedDatacenter) > 0 &&
+               len(selectedNamespace) > 0 &&
+               len(selectedUnitPrefix) > 0 &&
+               len(selectedVersion) > 0 {
+
+              mjver,err := strconv.ParseInt(selectedVersion, 10, 64)
+              if err != nil {
+                return cli.NewExitError("The specified major version does not look like an integer value.", 1)
+              }
+
+              req := LoadbalancerCreate {
+                Name: selectedUnitPrefix,
+                MajorVersion: int(mjver),
+                Datacenter: selectedDatacenter,
+                Namespace: selectedNamespace,
+              }
+
+              pi.Start()
+              res, e := CreateLoadBalancer(req, http, LoadDefaultConfig())
+              pi.Stop()
+              if e != nil {
+                PrintTerminalErrors(e)
+                return cli.NewExitError("Unable to launch the specified loadbalancer.", 1)
+              } else {
+                fmt.Println(res)
+              }
+            } else {
+              return cli.NewExitError("You must specify the following switches: \n\t--datacenter <string> \n\t--namespace <string> \n\t--major-version <int> \n\t--name <string>", 1)
+            }
             return nil
           },
         },
