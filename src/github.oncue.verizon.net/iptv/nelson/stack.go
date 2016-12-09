@@ -105,7 +105,7 @@ type StackDependencies struct {
  *     ],
  *     "inbound": []
  *   },
- *   "namespace": "devel"
+ *   "namespace": "dev"
  * }
  */
 type StackSummary struct {
@@ -207,7 +207,7 @@ func Redeploy(guid string, http *gorequest.SuperAgent, cfg *Config) (str string,
  *   "deployed_at": 1467225866870,
  *   "unit": "blobstore-testsuite",
  *   "plan": "fooo",
- *   "namespace": "devel"
+ *   "namespace": "dev"
  * }
  */
 type Stack struct {
@@ -235,7 +235,7 @@ func ListStacks(delimitedDcs string, delimitedNamespaces string, delimitedStatus
   if (isValidCommaDelimitedList(delimitedNamespaces)){
     uri = uri+"ns="+delimitedNamespaces
   } else {
-    uri = uri+"ns=devel,qa,prod"
+    uri = uri+"ns=dev,qa,prod"
   }
 
   r, bytes, errs := AugmentRequest(
