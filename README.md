@@ -112,6 +112,21 @@ $ nelson stacks inspect b8ff485a0306
 $ nelson stacks fs 02481438b432
 ```
 
+### Loadbalancer Operations
+
+```
+# list the loadbalancers
+nelson lbs list -ns dev -d us-east-1
+nelson lbs list -ns dev
+
+# remove a loadbalancer
+nelson lbs down 04dsq452xvq
+
+# create a new loadbalancer
+nelson lbs up --name howdy-lb --major-version 1 --datacenter us-east-1 --namespace dev
+nelson lbs up -n howdy-lb -mv 1 -d us-east-1 -ns dev
+```
+
 The following commands are currently being developed:
 
 ```
