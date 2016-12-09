@@ -235,7 +235,7 @@ func ListStacks(delimitedDcs string, delimitedNamespaces string, delimitedStatus
   if (isValidCommaDelimitedList(delimitedNamespaces)){
     uri = uri+"ns="+delimitedNamespaces
   } else {
-    uri = uri+"ns=devel,qa,prod"
+    uri = uri+"ns=dev,qa,prod"
   }
 
   r, bytes, errs := AugmentRequest(
