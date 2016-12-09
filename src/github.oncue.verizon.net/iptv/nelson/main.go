@@ -513,7 +513,7 @@ func main() {
           },
         },
         {
-          Name:  "rm",
+          Name:  "down",
           Usage: "remove the specified load balancer",
           Action: func(c *cli.Context) error {
             guid := c.Args().First()
@@ -530,6 +530,14 @@ func main() {
             } else {
               return cli.NewExitError("You must supply a valid GUID for the loadbalancer you want to remove.", 1)
             }
+            return nil
+          },
+        },
+        {
+          Name:  "up",
+          Usage: "start a load balancer",
+          Action: func(c *cli.Context) error {
+            fmt.Println(">>>>>>>>>")
             return nil
           },
         },
