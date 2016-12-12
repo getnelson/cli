@@ -108,7 +108,7 @@ func PrintListLoadbalancers(lb []Loadbalancer){
 
 func RemoveLoadBalancer(guid string, http *gorequest.SuperAgent, cfg *Config) (str string, err []error){
   r, body, errs := AugmentRequest(
-    http.Delete(cfg.Endpoint+"/v1/units/deprecate"), cfg).EndBytes()
+    http.Delete(cfg.Endpoint+"/v1/loadbalancers/"+guid), cfg).EndBytes()
 
   if (r.StatusCode / 100 != 2){
     resp := string(body[:])
