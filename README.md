@@ -100,7 +100,7 @@ $ nelson stacks list --namespaces dev
 $ nelson stacks list --namespaces dev --statuses deploying,ready,deprecated
 
 # show the stacks that have been terminated by nelson in a given namespace
-$ nelson stacks list --namespaces dev --statues terminated
+$ nelson stacks list --namespaces dev --statuses terminated
 
 # redeploy a very specific deployment id
 $ nelson stacks redeploy b8ff485a0306
