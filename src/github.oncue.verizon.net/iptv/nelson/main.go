@@ -312,6 +312,26 @@ func main() {
           },
         },
         {
+          Name:  "runtime",
+          Usage: "Display the runtime status for a particular stack",
+          Action: func(c *cli.Context) error {
+            guid := c.Args().First()
+            if IsValidGUID(guid) {
+              r,e := GetStackRuntime(guid, http, LoadDefaultConfig())
+
+              if e != nil {
+                PrintTerminalErrors(e)
+                return cli.NewExitError("Unable to fetch runtime status.", 1)
+              } else {
+                PrintStackRuntime(r)
+              }
+            } else {
+              return cli.NewExitError("You must specify a valid GUID reference in order to display runtime status of a stack.", 1)
+            }
+            return nil
+          },
+        },
+        {
           Name:  "redeploy",
           Usage: "Trigger a redeployment for a specific stack",
           Action: func(c *cli.Context) error {

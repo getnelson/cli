@@ -3,6 +3,7 @@ package main
 import (
   "fmt"
   "errors"
+  "strconv"
   "encoding/json"
   "github.com/fatih/color"
   "github.com/parnurzeal/gorequest"
@@ -288,4 +289,94 @@ func GetDeploymentLog(guid string, http *gorequest.SuperAgent, cfg *Config){
   for _,l := range logs.Content {
     fmt.Println(l)
   }
+}
+
+/////////////////// RUNTIME INSPECT ///////////////////
+
+/*
+ * {
+ *   "consul_health": [{
+ *     "check_id": "64c0a2b5bd2972c9521fb7313b00db7dad58c04c",
+ *     "node": "ip-10-113-128-190",
+ *     "status": "passing",
+ *     "name": "service: default howdy-http--1-0-344--9uuu1mp2 check"
+ *   }],
+ *   "scheduler": {
+ *     "failed": 0,
+ *     "completed": 0,
+ *     "pending": 0,
+ *     "running": 1
+ *   },
+ *   "current_status": "ready",
+ *   "expires_at" : 10101333
+ * }
+ */
+type StackRuntime struct {
+  CurrentStatus string `json:"current_status"`
+  ExpiresAt int64 `json:"expires_at"`
+  Scheduler StackRuntimeScheduler `json:"scheduler"`
+  ConsulHealth []StackRuntimeHealth `json:"consul_health"`
+}
+
+type StackRuntimeHealth struct {
+  CheckId string `json:"check_id"`
+  Node string `json:"node"`
+  Status string `json:"status"`
+  Name string `json:"name"`
+}
+
+type StackRuntimeScheduler struct {
+  Failed int `json:"failed"`
+  Completed int `json:"completed"`
+  Pending int `json:"pending"`
+  Running int `json:"running"`
+}
+
+
+func GetStackRuntime(guid string, http *gorequest.SuperAgent, cfg *Config)(runtime StackRuntime, err []error){
+  r, bytes, errs := AugmentRequest(
+    http.Get(cfg.Endpoint+"/v1/deployments/"+guid+"/runtime"), cfg).EndBytes()
+
+  if (r.StatusCode / 100 != 2){
+    errs = append(errs, errors.New("bad response from Nelson server"))
+    return runtime, errs
+  } else {
+    if err := json.Unmarshal(bytes, &runtime); err != nil {
+      panic(err)
+    }
+    return runtime, errs
+  }
+}
+
+func PrintStackRuntime(r StackRuntime){
+
+  fmt.Println("")
+  fmt.Println("==>> Stack Status")
+
+  var tabulized = [][]string {}
+  tabulized = append(tabulized, []string{ "STATUS:", r.CurrentStatus })
+  tabulized = append(tabulized, []string{ "EXPIRES:", JavaEpochToDateStr(r.ExpiresAt) })
+  RenderTableToStdout([]string{ "Paramater", "Value" }, tabulized)
+  fmt.Println("")
+
+  // >>>>>>>>> Scheudler Summary
+  tabulized = [][]string {}
+  tabulized = append(tabulized, []string{ "PENDING:", strconv.Itoa(r.Scheduler.Pending) })
+  tabulized = append(tabulized, []string{ "RUNNING:", strconv.Itoa(r.Scheduler.Running) })
+  tabulized = append(tabulized, []string{ "COMPLETED:", strconv.Itoa(r.Scheduler.Completed) })
+  tabulized = append(tabulized, []string{ "FAILED:", strconv.Itoa(r.Scheduler.Failed) })
+
+  fmt.Println("==>> Scheudler")
+  RenderTableToStdout([]string{ "Paramater", "Value" }, tabulized)
+
+  // >>>>>>>>> Consul Health
+  tabulized = [][]string {}
+  for _,s := range r.ConsulHealth {
+    tabulized = append(tabulized,[]string{ s.CheckId, s.Node, s.Status, s.Name })
+  }
+
+  fmt.Println("")
+  fmt.Println("==>> Health Checks")
+  RenderTableToStdout([]string{ "ID", "Node", "Status", "Details" }, tabulized)
+
 }
