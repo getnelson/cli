@@ -7,7 +7,7 @@
 If you just want to use nelson-cli, then run the following:
 
 ```
-curl -GL https://is.gd/5C93hC | bash
+curl -GqL https://nelson.oncue.verizon.net/cli | bash
 ```
 
 This script will download and install the latest version and put it on your `$PATH`. We do not endorse piping scripts from the wire to `bash`, and you should read the script before executing the command. It will:
