@@ -41,6 +41,7 @@ type Loadbalancer struct {
   DeployTime int64 `json:"deploy_time"`
   Datacenter string `json:"datacenter"`
   NamespaceRef string `json:"namespace"`
+  Address string `json:"address"`
 }
 
 /*
@@ -103,10 +104,10 @@ func PrintListLoadbalancers(lb []Loadbalancer){
       // if not the last element, lets bang on a comma
       if(i == len(l.Routes)){ routes = routes + ", " }
     }
-    tabulized = append(tabulized,[]string{ l.Guid, l.Datacenter, l.NamespaceRef, l.Name, routes })
+    tabulized = append(tabulized,[]string{ l.Guid, l.Datacenter, l.NamespaceRef, l.Name, routes, l.Address })
   }
 
-  RenderTableToStdout([]string{ "GUID",  "Datacenter", "Namespace", "Name", "Routes"}, tabulized)
+  RenderTableToStdout([]string{ "GUID",  "Datacenter", "Namespace", "Name", "Routes", "Address"}, tabulized)
 }
 
 //////////////////////// REMOVE ////////////////////////
