@@ -75,15 +75,20 @@ func ListLoadbalancers(delimitedDcs string, delimitedNamespaces string, delimite
   r, bytes, errs := AugmentRequest(
     http.Get(cfg.Endpoint+uri), cfg).EndBytes()
 
-  if (r.StatusCode / 100 != 2){
-    errs = append(errs, errors.New("bad response from Nelson server"))
-    return nil, errs
-  } else {
-    var list []Loadbalancer
-    if err := json.Unmarshal(bytes, &list); err != nil {
-      panic(err)
+  if r != nil {
+    if (r.StatusCode / 100 != 2){
+      errs = append(errs, errors.New("bad response from Nelson server"))
+      return nil, errs
+    } else {
+      var list []Loadbalancer
+      if err := json.Unmarshal(bytes, &list); err != nil {
+        panic(err)
+      }
+      return list, errs
     }
-    return list, errs
+  } else {
+    errs = append(errs, errors.New("No response from the Nelson server, aborting."))
+    return nil, errs
   }
 }
 
