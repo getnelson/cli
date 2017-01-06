@@ -163,15 +163,15 @@ func PrintInspectStack(s StackSummary){
 
   if len(s.Dependencies.Outbound) != 0 {
     for _,w := range s.Dependencies.Outbound {
-      dependencies = append(dependencies,[]string{ w.Guid, w.StackName, w.Plan, w.Workflow, JavaEpochToDateStr(w.DeployedAt), yellow("OUTBOUND") })
+      dependencies = append(dependencies,[]string{ w.Guid, w.StackName, w.Type, JavaEpochToDateStr(w.DeployedAt), yellow("OUTBOUND") })
     }
   }
   if len(s.Dependencies.Inbound) != 0 {
     for _,w := range s.Dependencies.Inbound {
-      dependencies = append(dependencies,[]string{ w.Guid, w.StackName, w.Plan, w.Workflow, JavaEpochToDateStr(w.DeployedAt), green("INBOUND") })
+      dependencies = append(dependencies,[]string{ w.Guid, w.StackName, w.Type, JavaEpochToDateStr(w.DeployedAt), green("INBOUND") })
     }
   }
-  RenderTableToStdout([]string{ "GUID", "Stack", "Plan", "Workflow", "Deployed At", "Direction" }, dependencies)
+  RenderTableToStdout([]string{ "GUID", "Stack", "Type", "Deployed At", "Direction" }, dependencies)
 
   //>>>>>>>>>>> status history
   fmt.Println("") // give us a new line for spacing
@@ -218,6 +218,7 @@ type Stack struct {
   DeployedAt int64 `json:"deployed_at"`
   UnitName string `json:"unit"`
   Plan string `json:"plan"`
+  Type string `json:"type,omitempty"`
   NamespaceRef string `json:"namespace,omitempty"`
 }
 
