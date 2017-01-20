@@ -111,3 +111,32 @@ func Deprecate(req DeprecationRequest, http *gorequest.SuperAgent, cfg *Config) 
     return "Requested deprecation of "+req.ServiceType+" "+strconv.Itoa(req.Version.Major)+"."+strconv.Itoa(req.Version.Minor), errs
   }
 }
+
+/////////////////// COMMITING ///////////////////
+
+/*
+* {
+*   "unit": "foo",
+*   "version": "1.2.3",
+*   "target": "qa"
+* }
+*/
+type CommitRequest struct {
+  UnitName string `json:"unit"`
+  Version string `json:"version"`
+  Target string `json:"target"`
+}
+
+func CommitUnit(req CommitRequest, http *gorequest.SuperAgent, cfg *Config) (str string, err []error){
+  r, body, errs := AugmentRequest(
+    http.Post(cfg.Endpoint+"/v1/units/commit"), cfg).Send(req).EndBytes()
+
+  if (r.StatusCode / 100 != 2){
+    resp := string(body[:])
+    errs = append(errs, errors.New("Unexpected response from Nelson server"))
+    return resp, errs
+  } else {
+    return "Requested commit of "+req.UnitName+"@"+req.Version+" has failed.", errs
+  }
+}
+

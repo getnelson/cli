@@ -169,6 +169,56 @@ func main() {
           },
         },
         {
+          Name:  "commit",
+          Usage: "Commit a unit@version combination to a specific target namespace.",
+          Flags: []cli.Flag {
+            cli.StringFlag{
+              Name:   "unit, u",
+              Value:  "",
+              Usage:  "The specific unit you want to deprecate.",
+              Destination: &selectedUnitPrefix,
+            },
+            cli.StringFlag{
+              Name:   "version, v",
+              Value:  "",
+              Usage:  "The feature version series you want to deprecate. For example 1.2 or 5.3",
+              Destination: &selectedVersion,
+            },
+            cli.StringFlag{
+              Name:   "target, t",
+              Value:  "",
+              Usage:  "The target namespace you want to commit this unit too.",
+              Destination: &selectedNamespace,
+            },
+          },
+          Action: func(c *cli.Context) error {
+            if len(selectedUnitPrefix) > 0 && len(selectedVersion) > 0 {
+              match, _ := regexp.MatchString("(\\d+)\\.(\\d+).(\\d+)", selectedVersion)
+              if (match == true) {
+                req := CommitRequest {
+                  UnitName: selectedUnitPrefix,
+                  Version: selectedVersion,
+                  Target: selectedNamespace,
+                }
+                r,e := CommitUnit(req, http, LoadDefaultConfig())
+
+                unitWithVersion := selectedUnitPrefix+"@"+selectedVersion
+
+                if e != nil {
+                  return cli.NewExitError("Unable to commit "+unitWithVersion+" to '"+selectedNamespace+"'. Response was:\n"+r, 1)
+                } else {
+                  fmt.Println("===>> Commited "+unitWithVersion+" to '"+selectedNamespace+"'.")
+                }
+              } else {
+                return cli.NewExitError("You must supply a version of the format XXX.XXX.XXX, e.g. 2.3.4, 4.56.6, 1.7.9", 1)
+              }
+            } else {
+              return cli.NewExitError("Required --unit, --version or --target inputs were not valid", 1)
+            }
+            return nil
+          },
+        },
+        {
           Name:  "inspect",
           Usage: "Display details about a logical unit",
           Action: func(c *cli.Context) error {
@@ -295,7 +345,7 @@ func main() {
           Usage: "Display the current status and details about a specific stack",
           Action: func(c *cli.Context) error {
             guid := c.Args().First()
-            if len(guid) > 0 && IsValidGUID(guid) {
+            if len(guid) > 0 && isValidGUID(guid) {
               pi.Start()
               r, e := InspectStack(guid, http, LoadDefaultConfig())
               pi.Stop()
@@ -316,7 +366,7 @@ func main() {
           Usage: "Display the runtime status for a particular stack",
           Action: func(c *cli.Context) error {
             guid := c.Args().First()
-            if IsValidGUID(guid) {
+            if isValidGUID(guid) {
               r,e := GetStackRuntime(guid, http, LoadDefaultConfig())
 
               if e != nil {
@@ -336,7 +386,7 @@ func main() {
           Usage: "Trigger a redeployment for a specific stack",
           Action: func(c *cli.Context) error {
             guid := c.Args().First()
-            if IsValidGUID(guid) {
+            if isValidGUID(guid) {
               r,e := Redeploy(guid, http, LoadDefaultConfig())
 
               if e != nil {
@@ -433,7 +483,7 @@ func main() {
           Usage: "Fetch the deployment log for a given stack",
           Action: func(c *cli.Context) error {
             guid := c.Args().First()
-            if len(guid) > 0 && IsValidGUID(guid) {
+            if len(guid) > 0 && isValidGUID(guid) {
               GetDeploymentLog(guid, http, LoadDefaultConfig())
             } else {
               return cli.NewExitError("You must specify a valid GUID for the stack you wish to view logs for.", 1)
@@ -537,7 +587,7 @@ func main() {
           Usage: "remove the specified load balancer",
           Action: func(c *cli.Context) error {
             guid := c.Args().First()
-            if len(guid) > 0 && IsValidGUID(guid) {
+            if len(guid) > 0 && isValidGUID(guid) {
               pi.Start()
               r, e := InspectStack(guid, http, LoadDefaultConfig())
               pi.Stop()
