@@ -120,6 +120,7 @@ type StackSummary struct {
   Expiration int64 `json:"expiration"`
   Statuses []StackStatus `json:"statuses"`
   Dependencies StackDependencies `json:"dependencies"`
+  Resources []string `json:"resources"`
 }
 
 func InspectStack(guid string, http *gorequest.SuperAgent, cfg *Config) (result StackSummary, err []error){
@@ -149,6 +150,19 @@ func PrintInspectStack(s StackSummary){
   tabulized = append(tabulized, []string{ "WORKFLOW:", s.Workflow })
   tabulized = append(tabulized, []string{ "DEPLOYED AT:", JavaEpochToDateStr(s.DeployedAt) })
   tabulized = append(tabulized, []string{ "EXPIRES AT:", JavaEpochToDateStr(s.Expiration) })
+
+  if len(s.Resources) != 0 {
+    resources := ""
+    for i,r := range s.Resources {
+      if(i == 0){
+        resources = r
+      } else {
+        resources = resources+", "+r
+      }
+    }
+    tabulized = append(tabulized, []string{ "RESOURCES:", resources })
+  }
+
   fmt.Println("===>> Stack Information")
   RenderTableToStdout([]string{ "Paramater", "Value" }, tabulized)
 
@@ -157,21 +171,23 @@ func PrintInspectStack(s StackSummary){
   green  := color.New(color.FgGreen).SprintFunc()
   yellow := color.New(color.FgYellow).SprintFunc()
 
-  fmt.Println("") // give us a new line for spacing
-  fmt.Println("===>> Dependencies")
-  var dependencies = [][]string {}
+  if (len(s.Dependencies.Outbound) + len(s.Dependencies.Inbound)) != 0 {
+    fmt.Println("") // give us a new line for spacing
+    fmt.Println("===>> Dependencies")
+    var dependencies = [][]string {}
 
-  if len(s.Dependencies.Outbound) != 0 {
-    for _,w := range s.Dependencies.Outbound {
-      dependencies = append(dependencies,[]string{ w.Guid, w.StackName, w.Type, JavaEpochToDateStr(w.DeployedAt), yellow("OUTBOUND") })
+    if len(s.Dependencies.Outbound) != 0 {
+      for _,w := range s.Dependencies.Outbound {
+        dependencies = append(dependencies,[]string{ w.Guid, w.StackName, w.Type, JavaEpochToDateStr(w.DeployedAt), yellow("OUTBOUND") })
+      }
     }
-  }
-  if len(s.Dependencies.Inbound) != 0 {
-    for _,w := range s.Dependencies.Inbound {
-      dependencies = append(dependencies,[]string{ w.Guid, w.StackName, w.Type, JavaEpochToDateStr(w.DeployedAt), green("INBOUND") })
+    if len(s.Dependencies.Inbound) != 0 {
+      for _,w := range s.Dependencies.Inbound {
+        dependencies = append(dependencies,[]string{ w.Guid, w.StackName, w.Type, JavaEpochToDateStr(w.DeployedAt), green("INBOUND") })
+      }
     }
+    RenderTableToStdout([]string{ "GUID", "Stack", "Type", "Deployed At", "Direction" }, dependencies)
   }
-  RenderTableToStdout([]string{ "GUID", "Stack", "Type", "Deployed At", "Direction" }, dependencies)
 
   //>>>>>>>>>>> status history
   fmt.Println("") // give us a new line for spacing
