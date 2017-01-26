@@ -181,7 +181,7 @@ func main() {
             cli.StringFlag{
               Name:   "version, v",
               Value:  "",
-              Usage:  "The feature version series you want to deprecate. For example 1.2 or 5.3",
+              Usage:  "The feature version series you want to deprecate. For example 1.2.3 or 5.3.12",
               Destination: &selectedVersion,
             },
             cli.StringFlag{
