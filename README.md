@@ -83,7 +83,7 @@ $ nelson units list --namespaces dev --statuses terminated
 $ nelson units deprecate --unit foo --version 1.2
 
 # take a deployment from one namespace and commit it to the specified target namespace
-$ nelson units commit -- foo --version 1.2.3 --target qa
+$ nelson units commit --foo --version 1.2.3 --target qa
 
 ```
 
