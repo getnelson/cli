@@ -15,7 +15,7 @@ import (
  * {
  *   "datacenter": "perryman",
  *   "namespace": "stage",
- *   "serviceType": "cassandra",
+ *   "unit_type": "cassandra",
  *   "version": "1.2.3,
  *   "hash": "abcd1234",
  *   "description": "a cassandra for great good",
@@ -25,7 +25,7 @@ import (
 type ManualDeploymentRequest struct {
   Datacenter  string `json:"datacenter"`
   Namespace   string `json:"namespace"`
-  ServiceType string `json:"service_type"`
+  UnitType string `json:"unit_type"`
   Version     string `json:"version"`
   Hash        string `json:"hash"`
   Port        int64 `json:"port"`
