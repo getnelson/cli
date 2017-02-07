@@ -12,6 +12,7 @@ import (
 )
 
 var globalEnableDebug bool
+var globalEnableCurl bool
 var globalBuildVersion string
 
 func main() {
@@ -44,6 +45,11 @@ func main() {
       Name: "debug",
       Usage: "Enable debug mode on the network requests",
       Destination: &globalEnableDebug,
+    },
+    cli.BoolFlag{
+      Name: "debug-curl",
+      Usage: "Print the curl command analog for the current request",
+      Destination: &globalEnableCurl,
     },
   }
 

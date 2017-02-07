@@ -49,7 +49,7 @@ func createSession(client *gorequest.SuperAgent, githubToken string, baseURL str
       Post(url).
       Set("User-Agent", UserAgentString(globalBuildVersion)).
       Send(ver).
-      SetCurlCommand(false).
+      SetCurlCommand(globalEnableCurl).
       SetDebug(globalEnableDebug).
       EndBytes()
 
