@@ -21,7 +21,7 @@ func AugmentRequest(c *gorequest.SuperAgent, cfg *Config) *gorequest.SuperAgent 
     Set("Content-type","application/json").
     Set("User-Agent", UserAgentString(globalBuildVersion)).
     Timeout(15*time.Second).
-    SetCurlCommand(false).
+    SetCurlCommand(globalEnableCurl).
     SetDebug(globalEnableDebug)
 }
 
