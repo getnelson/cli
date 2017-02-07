@@ -463,7 +463,7 @@ func main() {
               req := ManualDeploymentRequest{
                 Datacenter: selectedDatacenter,
                 Namespace: selectedNamespace,
-                UnitType: selectedServiceType,
+                ServiceType: selectedServiceType,
                 Version: selectedVersion,
                 Hash: stackHash,
                 Description: description,
@@ -478,7 +478,7 @@ func main() {
                 fmt.Println(res)
               }
             } else {
-              return cli.NewExitError("You must specify the following switches: \n\t--datacenter <string> \n\t--namespace <string> \n\t--service-type <string> \n\t--version <string> \n\t--hash <string> \n\t--port <int>", 1)
+              return cli.NewExitError("You must specify the following switches: \n\t--datacenter <string> \n\t--namespace <string> \n\t--service-type <string> \n\t--version <string> \n\t--hash <string> \n\t--description <string> \n\t--port <int>", 1)
             }
             return nil
           },
