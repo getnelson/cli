@@ -29,6 +29,15 @@ Then you're ready to use the CLI. The first command you should execute after ins
 
 The below set of commands are the currently implemented set:
 
+### Global Flags
+```
+# pring debug output for network request
+$ nelson --debug <command>
+
+# print analogous curl command for network request
+$ nelson --debug-curl <command>
+```
+
 ### System Operations
 
 ```
