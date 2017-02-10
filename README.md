@@ -31,7 +31,7 @@ The below set of commands are the currently implemented set:
 
 ### Global Flags
 ```
-# pring debug output for network request
+# print debug output for network request
 $ nelson --debug <command>
 
 # print analogous curl command for network request
@@ -124,9 +124,14 @@ $ nelson stacks inspect b8ff485a0306
 $ nelson stacks fs 02481438b432
 
 # manually register a stack
-$ nelson stacks manual --datacenter us-east-1 --namespace dev \
-  --service-type zookeeper-iptv-dena --version 3.4.6 \
-  --hash mtq3otmymzu3oq --description "dena zookeeper" --port 2181
+$ nelson stacks manual \
+  --datacenter us-east-1 \
+  --namespace dev \
+  --service-type zookeeper-iptv-dena \
+  --version 3.4.6 \
+  --hash mtq3otmymzu3oq \
+  --description "dena zookeeper" \
+  --port 2181
 ```
 
 ### Loadbalancer Operations
