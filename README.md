@@ -29,6 +29,15 @@ Then you're ready to use the CLI. The first command you should execute after ins
 
 The below set of commands are the currently implemented set:
 
+### Global Flags
+```
+# print debug output for network request
+$ nelson --debug <command>
+
+# print analogous curl command for network request
+$ nelson --debug-curl <command>
+```
+
 ### System Operations
 
 ```
@@ -113,6 +122,16 @@ $ nelson stacks inspect b8ff485a0306
 
 # show the deployment log for a given deployment id
 $ nelson stacks fs 02481438b432
+
+# manually register a stack
+$ nelson stacks manual \
+  --datacenter us-east-1 \
+  --namespace dev \
+  --service-type zookeeper-iptv-dena \
+  --version 3.4.6 \
+  --hash mtq3otmymzu3oq \
+  --description "dena zookeeper" \
+  --port 2181
 ```
 
 ### Loadbalancer Operations
@@ -133,8 +152,6 @@ nelson lbs up -n howdy-lb -mv 1 -d us-east-1 -ns dev
 The following commands are currently being developed:
 
 ```
-$ nelson stack deploy --manual
-
 # list the workflows availabe in the remote nelson
 $ nelson workflows inspect --type job quasar
 
