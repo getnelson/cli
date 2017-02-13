@@ -149,6 +149,32 @@ nelson lbs up --name howdy-lb --major-version 1 --datacenter us-east-1 --namespa
 nelson lbs up -n howdy-lb -mv 1 -d us-east-1 -ns dev
 ```
 
+## Lint operations
+
+### Templates
+
+nelson-cli can run your consul-template in an environment similar to the container in which it runs.  Specifically, it creates a vault token with the same permissions as your unit and its requested resources.  If template rendering fails, the output is returned.  If template rendering succeeds, a success message is printed.  To avoid showing sensitive credentials, the output of a successful template run is discarded.
+
+```
+# Validate ross-test unit's creds.template with resources s3 and mysql
+$ nelson lint template -r s3 -r mysql howdy-http creds.template
+template rendering failed
+2017/02/13 22:24:18.197539 [INFO] consul-template v0.18.1 (9c62737)
+2017/02/13 22:24:18.197552 [INFO] (runner) creating new runner (dry: true, once: true)
+2017/02/13 22:24:18.197758 [INFO] (runner) creating watcher
+2017/02/13 22:24:18.200424 [INFO] (runner) starting
+2017/02/13 22:24:18.200442 [INFO] (runner) initiating run
+Consul Template returned errors:
+/consul-template/templates/nelson4230493193487710048.template: parse: template: :1: function "nope" not defined
+
+Template linting failed.
+
+# Fix errors and try again.
+$ nelson lint template -r s3 -r mysql howdy-http creds.template
+Template rendered successfully.
+Rendered output discarded for security reasons.
+```
+
 The following commands are currently being developed:
 
 ```
