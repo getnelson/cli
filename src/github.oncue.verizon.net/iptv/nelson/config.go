@@ -1,21 +1,80 @@
 package main
 
 import (
-	"os"
-	// "fmt"
-	"log"
-	"time"
-	// "github.com/parnurzeal/gorequest"
-	"io/ioutil"
-	// "encoding/json"
+	"errors"
+	"fmt"
+	"github.com/parnurzeal/gorequest"
 	"gopkg.in/yaml.v2"
+	"io/ioutil"
+	"log"
 	"net/http"
+	"os"
+	"time"
 )
 
 ///////////////////////////// CLI ENTRYPOINT //////////////////////////////////
 
-func LoadDefaultConfig() *Config {
-	return readConfigFile(defaultConfigPath())
+func LoadDefaultConfigOrExit(http *gorequest.SuperAgent) *Config {
+	pth := defaultConfigPath()
+	errout := []error{}
+
+	_, err := os.Stat(pth)
+
+	if os.IsNotExist(err) {
+		errout = append(errout, errors.New("No config file existed at "+pth+". You need to `nelson login` before running other commands."))
+	}
+
+	x, parsed := readConfigFile(pth)
+
+	if x != nil {
+		errout = append(errout, errors.New("Unable to read configuration file at '"+pth+"'. Reported error was: "+x.Error()))
+	}
+
+	ve := parsed.Validate()
+
+	if ve != nil {
+		errout = append(errout, ve...) // TIM: wtf golang, ... means "expand these as vararg function application"
+	}
+
+	// if there are errors loading the config, assume its an expired
+	// token and try to regenerate the configuration
+	if errout != nil {
+		// configuration file does not exist
+		if err != nil {
+			bailout(errout)
+		}
+
+		if len(ve) > 0 {
+			// retry the login based on information we know
+			x := attemptConfigRefresh(http, parsed)
+			// if that didnt help, then bail out and report the issue to the user.
+			if x != nil {
+				errout = append(errout, x...)
+				bailout(errout)
+			}
+			_, contents := readConfigFile(pth)
+			return contents
+		}
+	}
+	// if regular loading of the config worked, then
+	// just go with that! #happypath
+	return parsed
+}
+
+func attemptConfigRefresh(http *gorequest.SuperAgent, existing *Config) []error {
+	fmt.Println("Attempted token refresh...")
+	e, u := hostFromUri(existing.Endpoint)
+	if e != nil {
+		return []error{e}
+	}
+	return Login(http, os.Getenv("GITHUB_TOKEN"), u, false)
+}
+
+func bailout(errors []error) {
+	fmt.Println("🚫")
+	fmt.Println("Encountered an unexpected problem(s) loading the configuration file: ")
+	PrintTerminalErrors(errors)
+	os.Exit(1)
 }
 
 ////////////////////////////// CONFIG YAML ///////////////////////////////////
@@ -74,6 +133,16 @@ func parseConfigYaml(yamlAsBytes []byte) *Config {
 	return temp
 }
 
+func (c *Config) Validate() []error {
+	// check that the token has not expired
+	errs := []error{}
+
+	if c.ConfigSession.ExpiresAt <= currentTimeMillis() {
+		errs = append(errs, errors.New("Your session has expired. Please 'nelson login' again to reactivate your session."))
+	}
+	return errs
+}
+
 /////////////////////////////// CONFIG I/O ////////////////////////////////////
 
 func defaultConfigPath() string {
@@ -92,14 +161,7 @@ func writeConfigFile(s Session, url string, configPath string) {
 	}
 }
 
-func readConfigFile(configPath string) *Config {
-	if _, err := os.Stat(configPath); os.IsNotExist(err) {
-		panic("No config file existed at " + configPath + ". You need to `nelson login` before running other commands.")
-	}
-
+func readConfigFile(configPath string) (error, *Config) {
 	b, err := ioutil.ReadFile(configPath)
-	if err != nil {
-		panic(err)
-	}
-	return parseConfigYaml(b)
+	return err, parseConfigYaml(b) // TIM: parsing never fails, right? ;-)
 }

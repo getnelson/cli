@@ -9,6 +9,7 @@ import (
 	"github.com/briandowns/spinner"
 	"github.com/olekukonko/tablewriter"
 	"github.com/parnurzeal/gorequest"
+	"net/url"
 	"os"
 	"regexp"
 	"runtime"
@@ -37,6 +38,22 @@ func RenderTableToStdout(headers []string, data [][]string) {
 	table.SetAlignment(tablewriter.ALIGN_LEFT)
 	table.AppendBulk(data) // Add Bulk Data
 	table.Render()
+}
+
+func hostFromUri(str string) (error, string) {
+	u, e := url.Parse(str)
+	if e != nil {
+		return e, ""
+	}
+	return e, u.Host
+}
+
+/*
+ * return a java-style System.currentTimeMillis to match
+ * the values being returned from the server.
+ */
+func currentTimeMillis() int64 {
+	return time.Now().UnixNano() / int64(time.Millisecond)
 }
 
 func JavaEpochToDateStr(long int64) string {
@@ -88,6 +105,6 @@ func getVersionForMode(globalBuildVersion string) string {
 	if len(globalBuildVersion) == 0 {
 		return "dev"
 	} else {
-		return "0.2." + globalBuildVersion
+		return "0.5." + globalBuildVersion
 	}
 }
