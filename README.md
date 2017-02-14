@@ -166,9 +166,8 @@ $ nelson stacks list --unit howdy-batch-0.3
 ## Development
 
 1. `brew install go` - install the Go programming language:
-1. `go get github.com/constabulary/gb` - install the `gb` build tool
-1. `go get github.com/codeskyblue/fswatch` - install `fswatch` so we can do continous compilation
+1. `make install-dev` - install the `gb` build tool
 1. `alias fswatch="$GOPATH/bin/fswatch"`
-1. `fswatch`
+1. `make watch`
 
 This should give continous compilation without the tedious need to constantly restart `gb build`
