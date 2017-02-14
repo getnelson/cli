@@ -9,6 +9,7 @@ import (
 	"github.com/briandowns/spinner"
 	"github.com/olekukonko/tablewriter"
 	"github.com/parnurzeal/gorequest"
+	"net/url"
 	"os"
 	"regexp"
 	"runtime"
@@ -37,6 +38,14 @@ func RenderTableToStdout(headers []string, data [][]string) {
 	table.SetAlignment(tablewriter.ALIGN_LEFT)
 	table.AppendBulk(data) // Add Bulk Data
 	table.Render()
+}
+
+func hostFromUri(str string) (error, string) {
+	u, e := url.Parse(str)
+	if e != nil {
+		return e, ""
+	}
+	return e, u.Host
 }
 
 /*

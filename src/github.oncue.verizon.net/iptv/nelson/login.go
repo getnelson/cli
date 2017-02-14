@@ -1,15 +1,8 @@
 package main
 
 import (
-	// "os"
-	// "fmt"
-	// "log"
-	"github.com/parnurzeal/gorequest"
-	// "io/ioutil"
 	"encoding/json"
-	// "gopkg.in/yaml.v2"
-	"fmt"
-	"os"
+	"github.com/parnurzeal/gorequest"
 )
 
 type CreateSessionRequest struct {
@@ -24,11 +17,14 @@ type Session struct {
 
 ///////////////////////////// CLI ENTRYPOINT ////////////////////////////////
 
-func Login(client *gorequest.SuperAgent, githubToken string, nelsonHost string, disableTLS bool) bool {
+func Login(client *gorequest.SuperAgent, githubToken string, nelsonHost string, disableTLS bool) []error {
 	baseURL := createEndpointURL(nelsonHost, !disableTLS)
-	sess := createSession(client, githubToken, baseURL)
-	writeConfigFile(sess, baseURL, defaultConfigPath())
-	return true
+	e, sess := createSession(client, githubToken, baseURL)
+	if e != nil {
+		return []error{e}
+	}
+	writeConfigFile(sess, baseURL, defaultConfigPath()) // TIM: side-effect, discarding errors seems wrong
+	return nil
 }
 
 ///////////////////////////// INTERNALS ////////////////////////////////
@@ -43,7 +39,7 @@ func createEndpointURL(host string, useTLS bool) string {
 }
 
 /* TODO: any error handling here... would be nice */
-func createSession(client *gorequest.SuperAgent, githubToken string, baseURL string) Session {
+func createSession(client *gorequest.SuperAgent, githubToken string, baseURL string) (error, Session) {
 	ver := CreateSessionRequest{AccessToken: githubToken}
 	url := baseURL + "/auth/github"
 	_, bytes, errs := client.
@@ -60,10 +56,8 @@ func createSession(client *gorequest.SuperAgent, githubToken string, baseURL str
 
 	var result Session
 	if err := json.Unmarshal(bytes, &result); err != nil {
-		fmt.Println()
-		fmt.Println("Error: " + string(bytes))
-		os.Exit(1)
+		return err, Session{}
 	}
 
-	return result
+	return nil, result
 }

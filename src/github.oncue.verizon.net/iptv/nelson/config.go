@@ -2,6 +2,8 @@ package main
 
 import (
 	"errors"
+	"fmt"
+	"github.com/parnurzeal/gorequest"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
@@ -12,11 +14,13 @@ import (
 
 ///////////////////////////// CLI ENTRYPOINT //////////////////////////////////
 
-func LoadDefaultConfig() ([]error, *Config) {
+func LoadDefaultConfigOrExit(http *gorequest.SuperAgent) *Config {
 	pth := defaultConfigPath()
 	errout := []error{}
 
-	if _, err := os.Stat(pth); os.IsNotExist(err) {
+	_, err := os.Stat(pth)
+
+	if os.IsNotExist(err) {
 		errout = append(errout, errors.New("No config file existed at "+pth+". You need to `nelson login` before running other commands."))
 	}
 
@@ -32,7 +36,68 @@ func LoadDefaultConfig() ([]error, *Config) {
 		errout = append(errout, ve...) // TIM: wtf golang, ... means "expand these as vararg function application"
 	}
 
-	return errout, parsed
+	// if there are errors loading the config, assume its an expired
+	// token and try to regenerate the configuration
+	if errout != nil {
+		// configuration file does not exist
+		if err != nil {
+			bailout(errout)
+		}
+
+		if len(ve) > 0 {
+			// retry the login based on information we know
+			x := attemptConfigRefresh(http, parsed)
+			// if that didnt help, then bail out and report the issue to the user.
+			if x != nil {
+				errout = append(errout, x...)
+				bailout(errout)
+			}
+			_, contents := readConfigFile(pth)
+			return contents
+		}
+	}
+	// if regular loading of the config worked, then
+	// just go with that! #happypath
+	return parsed
+}
+
+// func LoadDefaultConfig() ([]error, *Config) {
+// 	pth := defaultConfigPath()
+// 	errout := []error{}
+
+// 	if _, err := os.Stat(pth); os.IsNotExist(err) {
+// 		errout = append(errout, errors.New("No config file existed at "+pth+". You need to `nelson login` before running other commands."))
+// 	}
+
+// 	x, parsed := readConfigFile(pth)
+
+// 	if x != nil {
+// 		errout = append(errout, errors.New("Unable to read configuration file at '"+pth+"'. Reported error was: "+x.Error()))
+// 	}
+
+// 	ve := parsed.Validate()
+
+// 	if ve != nil {
+// 		errout = append(errout, ve...) // TIM: wtf golang, ... means "expand these as vararg function application"
+// 	}
+
+// 	return errout, parsed
+// }
+
+func attemptConfigRefresh(http *gorequest.SuperAgent, existing *Config) []error {
+	fmt.Println("Attempted token refresh...")
+	e, u := hostFromUri(existing.Endpoint)
+	if e != nil {
+		return []error{e}
+	}
+	return Login(http, os.Getenv("GITHUB_TOKEN"), u, false)
+}
+
+func bailout(errors []error) {
+	fmt.Println("🚫")
+	fmt.Println("Encountered an unexpected problem(s) loading the configuration file: ")
+	PrintTerminalErrors(errors)
+	os.Exit(1)
 }
 
 ////////////////////////////// CONFIG YAML ///////////////////////////////////
