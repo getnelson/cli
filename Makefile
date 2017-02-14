@@ -1,7 +1,7 @@
 
 TRAVIS_BUILD_NUMBER ?= dev
-CLI_FEATURE_VERSION = 1.0
-CLI_VERSION = ${CLI_FEATURE_VERSION}.${TRAVIS_BUILD_NUMBER}
+CLI_FEATURE_VERSION ?= 1.0
+CLI_VERSION ?= ${CLI_FEATURE_VERSION}.${TRAVIS_BUILD_NUMBER}
 # if not set, then we're doing local development
 # as this will be set by the travis matrix for realz
 TARGET_PLATFORM ?= darwin
