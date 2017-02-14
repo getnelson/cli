@@ -27,6 +27,13 @@ func main() {
 	http := gorequest.New()
 	pi := ProgressIndicator()
 
+	e, cfg := LoadDefaultConfig()
+
+	if e != nil {
+		fmt.Println("Encountered an unexpected problem loading the configuration file: "+e.Error())
+		os.Exit(1)
+	}
+
 	// switches for the cli
 	var userGithubToken string
 	var disableTLS bool
@@ -104,7 +111,7 @@ func main() {
 					Usage: "List all the available datacenters",
 					Action: func(c *cli.Context) error {
 						pi.Start()
-						r, e := ListDatacenters(http, LoadDefaultConfig())
+						r, e := ListDatacenters(http, cfg)
 						pi.Stop()
 						if e != nil {
 							return cli.NewExitError("Unable to list datacenters.", 1)
@@ -164,7 +171,7 @@ func main() {
 						}
 
 						pi.Start()
-						us, errs := ListUnits(selectedDatacenter, selectedNamespace, selectedStatus, http, LoadDefaultConfig())
+						us, errs := ListUnits(selectedDatacenter, selectedNamespace, selectedStatus, http, cfg)
 						pi.Stop()
 						if errs != nil {
 							return cli.NewExitError("Unable to list units", 1)
@@ -206,7 +213,7 @@ func main() {
 									Version:  selectedVersion,
 									Target:   selectedNamespace,
 								}
-								r, e := CommitUnit(req, http, LoadDefaultConfig())
+								r, e := CommitUnit(req, http, cfg)
 
 								unitWithVersion := selectedUnitPrefix + "@" + selectedVersion
 
@@ -264,7 +271,7 @@ func main() {
 									ServiceType: selectedUnitPrefix,
 									Version:     ver,
 								}
-								r, e := Deprecate(req, http, LoadDefaultConfig())
+								r, e := Deprecate(req, http, cfg)
 								if e != nil {
 									return cli.NewExitError("Unable to deprecate unit+version series. Response was:\n"+r, 1)
 								} else {
@@ -335,7 +342,7 @@ func main() {
 						}
 
 						pi.Start()
-						r, e := ListStacks(selectedDatacenter, selectedNamespace, selectedStatus, http, LoadDefaultConfig())
+						r, e := ListStacks(selectedDatacenter, selectedNamespace, selectedStatus, http, cfg)
 						pi.Stop()
 						if e != nil {
 							PrintTerminalErrors(e)
@@ -353,7 +360,7 @@ func main() {
 						guid := c.Args().First()
 						if len(guid) > 0 && isValidGUID(guid) {
 							pi.Start()
-							r, e := InspectStack(guid, http, LoadDefaultConfig())
+							r, e := InspectStack(guid, http, cfg)
 							pi.Stop()
 							if e != nil {
 								PrintTerminalErrors(e)
@@ -373,7 +380,7 @@ func main() {
 					Action: func(c *cli.Context) error {
 						guid := c.Args().First()
 						if isValidGUID(guid) {
-							r, e := GetStackRuntime(guid, http, LoadDefaultConfig())
+							r, e := GetStackRuntime(guid, http, cfg)
 
 							if e != nil {
 								PrintTerminalErrors(e)
@@ -393,7 +400,7 @@ func main() {
 					Action: func(c *cli.Context) error {
 						guid := c.Args().First()
 						if isValidGUID(guid) {
-							r, e := Redeploy(guid, http, LoadDefaultConfig())
+							r, e := Redeploy(guid, http, cfg)
 
 							if e != nil {
 								return cli.NewExitError("Unable to request a redeploy. Response was:\n"+r, 1)
@@ -470,7 +477,7 @@ func main() {
 								Port:        selectedPort,
 							}
 							pi.Start()
-							res, e := RegisterManualDeployment(req, http, LoadDefaultConfig())
+							res, e := RegisterManualDeployment(req, http, cfg)
 							pi.Stop()
 							if e != nil {
 								return cli.NewExitError("Unable to register manual deployment.", 1)
@@ -490,7 +497,7 @@ func main() {
 					Action: func(c *cli.Context) error {
 						guid := c.Args().First()
 						if len(guid) > 0 && isValidGUID(guid) {
-							GetDeploymentLog(guid, http, LoadDefaultConfig())
+							GetDeploymentLog(guid, http, cfg)
 						} else {
 							return cli.NewExitError("You must specify a valid GUID for the stack you wish to view logs for.", 1)
 						}
@@ -509,7 +516,7 @@ func main() {
 					Usage: "list the available cleanup policies",
 					Action: func(c *cli.Context) error {
 						pi.Start()
-						policies, e := ListCleanupPolicies(http, LoadDefaultConfig())
+						policies, e := ListCleanupPolicies(http, cfg)
 						pi.Stop()
 						if e != nil {
 							PrintTerminalErrors(e)
@@ -528,7 +535,6 @@ func main() {
 			Usage: "Ask nelson who you are currently logged in as",
 			Action: func(c *cli.Context) error {
 				pi.Start()
-				cfg := LoadDefaultConfig()
 				sr, e := WhoAmI(http, cfg)
 				pi.Stop()
 				if e != nil {
@@ -578,7 +584,7 @@ func main() {
 						}
 
 						pi.Start()
-						us, errs := ListLoadbalancers(selectedDatacenter, selectedNamespace, selectedStatus, http, LoadDefaultConfig())
+						us, errs := ListLoadbalancers(selectedDatacenter, selectedNamespace, selectedStatus, http, cfg)
 						pi.Stop()
 						if errs != nil {
 							return cli.NewExitError("Unable to list load balancers right now. Sorry!", 1)
@@ -595,7 +601,7 @@ func main() {
 						guid := c.Args().First()
 						if len(guid) > 0 && isValidGUID(guid) {
 							pi.Start()
-							r, e := InspectStack(guid, http, LoadDefaultConfig())
+							r, e := InspectStack(guid, http, cfg)
 							pi.Stop()
 							if e != nil {
 								PrintTerminalErrors(e)
@@ -657,7 +663,7 @@ func main() {
 							}
 
 							pi.Start()
-							res, e := CreateLoadBalancer(req, http, LoadDefaultConfig())
+							res, e := CreateLoadBalancer(req, http, cfg)
 							pi.Stop()
 							if e != nil {
 								PrintTerminalErrors(e)

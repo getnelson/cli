@@ -38,7 +38,7 @@ func TestRoundTripConfigFile(t *testing.T) {
 		t.Error("Expected a file to exist at ", path)
 	}
 
-	loadedCfg := readConfigFile(path)
+	_, loadedCfg := readConfigFile(path)
 
 	if expected != *loadedCfg {
 		t.Error(expected, loadedCfg)

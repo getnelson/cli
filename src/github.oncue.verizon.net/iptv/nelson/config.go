@@ -2,20 +2,31 @@ package main
 
 import (
 	"os"
-	// "fmt"
 	"log"
 	"time"
-	// "github.com/parnurzeal/gorequest"
-	"io/ioutil"
-	// "encoding/json"
-	"gopkg.in/yaml.v2"
+	"errors"
 	"net/http"
+	"io/ioutil"
+	"gopkg.in/yaml.v2"
 )
 
 ///////////////////////////// CLI ENTRYPOINT //////////////////////////////////
 
-func LoadDefaultConfig() *Config {
-	return readConfigFile(defaultConfigPath())
+func LoadDefaultConfig() (error, *Config) {
+	pth := defaultConfigPath()
+	empty := &Config {}
+
+	if _, err := os.Stat(pth); os.IsNotExist(err) {
+		return errors.New("No config file existed at " + pth + ". You need to `nelson login` before running other commands."), empty
+	}
+
+	err, parsed := readConfigFile(pth)
+
+	if err != nil {
+		return errors.New("Unable to read configuration file at '"+pth+"'. Reported error was: " + err.Error()), empty
+	}
+
+	return nil, parsed
 }
 
 ////////////////////////////// CONFIG YAML ///////////////////////////////////
@@ -74,6 +85,16 @@ func parseConfigYaml(yamlAsBytes []byte) *Config {
 	return temp
 }
 
+func (c *Config) Validate() []error {
+	// check that the token has not expired
+	errs := []error{}
+
+	if c.ConfigSession.ExpiresAt <= currentTimeMillis() {
+		errs = append(errs, errors.New("Your session has expired. Please 'nelson login' again to reactivate your session."))
+	}
+	return errs
+}
+
 /////////////////////////////// CONFIG I/O ////////////////////////////////////
 
 func defaultConfigPath() string {
@@ -92,14 +113,7 @@ func writeConfigFile(s Session, url string, configPath string) {
 	}
 }
 
-func readConfigFile(configPath string) *Config {
-	if _, err := os.Stat(configPath); os.IsNotExist(err) {
-		panic("No config file existed at " + configPath + ". You need to `nelson login` before running other commands.")
-	}
-
+func readConfigFile(configPath string) (error, *Config) {
 	b, err := ioutil.ReadFile(configPath)
-	if err != nil {
-		panic(err)
-	}
-	return parseConfigYaml(b)
+	return err, parseConfigYaml(b) // TIM: parsing never fails, right? ;-)
 }

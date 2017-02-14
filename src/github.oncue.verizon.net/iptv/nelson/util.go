@@ -39,6 +39,14 @@ func RenderTableToStdout(headers []string, data [][]string) {
 	table.Render()
 }
 
+/*
+ * return a java-style System.currentTimeMillis to match
+ * the values being returned from the server.
+ */
+func currentTimeMillis() int64 {
+	return time.Now().UnixNano() / int64(time.Millisecond)
+}
+
 func JavaEpochToDateStr(long int64) string {
 	t := time.Unix(0, long*int64(time.Millisecond))
 	return t.Format(time.RFC3339)
@@ -88,6 +96,6 @@ func getVersionForMode(globalBuildVersion string) string {
 	if len(globalBuildVersion) == 0 {
 		return "dev"
 	} else {
-		return "0.2." + globalBuildVersion
+		return "0.5." + globalBuildVersion
 	}
 }
