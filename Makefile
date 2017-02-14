@@ -6,7 +6,7 @@ CLI_VERSION ?= ${CLI_FEATURE_VERSION}.${TRAVIS_BUILD_NUMBER}
 # as this will be set by the travis matrix for realz
 TARGET_PLATFORM ?= darwin
 TARGET_ARCH ?= amd64
-TAR_NAME = nelson-cli-${TARGET_PLATFORM}-${TARGET_ARCH}-${CLI_VERSION}.tgz
+TAR_NAME = nelson-cli-${TARGET_PLATFORM}-${TARGET_ARCH}-${CLI_VERSION}.tar.gz
 
 install:
 	go get github.com/constabulary/gb/...
