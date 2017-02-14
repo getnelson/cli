@@ -17,13 +17,13 @@ func LoadDefaultConfig() ([]error, *Config) {
 	errout := []error{}
 
 	if _, err := os.Stat(pth); os.IsNotExist(err) {
-		errout = append(errout, errors.New("No config file existed at " + pth + ". You need to `nelson login` before running other commands."))
+		errout = append(errout, errors.New("No config file existed at "+pth+". You need to `nelson login` before running other commands."))
 	}
 
 	x, parsed := readConfigFile(pth)
 
 	if x != nil {
-		errout = append(errout, errors.New("Unable to read configuration file at '" + pth + "'. Reported error was: " + x.Error()))
+		errout = append(errout, errors.New("Unable to read configuration file at '"+pth+"'. Reported error was: "+x.Error()))
 	}
 
 	ve := parsed.Validate()
