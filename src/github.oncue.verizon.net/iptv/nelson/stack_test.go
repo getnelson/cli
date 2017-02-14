@@ -1,13 +1,13 @@
 package main
 
 import (
-  "encoding/json"
-  "testing"
-  // "fmt"
+	"encoding/json"
+	"testing"
+	// "fmt"
 )
 
 func TestStackJsonUnmarshaling(t *testing.T) {
-  fixture := `
+	fixture := `
     {
       "workflow": "manual",
       "guid": "1a69395e919d",
@@ -17,15 +17,15 @@ func TestStackJsonUnmarshaling(t *testing.T) {
       "type": "service"
     }`
 
-  var result Stack
-  err := json.Unmarshal([]byte(fixture), &result)
-  if result.Workflow != "manual" {
-    t.Error("Should be able to parse JSON, but got error:\n", err)
-  }
+	var result Stack
+	err := json.Unmarshal([]byte(fixture), &result)
+	if result.Workflow != "manual" {
+		t.Error("Should be able to parse JSON, but got error:\n", err)
+	}
 }
 
 func TestStackSummaryJsonUnmarshaling(t *testing.T) {
-  fixture := `
+	fixture := `
   {
   "workflow": "pulsar",
   "guid": "e4184c271bb9",
@@ -82,12 +82,12 @@ func TestStackSummaryJsonUnmarshaling(t *testing.T) {
   "namespace": "dev"
 }`
 
-  var result StackSummary
-  err := json.Unmarshal([]byte(fixture), &result)
+	var result StackSummary
+	err := json.Unmarshal([]byte(fixture), &result)
 
-  t.Log(result.Dependencies.Outbound)
+	t.Log(result.Dependencies.Outbound)
 
-  if len(result.Dependencies.Outbound) != 1 {
-    t.Error("Should have had one outbound dependency, but got error:\n", err)
-  }
+	if len(result.Dependencies.Outbound) != 1 {
+		t.Error("Should have had one outbound dependency, but got error:\n", err)
+	}
 }
