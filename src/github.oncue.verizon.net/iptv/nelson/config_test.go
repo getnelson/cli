@@ -44,3 +44,17 @@ func TestRoundTripConfigFile(t *testing.T) {
 		t.Error(expected, loadedCfg)
 	}
 }
+
+func TestConfigValidate(t *testing.T) {
+	c := Config{
+		Endpoint: "foo.bar.com",
+		ConfigSession: ConfigSession{
+			Token:     "xxx",
+			ExpiresAt: (currentTimeMillis() - 60000), // now minus 1 minute
+		},
+	}
+
+	if len(c.Validate()) != 1 {
+		t.Error(1, len(c.Validate()))
+	}
+}

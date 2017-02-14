@@ -1,32 +1,38 @@
 package main
 
 import (
-	"os"
-	"log"
-	"time"
 	"errors"
-	"net/http"
-	"io/ioutil"
 	"gopkg.in/yaml.v2"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"os"
+	"time"
 )
 
 ///////////////////////////// CLI ENTRYPOINT //////////////////////////////////
 
-func LoadDefaultConfig() (error, *Config) {
+func LoadDefaultConfig() ([]error, *Config) {
 	pth := defaultConfigPath()
-	empty := &Config {}
+	errout := []error{}
 
 	if _, err := os.Stat(pth); os.IsNotExist(err) {
-		return errors.New("No config file existed at " + pth + ". You need to `nelson login` before running other commands."), empty
+		errout = append(errout, errors.New("No config file existed at " + pth + ". You need to `nelson login` before running other commands."))
 	}
 
-	err, parsed := readConfigFile(pth)
+	x, parsed := readConfigFile(pth)
 
-	if err != nil {
-		return errors.New("Unable to read configuration file at '"+pth+"'. Reported error was: " + err.Error()), empty
+	if x != nil {
+		errout = append(errout, errors.New("Unable to read configuration file at '" + pth + "'. Reported error was: " + x.Error()))
 	}
 
-	return nil, parsed
+	ve := parsed.Validate()
+
+	if ve != nil {
+		errout = append(errout, ve...) // TIM: wtf golang, ... means "expand these as vararg function application"
+	}
+
+	return errout, parsed
 }
 
 ////////////////////////////// CONFIG YAML ///////////////////////////////////

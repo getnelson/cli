@@ -28,9 +28,9 @@ func main() {
 	pi := ProgressIndicator()
 
 	e, cfg := LoadDefaultConfig()
-
 	if e != nil {
-		fmt.Println("Encountered an unexpected problem loading the configuration file: "+e.Error())
+		fmt.Println("Encountered an unexpected problem(s) loading the configuration file: ")
+		PrintTerminalErrors(e)
 		os.Exit(1)
 	}
 
