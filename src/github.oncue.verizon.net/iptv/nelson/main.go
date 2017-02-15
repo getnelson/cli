@@ -1,9 +1,11 @@
 package main
 
 import (
+	"encoding/base64"
 	"fmt"
 	"github.com/parnurzeal/gorequest"
 	"gopkg.in/urfave/cli.v1"
+	"io/ioutil"
 	"os"
 	"regexp"
 	"strconv"
@@ -37,6 +39,7 @@ func main() {
 	var selectedVersion string
 	var selectedPort int64
 	var selectedServiceType string
+	var selectedTemplate string
 	var stackHash string
 	var description string
 
@@ -623,7 +626,7 @@ func main() {
 								PrintTerminalErrors(e)
 								return cli.NewExitError("Unable to remove loadbalancer '"+guid+"'.", 1)
 							} else {
-								fmt.Println("==>>> "+r)
+								fmt.Println("==>>> " + r)
 							}
 						} else {
 							return cli.NewExitError("You must supply a valid GUID for the loadbalancer you want to remove.", 1)
@@ -690,6 +693,67 @@ func main() {
 							}
 						} else {
 							return cli.NewExitError("You must specify the following switches: \n\t--datacenter <string> \n\t--namespace <string> \n\t--major-version <int> \n\t--name <string>", 1)
+						}
+						return nil
+					},
+				},
+			},
+		},
+		/////////////////////////// LINT //////////////////////////////
+		{
+			Name:  "lint",
+			Usage: "Set of commands to lint aspects of your deployment",
+			Subcommands: []cli.Command{
+				{
+					Name:  "template",
+					Usage: "Test whether a template will render in your container",
+					Flags: []cli.Flag{
+						cli.StringFlag{
+							Name:        "unit, u",
+							Value:       "",
+							Usage:       "The unit name that owns the template (e.g., howdyhttp)",
+							Destination: &selectedUnitPrefix,
+						},
+						cli.StringSliceFlag{
+							Name:  "resource, r",
+							Usage: "resources required by this template (e.g., s3); repeatable",
+						},
+						cli.StringFlag{
+							Name:        "template, t",
+							Value:       "",
+							Usage:       "The file name containing the template to lint",
+							Destination: &selectedTemplate,
+						},
+					},
+					Action: func(c *cli.Context) error {
+						if len(selectedUnitPrefix) <= 0 {
+							return cli.NewExitError("You must specify a unit name for the template to be linted.", 1)
+						}
+
+						if len(selectedTemplate) <= 0 {
+							return cli.NewExitError("You must specify a template file to lint.", 1)
+						}
+						template, err := ioutil.ReadFile(selectedTemplate)
+						if err != nil {
+							return cli.NewExitError("Could not read "+selectedTemplate, 1)
+						}
+						templateBase64 := base64.StdEncoding.EncodeToString(template)
+
+						pi.Start()
+						cfg := LoadDefaultConfigOrExit(http)
+						req := LintTemplateRequest{
+							Unit:      selectedUnitPrefix,
+							Resources: c.StringSlice("resource"),
+							Template:  templateBase64,
+						}
+						msg, errs := LintTemplate(req, http, cfg)
+						pi.Stop()
+						if errs != nil {
+							PrintTerminalErrors(errs)
+							fmt.Println(msg)
+							return cli.NewExitError("Template linting failed.", 1)
+						} else {
+							fmt.Println(msg)
 						}
 						return nil
 					},
