@@ -153,29 +153,52 @@ nelson lbs up -n howdy-lb -mv 1 -d us-east-1 -ns dev
 
 ### Templates
 
-nelson-cli can run your consul-template in an environment similar to the container in which it runs.  Specifically, it creates a vault token with the same permissions as your unit and its requested resources.  If template rendering fails, the output is returned.  If template rendering succeeds, a success message is printed.  To avoid showing sensitive credentials, the output of a successful template run is discarded.
+Testing consul templates is tedious, because many require vault access and/or Nelson environment variables to render.  nelson-cli can render your consul-template in an environment similar to your container.  Specifically, it:
+
+* creates a vault token with the same permissions as your unit and resources
+* renders the template server-side with the vault token and a full set of NELSON environment variables for the dev namespace
+* shows the error output, if any
+
+Given this template at `application.cfg.template`:
 
 ```
-# Validate ross-test unit's creds.template with resources s3 and mysql
-$ nelson lint template -r s3 -r mysql howdy-http creds.template
+{{with $ns := env "NELSON_ENV"}}
+{{with secret (print "fios/" $ns "/test/creds/howdy-http")}}
+username={{.data.username}}
+{{end}}
+{{end}}
+```
+
+Lint it as `howdy-http` unit, using resource `test`:
+
+```
+$ nelson lint template -u howdy-http -r test -t application.cfg.template
 template rendering failed
-2017/02/13 22:24:18.197539 [INFO] consul-template v0.18.1 (9c62737)
-2017/02/13 22:24:18.197552 [INFO] (runner) creating new runner (dry: true, once: true)
-2017/02/13 22:24:18.197758 [INFO] (runner) creating watcher
-2017/02/13 22:24:18.200424 [INFO] (runner) starting
-2017/02/13 22:24:18.200442 [INFO] (runner) initiating run
+2017/02/15 18:54:15.496679 [INFO] consul-template v0.18.1 (9c62737)
+2017/02/15 18:54:15.496716 [INFO] (runner) creating new runner (dry: true, once: true)
+2017/02/15 18:54:15.497461 [INFO] (runner) creating watcher
+2017/02/15 18:54:15.497809 [INFO] (runner) starting
+2017/02/15 18:54:15.497884 [INFO] (runner) initiating run
+2017/02/15 18:54:15.999977 [INFO] (runner) initiating run
 Consul Template returned errors:
-/consul-template/templates/nelson4230493193487710048.template: parse: template: :1: function "nope" not defined
+/consul-template/templates/nelson7713234105042928921.template: execute: template: :3:16: executing "" at <.data.username>: can't evaluate field data in type *dependency.Secret
 
 Template linting failed.
+```
 
-# Fix errors and try again.
-$ nelson lint template -r s3 -r mysql howdy-http creds.template
+Oops.  Line 3 of the template should be `.Data`, not `.data`.  Fix it and try again:
+
+```
+$ nelson lint template -u howdy-http -r test -t application.cfg.template
 Template rendered successfully.
 Rendered output discarded for security reasons.
 ```
 
-The following commands are currently being developed:
+The template rendered, but because we don't want to expose any secrets, we get a simple success message.  Congratulations.  Your template should now render correctly when deployed by Nelson.
+
+## Under construction
+
+The following commands are under development or pending documentation:
 
 ```
 # list the workflows availabe in the remote nelson

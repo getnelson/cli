@@ -39,6 +39,7 @@ func main() {
 	var selectedVersion string
 	var selectedPort int64
 	var selectedServiceType string
+	var selectedTemplate string
 	var stackHash string
 	var description string
 
@@ -707,32 +708,42 @@ func main() {
 					Name:  "template",
 					Usage: "Test whether a template will render in your container",
 					Flags: []cli.Flag{
+						cli.StringFlag{
+							Name:        "unit, u",
+							Value:       "",
+							Usage:       "The unit name that owns the template (e.g., howdyhttp)",
+							Destination: &selectedUnitPrefix,
+						},
 						cli.StringSliceFlag{
-							Name:  "resources, r",
-							Usage: "resources required by this template (may be specified multiple times)",
+							Name:  "resource, r",
+							Usage: "resources required by this template (e.g., s3); repeatable",
+						},
+						cli.StringFlag{
+							Name:        "template, t",
+							Value:       "",
+							Usage:       "The file name containing the template to lint",
+							Destination: &selectedTemplate,
 						},
 					},
 					Action: func(c *cli.Context) error {
-						unit := c.Args().First()
-						if len(unit) <= 0 {
+						if len(selectedUnitPrefix) <= 0 {
 							return cli.NewExitError("You must specify a unit name for the template to be linted.", 1)
 						}
 
-						templateFile := c.Args().Get(1)
-						if len(templateFile) <= 0 {
+						if len(selectedTemplate) <= 0 {
 							return cli.NewExitError("You must specify a template file to lint.", 1)
 						}
-						template, err := ioutil.ReadFile(templateFile)
+						template, err := ioutil.ReadFile(selectedTemplate)
 						if err != nil {
-							return cli.NewExitError("Could not read "+templateFile, 1)
+							return cli.NewExitError("Could not read "+selectedTemplate, 1)
 						}
 						templateBase64 := base64.StdEncoding.EncodeToString(template)
 
 						pi.Start()
 						cfg := LoadDefaultConfigOrExit(http)
 						req := LintTemplateRequest{
-							Unit:      unit,
-							Resources: c.StringSlice("resources"),
+							Unit:      selectedUnitPrefix,
+							Resources: c.StringSlice("resource"),
 							Template:  templateBase64,
 						}
 						msg, errs := LintTemplate(req, http, cfg)
