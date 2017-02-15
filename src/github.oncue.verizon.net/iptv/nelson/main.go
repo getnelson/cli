@@ -617,13 +617,13 @@ func main() {
 						if len(guid) > 0 && isValidGUID(guid) {
 							pi.Start()
 							cfg := LoadDefaultConfigOrExit(http)
-							r, e := InspectStack(guid, http, cfg)
+							r, e := RemoveLoadBalancer(guid, http, cfg)
 							pi.Stop()
 							if e != nil {
 								PrintTerminalErrors(e)
 								return cli.NewExitError("Unable to remove loadbalancer '"+guid+"'.", 1)
 							} else {
-								PrintInspectStack(r)
+								fmt.Println("==>>> "+r)
 							}
 						} else {
 							return cli.NewExitError("You must supply a valid GUID for the loadbalancer you want to remove.", 1)
