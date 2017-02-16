@@ -7,6 +7,7 @@ package main
 import (
 	"fmt"
 	"github.com/briandowns/spinner"
+	humanize "github.com/dustin/go-humanize"
 	"github.com/olekukonko/tablewriter"
 	"github.com/parnurzeal/gorequest"
 	"net/url"
@@ -56,8 +57,16 @@ func currentTimeMillis() int64 {
 	return time.Now().UnixNano() / int64(time.Millisecond)
 }
 
+func javaEpochToTime(long int64) time.Time {
+	return time.Unix(0, long*int64(time.Millisecond))
+}
+
+func javaEpochToHumanizedTime(long int64) string {
+	return humanize.Time(javaEpochToTime(long))
+}
+
 func JavaEpochToDateStr(long int64) string {
-	t := time.Unix(0, long*int64(time.Millisecond))
+	t := javaEpochToTime(long)
 	return t.Format(time.RFC3339)
 }
 
