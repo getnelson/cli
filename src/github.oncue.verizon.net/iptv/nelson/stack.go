@@ -274,7 +274,7 @@ func ListStacks(delimitedDcs string, delimitedNamespaces string, delimitedStatus
 func PrintListStacks(stacks []Stack) {
 	var tabulized = [][]string{}
 	for _, s := range stacks {
-		tabulized = append(tabulized, []string{s.Guid, s.NamespaceRef, s.StackName, s.Plan, s.Workflow, JavaEpochToDateStr(s.DeployedAt)})
+		tabulized = append(tabulized, []string{s.Guid, s.NamespaceRef, s.StackName, s.Plan, s.Workflow, javaEpochToHumanizedTime(s.DeployedAt)})
 	}
 
 	RenderTableToStdout([]string{"GUID", "Namespace", "Stack", "Plan", "Workflow", "Deployed At"}, tabulized)
