@@ -247,8 +247,8 @@ func ListStacks(delimitedDcs string, delimitedNamespaces string, delimitedStatus
 	if isValidCommaDelimitedList(delimitedStatuses) {
 		uri = uri + "status=" + delimitedStatuses + "&"
 	} else {
-		// if the user didnt specify statuses, they probally only want ready units.
-		uri = uri + "status=ready,warming,deprecated&"
+		// if the user didnt specify statuses, they probally want all the stacks except historical terminated ones.
+		uri = uri + "status=pending,ready,warming,deprecated,failed&"
 	}
 	if isValidCommaDelimitedList(delimitedNamespaces) {
 		uri = uri + "ns=" + delimitedNamespaces
