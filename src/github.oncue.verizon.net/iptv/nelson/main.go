@@ -99,7 +99,7 @@ func main() {
 		////////////////////////////// DATACENTER //////////////////////////////////
 		{
 			Name:    "datacenters",
-			Aliases: []string{"dcs"},
+			Aliases: []string{"dcs", "datacenter"},
 			Usage:   "Set of commands for working with Nelson datacenters",
 			Subcommands: []cli.Command{
 				{
@@ -122,8 +122,9 @@ func main() {
 		},
 		////////////////////////////// UNITS //////////////////////////////////
 		{
-			Name:  "units",
-			Usage: "Set of commands to obtain details about logical deployment units",
+			Name:    "units",
+			Aliases: []string{"unit"},
+			Usage:   "Set of commands to obtain details about logical deployment units",
 			Subcommands: []cli.Command{
 				{
 					Name:  "list",
@@ -296,8 +297,9 @@ func main() {
 		},
 		////////////////////////////// STACK //////////////////////////////////
 		{
-			Name:  "stacks",
-			Usage: "Set of commands to obtain details about deployed stacks",
+			Name:    "stacks",
+			Aliases: []string{"stack"},
+			Usage:   "Set of commands to obtain details about deployed stacks",
 			Subcommands: []cli.Command{
 				{
 					Name:  "list",
@@ -566,7 +568,7 @@ func main() {
 		/////////////////////////// LOADBALANCERS //////////////////////////////
 		{
 			Name:    "loadbalancers",
-			Aliases: []string{"lbs"},
+			Aliases: []string{"lbs", "loadbalancer"},
 			Usage:   "Set of commands to obtain details about available load balancers",
 			Subcommands: []cli.Command{
 				{
