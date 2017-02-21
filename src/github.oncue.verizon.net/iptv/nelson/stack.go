@@ -39,7 +39,7 @@ func RegisterManualDeployment(
 	r, body, errs := AugmentRequest(
 		http.Post(cfg.Endpoint+"/v1/deployments"), cfg).Send(req).EndBytes()
 
-	if r.StatusCode/100 != 2 {
+	if r.StatusCode/100 != 3 {
 		resp := string(body[:])
 		errs = append(errs, errors.New("Unexpected response from Nelson server"))
 		return resp, errs
