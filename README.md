@@ -45,7 +45,7 @@ $ nelson --debug-curl <command>
 $ nelson whoami
 
 # display info for the currently deployed Nelson
-$ nelson whoareyou
+$ nelson system version
 
 # list the available clean policies on this remote nelson
 $ nelson system cleanup-policies
