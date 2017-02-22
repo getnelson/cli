@@ -545,6 +545,24 @@ func main() {
 						return nil
 					},
 				},
+				{
+					Name:  "version",
+					Usage: "Ask for info about the current Nelson build",
+					Action: func(c *cli.Context) error {
+						pi.Start()
+						cfg := LoadDefaultConfigOrExit(http)
+						sr, e := WhoAreYou(http, cfg)
+						pi.Stop()
+						if e != nil {
+							PrintTerminalErrors(e)
+							return cli.NewExitError("Unable to fetch build info for Nelson.", 1)
+						} else {
+							fmt.Println(sr.Banner)
+							fmt.Println(" " + cfg.Endpoint)
+						}
+						return nil
+					},
+				},
 			},
 		},
 		////////////////////////////// WHOAMI //////////////////////////////////
@@ -561,25 +579,6 @@ func main() {
 					return cli.NewExitError("Unable to determine who is currently logged into Nelson.", 1)
 				} else {
 					fmt.Println("===>> Currently logged in to " + sr.User.Name + " @ " + cfg.Endpoint)
-				}
-				return nil
-			},
-		},
-		////////////////////////////// WHOAREYOU //////////////////////////////////
-		{
-			Name:  "whoareyou",
-			Usage: "Ask for info about the current Nelson build",
-			Action: func(c *cli.Context) error {
-				pi.Start()
-				cfg := LoadDefaultConfigOrExit(http)
-				sr, e := WhoAreYou(http, cfg)
-				pi.Stop()
-				if e != nil {
-					PrintTerminalErrors(e)
-					return cli.NewExitError("Unable to fetch build info for Nelson.", 1)
-				} else {
-					fmt.Println(sr.Banner)
-					fmt.Println(cfg.Endpoint)
 				}
 				return nil
 			},
