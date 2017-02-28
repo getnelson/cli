@@ -42,6 +42,7 @@ func main() {
 	var selectedTemplate string
 	var stackHash string
 	var description string
+	var selectedNoGrace bool
 
 	app.Flags = []cli.Flag{
 		cli.BoolFlag{
@@ -244,8 +245,13 @@ func main() {
 				},
 				{
 					Name:  "deprecate",
-					Usage: "Deprecate a unit/version combination (and all patch series)",
+					Usage: "Deprecate a unit/version combination",
 					Flags: []cli.Flag{
+						cli.BoolFlag{
+							Name:        "no-grace, n",
+							Usage:       "expire this unit immedietly rather than allowing the usual grace period",
+							Destination: &selectedNoGrace,
+						},
 						cli.StringFlag{
 							Name:        "unit, u",
 							Value:       "",
@@ -261,7 +267,7 @@ func main() {
 					},
 					Action: func(c *cli.Context) error {
 						if len(selectedUnitPrefix) > 0 && len(selectedVersion) > 0 {
-							match, _ := regexp.MatchString("(\\d+)\\.(\\d+)", selectedVersion)
+							match, _ := regexp.MatchString("^(\\d+)\\.(\\d+)$", selectedVersion)
 							if match == true {
 								splitVersion := strings.Split(selectedVersion, ".")
 								mjr, _ := strconv.Atoi(splitVersion[0])
@@ -270,7 +276,7 @@ func main() {
 									Major: mjr,
 									Minor: min,
 								}
-								req := DeprecationRequest{
+								req := DeprecationExpiryRequest{
 									ServiceType: selectedUnitPrefix,
 									Version:     ver,
 								}
@@ -282,7 +288,16 @@ func main() {
 								if e != nil {
 									return cli.NewExitError("Unable to deprecate unit+version series. Response was:\n"+r, 1)
 								} else {
-									fmt.Println("===>> Deprecated " + selectedUnitPrefix + " " + selectedVersion)
+									if selectedNoGrace == true {
+										_, e2 := Expire(req, http, cfg)
+										if e2 != nil {
+											return cli.NewExitError("Unable to deprecate unit+version series. Response was:\n"+r, 1)
+										} else {
+											fmt.Println("===>> Deprecated and expired " + selectedUnitPrefix + " " + selectedVersion)
+										}
+									} else {
+										fmt.Println("===>> Deprecated " + selectedUnitPrefix + " " + selectedVersion)
+									}
 								}
 							} else {
 								return cli.NewExitError("You must supply a feature version of the format XXX.XXX, e.g. 2.3, 4.56, 1.7", 1)

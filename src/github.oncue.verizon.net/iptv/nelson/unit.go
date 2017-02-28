@@ -94,12 +94,12 @@ func PrintListUnits(units []UnitSummary) {
  *   }
  * }
  */
-type DeprecationRequest struct {
+type DeprecationExpiryRequest struct {
 	ServiceType string         `json:"service_type"`
 	Version     FeatureVersion `json:"version"`
 }
 
-func Deprecate(req DeprecationRequest, http *gorequest.SuperAgent, cfg *Config) (str string, err []error) {
+func Deprecate(req DeprecationExpiryRequest, http *gorequest.SuperAgent, cfg *Config) (str string, err []error) {
 	r, body, errs := AugmentRequest(
 		http.Post(cfg.Endpoint+"/v1/units/deprecate"), cfg).Send(req).EndBytes()
 
@@ -109,6 +109,21 @@ func Deprecate(req DeprecationRequest, http *gorequest.SuperAgent, cfg *Config) 
 		return resp, errs
 	} else {
 		return "Requested deprecation of " + req.ServiceType + " " + strconv.Itoa(req.Version.Major) + "." + strconv.Itoa(req.Version.Minor), errs
+	}
+}
+
+/////////////////// EXPIRATION ///////////////////
+
+func Expire(req DeprecationExpiryRequest, http *gorequest.SuperAgent, cfg *Config) (str string, err []error) {
+	r, body, errs := AugmentRequest(
+		http.Post(cfg.Endpoint+"/v1/units/expire"), cfg).Send(req).EndBytes()
+
+	if r.StatusCode/100 != 2 {
+		resp := string(body[:])
+		errs = append(errs, errors.New("Unexpected response from Nelson server"))
+		return resp, errs
+	} else {
+		return "Requested expiration of " + req.ServiceType + " " + strconv.Itoa(req.Version.Major) + "." + strconv.Itoa(req.Version.Minor), errs
 	}
 }
 

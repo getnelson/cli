@@ -27,7 +27,7 @@ Then you're ready to use the CLI. The first command you should execute after ins
 
 > ⛔ Note that currently the Nelson client can only be logged into *one* remote *Nelson* service at a time. ⛔
 
-The below set of commands are the currently implemented set:
+The below set of commands are the currently implemented set - node that for subcommands, both plural and singular command verbs work. For example `stacks` and `stack` are functionallty identical:
 
 ### Global Flags
 ```
@@ -93,6 +93,9 @@ $ nelson units list --namespaces dev --statuses terminated
 
 # deprecate a specific unit and feature version
 $ nelson units deprecate --unit foo --version 1.2
+
+# deprecate a specific unit and feature version, and expire the unit right away
+$ nelson units deprecate --no-grace --unit foo --version 1.2
 
 # take a deployment from one namespace and commit it to the specified target namespace
 $ nelson units commit --foo --version 1.2.3 --target qa
