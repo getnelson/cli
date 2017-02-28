@@ -91,8 +91,11 @@ $ nelson units list --namespaces dev --statuses deploying,ready,deprecated
 # show the units that have been terminated by nelson in a given namespace
 $ nelson units list --namespaces dev --statuses terminated
 
-# deprecate a specific unit and feature version
-$ nelson units deprecate --unit foo --version 1.2
+# deprecate a specific unit and patch version
+$ nelson units deprecate --unit foo --version 1.2.4
+
+# deprecate a specific unit and patch version, and expire the unit right away
+$ nelson units deprecate --no-grace --unit foo --version 1.2.3
 
 # take a deployment from one namespace and commit it to the specified target namespace
 $ nelson units commit --foo --version 1.2.3 --target qa
