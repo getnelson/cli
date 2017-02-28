@@ -247,9 +247,9 @@ func main() {
 					Name:  "deprecate",
 					Usage: "Deprecate a unit/version combination",
 					Flags: []cli.Flag{
-						cli.BoolFlag {
-							Name: 			 "no-grace, n",
-							Usage:			 "expire this unit immedietly rather than allowing the usual grace period",
+						cli.BoolFlag{
+							Name:        "no-grace, n",
+							Usage:       "expire this unit immedietly rather than allowing the usual grace period",
 							Destination: &selectedNoGrace,
 						},
 						cli.StringFlag{

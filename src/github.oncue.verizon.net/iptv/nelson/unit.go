@@ -103,7 +103,7 @@ func Deprecate(req DeprecationExpiryRequest, http *gorequest.SuperAgent, cfg *Co
 	r, body, errs := AugmentRequest(
 		http.Post(cfg.Endpoint+"/v1/units/deprecate"), cfg).Send(req).EndBytes()
 
-	if r.StatusCode / 100 != 2 {
+	if r.StatusCode/100 != 2 {
 		resp := string(body[:])
 		errs = append(errs, errors.New("Unexpected response from Nelson server"))
 		return resp, errs
@@ -118,7 +118,7 @@ func Expire(req DeprecationExpiryRequest, http *gorequest.SuperAgent, cfg *Confi
 	r, body, errs := AugmentRequest(
 		http.Post(cfg.Endpoint+"/v1/units/expire"), cfg).Send(req).EndBytes()
 
-	if r.StatusCode / 100 != 2 {
+	if r.StatusCode/100 != 2 {
 		resp := string(body[:])
 		errs = append(errs, errors.New("Unexpected response from Nelson server"))
 		return resp, errs
