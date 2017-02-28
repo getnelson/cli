@@ -267,7 +267,7 @@ func main() {
 					},
 					Action: func(c *cli.Context) error {
 						if len(selectedUnitPrefix) > 0 && len(selectedVersion) > 0 {
-							match, _ := regexp.MatchString("(\\d+)\\.(\\d+)", selectedVersion)
+							match, _ := regexp.MatchString("^(\\d+)\\.(\\d+)$", selectedVersion)
 							if match == true {
 								splitVersion := strings.Split(selectedVersion, ".")
 								mjr, _ := strconv.Atoi(splitVersion[0])
