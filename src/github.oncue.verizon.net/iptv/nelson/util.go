@@ -33,7 +33,7 @@ func RenderTableToStdout(headers []string, data [][]string) {
 	table.SetBorders(tablewriter.Border{Left: false, Top: false, Right: false, Bottom: false})
 	table.SetHeaderLine(false)
 	table.SetRowLine(false)
-	table.SetColWidth(100)
+	table.SetColWidth(120)
 	table.SetColumnSeparator("")
 	table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
 	table.SetAlignment(tablewriter.ALIGN_LEFT)
