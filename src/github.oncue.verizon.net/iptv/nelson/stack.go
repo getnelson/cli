@@ -236,6 +236,7 @@ type Stack struct {
 	Plan         string `json:"plan"`
 	Type         string `json:"type,omitempty"`
 	NamespaceRef string `json:"namespace,omitempty"`
+	Status       string `json:"status"`
 }
 
 func ListStacks(delimitedDcs string, delimitedNamespaces string, delimitedStatuses string, http *gorequest.SuperAgent, cfg *Config) (list []Stack, err []error) {
@@ -274,10 +275,10 @@ func ListStacks(delimitedDcs string, delimitedNamespaces string, delimitedStatus
 func PrintListStacks(stacks []Stack) {
 	var tabulized = [][]string{}
 	for _, s := range stacks {
-		tabulized = append(tabulized, []string{s.Guid, s.NamespaceRef, s.StackName, s.Plan, s.Workflow, javaEpochToHumanizedTime(s.DeployedAt)})
+		tabulized = append(tabulized, []string{s.Guid, s.NamespaceRef, s.StackName, s.Status, s.Plan, s.Workflow, javaEpochToHumanizedTime(s.DeployedAt)})
 	}
 
-	RenderTableToStdout([]string{"GUID", "Namespace", "Stack", "Plan", "Workflow", "Deployed At"}, tabulized)
+	RenderTableToStdout([]string{"GUID", "Namespace", "Stack", "Status", "Plan", "Workflow", "Deployed At"}, tabulized)
 }
 
 /////////////////// DEPLOYMENT LOG ///////////////////
