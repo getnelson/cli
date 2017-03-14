@@ -67,7 +67,11 @@ func attemptConfigRefresh(http *gorequest.SuperAgent, existing *Config) []error 
 	if e != nil {
 		return []error{e}
 	}
-	return Login(http, os.Getenv("GITHUB_TOKEN"), u, false)
+	var ghToken string = os.Getenv("GITHUB_TOKEN")
+	if len([]rune(ghToken)) != 0 {
+		return Login(http, os.Getenv("GITHUB_TOKEN"), u, false)
+	}
+	return []error{e}
 }
 
 func bailout(errors []error) {
