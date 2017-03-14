@@ -221,6 +221,11 @@ $ nelson stacks list --unit howdy-batch-0.3
 ## Development
 
 1. `brew install go` - install the Go programming language:
+1. create a directory to contain your go projects
+1. in your .bashrc or .zshrc, add
+    `export GOPATH=~/[path_to_go_directory]/go`
+    `export PATH=$PATH:$GOPATH/bin`
+    `ulimit -n 7168`
 1. `make install-dev` - install the `gb` build tool
 1. `alias fswatch="$GOPATH/bin/fswatch"`
 1. `make watch`
