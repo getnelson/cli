@@ -85,7 +85,7 @@ func main() {
 				}
 
 				if len(userGithubToken) <= 0 {
-					return cli.NewExitError("You must specifiy a `--token` or a `-t` to login.", 1)
+					return cli.NewExitError("You must specifiy a `--token` or a `-t` to login, or set your GITHUB_TOKEN environment variable", 1)
 				}
 
 				// fmt.Println("token: ", userGithubToken)
