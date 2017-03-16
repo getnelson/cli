@@ -64,7 +64,7 @@ func LoadDefaultConfigOrExit(http *gorequest.SuperAgent) *Config {
 func attemptConfigRefresh(http *gorequest.SuperAgent, existing *Config) []error {
 	errout := []error{}
 	var ghToken string = os.Getenv("GITHUB_TOKEN")
-	if len([]rune(ghToken)) == 0{
+	if len([]rune(ghToken)) != 0{
 		fmt.Println("Attempted token refresh...")
 	}
 	e, u := hostFromUri(existing.Endpoint)
