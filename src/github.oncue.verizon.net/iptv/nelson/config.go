@@ -63,12 +63,14 @@ func LoadDefaultConfigOrExit(http *gorequest.SuperAgent) *Config {
 
 func attemptConfigRefresh(http *gorequest.SuperAgent, existing *Config) []error {
 	errout := []error{}
-	fmt.Println("Attempted token refresh...")
+	var ghToken string = os.Getenv("GITHUB_TOKEN")
+	if len([]rune(ghToken)) == 0{
+		fmt.Println("Attempted token refresh...")
+	}
 	e, u := hostFromUri(existing.Endpoint)
 	if e != nil {
 		return []error{e}
 	}
-	var ghToken string = os.Getenv("GITHUB_TOKEN")
 	if len([]rune(ghToken)) == 0 {
 		errout = append(errout, errors.New("Environment GITHUB_TOKEN variable not defined. "))
 		bailout(errout)
