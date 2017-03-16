@@ -73,10 +73,8 @@ func attemptConfigRefresh(http *gorequest.SuperAgent, existing *Config) []error 
 		bailout(errout)
 		// return []error{errout}
 	}
-	if len([]rune(ghToken)) != 0{
-		fmt.Println("Attempted token refresh...")
-	}
-	return Login(http, os.Getenv("GITHUB_TOKEN"), u, false)
+	fmt.Println("Attempted token refresh...")
+	return Login(http, ghToken, u, false)
 }
 
 func bailout(errors []error) {
