@@ -4,7 +4,7 @@
 		{
 			"importpath": "github.com/briandowns/spinner",
 			"repository": "https://github.com/briandowns/spinner",
-			"revision": "f4193f332207b8229aab642269c297cab1df1015",
+			"revision": "ec599f41a86d9a71c359e224bd71a2df3e909a3d",
 			"branch": "master"
 		},
 		{
@@ -46,7 +46,7 @@
 		{
 			"importpath": "github.com/olekukonko/tablewriter",
 			"repository": "https://github.com/olekukonko/tablewriter",
-			"revision": "daf2955e742cf123959884fdff4685aa79b63135",
+			"revision": "febf2d34b54a69ce7530036c7503b1c9fbfdf0bb",
 			"branch": "master"
 		},
 		{
@@ -77,7 +77,7 @@
 		{
 			"importpath": "gopkg.in/urfave/cli.v1",
 			"repository": "https://gopkg.in/urfave/cli.v1",
-			"revision": "1efa31f08b9333f1bd4882d61f9d668a70cd902e",
+			"revision": "0bdeddeeb0f650497d603c4ad7b20cfe685682f6",
 			"branch": "master"
 		},
 		{
