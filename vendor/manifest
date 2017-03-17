@@ -52,8 +52,14 @@
 		{
 			"importpath": "github.com/parnurzeal/gorequest",
 			"repository": "https://github.com/parnurzeal/gorequest",
-			"revision": "b64673b971a1742b8ba91f228f1c029632d4b686",
-			"branch": "HEAD"
+			"revision": "ea779001e09326d30d455dbf37bc0d08c49941a2",
+			"branch": "develop"
+		},
+		{
+			"importpath": "github.com/pkg/errors",
+			"repository": "https://github.com/pkg/errors",
+			"revision": "ff09b135c25aae272398c51a07235b90a75aa4f0",
+			"branch": "master"
 		},
 		{
 			"importpath": "github.com/urfave/cli",

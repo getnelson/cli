@@ -10,6 +10,7 @@ import (
 	humanize "github.com/dustin/go-humanize"
 	"github.com/olekukonko/tablewriter"
 	"github.com/parnurzeal/gorequest"
+	"net/http"
 	"net/url"
 	"os"
 	"regexp"
@@ -22,7 +23,8 @@ func AugmentRequest(c *gorequest.SuperAgent, cfg *Config) *gorequest.SuperAgent 
 		AddCookie(cfg.GetAuthCookie()).
 		Set("Content-type", "application/json").
 		Set("User-Agent", UserAgentString(globalBuildVersion)).
-		Timeout(15 * time.Second).
+		Timeout(5*time.Second).
+		Retry(3, 1*time.Second, http.StatusBadGateway, http.StatusInternalServerError).
 		SetCurlCommand(globalEnableCurl).
 		SetDebug(globalEnableDebug)
 }
