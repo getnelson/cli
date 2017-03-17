@@ -39,6 +39,10 @@ func RegisterManualDeployment(
 	r, body, errs := AugmentRequest(
 		http.Post(cfg.Endpoint+"/v1/deployments"), cfg).Send(req).EndBytes()
 
+	if errs != nil {
+		return "", errs
+	}
+
 	if r.StatusCode/100 != 3 {
 		resp := string(body[:])
 		errs = append(errs, errors.New("Unexpected response from Nelson server"))
@@ -127,6 +131,10 @@ func InspectStack(guid string, http *gorequest.SuperAgent, cfg *Config) (result 
 	r, bytes, errs := AugmentRequest(
 		http.Get(cfg.Endpoint+"/v1/deployments/"+guid), cfg).EndBytes()
 
+	if errs != nil {
+		return StackSummary{}, errs
+	}
+
 	if r.StatusCode/100 != 2 {
 		errs = append(errs, errors.New("Bad response from Nelson server"))
 		// zomg, constructor just nulls *all* the fields, because who cares about correctness!
@@ -205,6 +213,10 @@ func Redeploy(guid string, http *gorequest.SuperAgent, cfg *Config) (str string,
 	r, body, errs := AugmentRequest(
 		http.Post(cfg.Endpoint+"/v1/deployments/"+guid+"/redeploy"), cfg).EndBytes()
 
+	if errs != nil {
+		return "", errs
+	}
+
 	if r.StatusCode/100 != 2 {
 		resp := string(body[:])
 		errs = append(errs, errors.New("bad response from Nelson server"))
@@ -259,6 +271,10 @@ func ListStacks(delimitedDcs string, delimitedNamespaces string, delimitedStatus
 
 	r, bytes, errs := AugmentRequest(
 		http.Get(cfg.Endpoint+uri), cfg).EndBytes()
+
+	if errs != nil {
+		return nil, errs
+	}
 
 	if r.StatusCode/100 != 2 {
 		errs = append(errs, errors.New("Bad response from Nelson server"))
@@ -353,6 +369,10 @@ type StackRuntimeScheduler struct {
 func GetStackRuntime(guid string, http *gorequest.SuperAgent, cfg *Config) (runtime StackRuntime, err []error) {
 	r, bytes, errs := AugmentRequest(
 		http.Get(cfg.Endpoint+"/v1/deployments/"+guid+"/runtime"), cfg).EndBytes()
+
+	if errs != nil {
+		return StackRuntime{}, errs
+	}
 
 	if r.StatusCode/100 != 2 {
 		errs = append(errs, errors.New("bad response from Nelson server"))
