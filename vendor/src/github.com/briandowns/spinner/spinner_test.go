@@ -21,33 +21,36 @@ import (
 	"time"
 )
 
+const baseWait = 3
+
+// syncBuffer
 type syncBuffer struct {
 	sync.Mutex
 	bytes.Buffer
 }
 
+// Write
 func (b *syncBuffer) Write(data []byte) (int, error) {
 	b.Lock()
 	defer b.Unlock()
 	return b.Buffer.Write(data)
 }
 
+// withOutput
 func withOutput(a []string, d time.Duration) (*Spinner, *syncBuffer) {
+	var out syncBuffer
 	s := New(a, d)
-	out := new(syncBuffer)
-	s.Writer = out
-	return s, out
-}
-
-func byteSlicesEq(a []byte, b []byte) bool {
-	return string(a) == string(b)
+	s.Writer = &out
+	return s, &out
 }
 
 // TestNew verifies that the returned instance is of the proper type
 func TestNew(t *testing.T) {
-	s := New(CharSets[1], 1*time.Second)
-	if reflect.TypeOf(s).String() != "*spinner.Spinner" {
-		t.Error("New returned incorrect type")
+	for i := 0; i < len(CharSets); i++ {
+		s := New(CharSets[i], 1*time.Second)
+		if reflect.TypeOf(s).String() != "*spinner.Spinner" {
+			t.Error("New returned incorrect type kind=%d",i)
+		}
 	}
 }
 
@@ -56,8 +59,7 @@ func TestStart(t *testing.T) {
 	s := New(CharSets[1], 100*time.Millisecond)
 	s.Color("red")
 	s.Start()
-	dur := 4000
-	time.Sleep(time.Duration(dur) * time.Millisecond)
+	time.Sleep(baseWait * time.Second)
 	s.Stop()
 	time.Sleep(100 * time.Millisecond)
 }
@@ -88,8 +90,8 @@ func TestStop(t *testing.T) {
 // TestRestart will verify a spinner can be stopped and started again
 func TestRestart(t *testing.T) {
 	s := New(CharSets[4], 50*time.Millisecond)
-	out := new(syncBuffer)
-	s.Writer = out
+	var out syncBuffer
+	s.Writer = &out
 	s.Start()
 	s.Color("cyan")
 	time.Sleep(200 * time.Millisecond)
@@ -102,7 +104,7 @@ func TestRestart(t *testing.T) {
 	result := out.Bytes()
 	first := result[:len(result)/2]
 	secnd := result[len(result)/2:]
-	if !byteSlicesEq(first, secnd) {
+	if string(first) != string(secnd) {
 		t.Errorf("Expected ==, got \n%#v != \n%#v", first, secnd)
 	}
 	s = nil
@@ -113,13 +115,13 @@ func TestReverse(t *testing.T) {
 	a := New(CharSets[10], 1*time.Second)
 	a.Color("red")
 	a.Start()
-	time.Sleep(4 * time.Second)
+	time.Sleep(baseWait * time.Second)
 	a.Reverse()
 	a.Restart()
-	time.Sleep(4 * time.Second)
+	time.Sleep(baseWait * time.Second)
 	a.Reverse()
 	a.Restart()
-	time.Sleep(4 * time.Second)
+	time.Sleep(baseWait * time.Second)
 	a.Stop()
 	a = nil
 }
@@ -128,7 +130,7 @@ func TestReverse(t *testing.T) {
 func TestUpdateSpeed(t *testing.T) {
 	s := New(CharSets[10], 1*time.Second)
 	delay1 := s.Delay
-	s.UpdateSpeed(3 * time.Second)
+	s.UpdateSpeed(baseWait * time.Second)
 	delay2 := s.Delay
 	if delay1 == delay2 {
 		t.Error("update of speed failed")
@@ -157,22 +159,11 @@ func TestGenerateNumberSequence(t *testing.T) {
 	if reflect.TypeOf(seq).String() != "[]string" {
 		t.Error("received incorrect type in return from GenerateNumberSequence")
 	}
+	t.Log("In: ", elementCount)
+	t.Log("Out: ", len(seq))
 	if len(seq) != elementCount {
 		t.Error("number of elements in slice doesn't match expected count")
 	}
-}
-
-// TestMultiple will
-func TestMultiple(t *testing.T) {
-	a := New(CharSets[0], 100*time.Millisecond)
-	b := New(CharSets[1], 250*time.Millisecond)
-	a.Start()
-	a.Color("green")
-	b.Start()
-	time.Sleep(4 * time.Second)
-	a.Stop()
-	time.Sleep(3 * time.Second)
-	b.Stop()
 }
 
 // TestBackspace proves that the correct number of characters are removed.
@@ -185,6 +176,42 @@ func TestBackspace(t *testing.T) {
 	s.Color("blue")
 	s.Start()
 	fmt.Print("This is on the same line as the spinner: ")
-	time.Sleep(4 * time.Second)
+	time.Sleep(baseWait * time.Second)
 	s.Stop()
+}
+
+// TestColorError tests that if an invalid color string is passed to the Color
+// function, the invalid color error is returned
+func TestColorError(t *testing.T) {
+	s := New(CharSets[0], 100*time.Millisecond)
+
+	invalidColorName := "bluez"
+	validColorName := "green"
+
+	if s.Color(invalidColorName) != errInvalidColor {
+		t.Error("Color method did not return an error when given an invalid color.")
+	}
+
+	if s.Color(validColorName) != nil {
+		t.Error("Color method did not return nil when given a valid color name.")
+	}
+}
+
+/*
+Benchmarks
+*/
+
+// BenchmarkNew runs a benchmark for the New() function
+func BenchmarkNew(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		New(CharSets[1], 1*time.Second)
+	}
+}
+
+func BenchmarkNewStartStop(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		s := New(CharSets[1], 1*time.Second)
+		s.Start()
+		s.Stop()
+	}
 }
