@@ -27,6 +27,10 @@ type LintTemplateFailure struct {
 func LintTemplate(req LintTemplateRequest, http *gorequest.SuperAgent, cfg *Config) (str string, err []error) {
 	r, body, errs := AugmentRequest(http.Post(cfg.Endpoint+"/v1/validate-template"), cfg).Send(req).EndBytes()
 
+	if errs != nil {
+		return "", errs
+	}
+
 	if r.StatusCode/100 == 2 {
 		return "Template rendered successfully.\nRendered output discarded for security reasons.", errs
 	} else if r.StatusCode == 400 || r.StatusCode == 504 {

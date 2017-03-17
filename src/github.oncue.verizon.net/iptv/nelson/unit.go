@@ -62,6 +62,10 @@ func ListUnits(delimitedDcs string, delimitedNamespaces string, delimitedStatuse
 	r, bytes, errs := AugmentRequest(
 		http.Get(cfg.Endpoint+uri), cfg).EndBytes()
 
+	if errs != nil {
+		return nil, errs
+	}
+
 	if r.StatusCode/100 != 2 {
 		errs = append(errs, errors.New("bad response from Nelson server"))
 		return nil, errs
@@ -103,6 +107,10 @@ func Deprecate(req DeprecationExpiryRequest, http *gorequest.SuperAgent, cfg *Co
 	r, body, errs := AugmentRequest(
 		http.Post(cfg.Endpoint+"/v1/units/deprecate"), cfg).Send(req).EndBytes()
 
+	if errs != nil {
+		return "", errs
+	}
+
 	if r.StatusCode/100 != 2 {
 		resp := string(body[:])
 		errs = append(errs, errors.New("Unexpected response from Nelson server"))
@@ -117,6 +125,10 @@ func Deprecate(req DeprecationExpiryRequest, http *gorequest.SuperAgent, cfg *Co
 func Expire(req DeprecationExpiryRequest, http *gorequest.SuperAgent, cfg *Config) (str string, err []error) {
 	r, body, errs := AugmentRequest(
 		http.Post(cfg.Endpoint+"/v1/units/expire"), cfg).Send(req).EndBytes()
+
+	if errs != nil {
+		return "", errs
+	}
 
 	if r.StatusCode/100 != 2 {
 		resp := string(body[:])
@@ -145,6 +157,10 @@ type CommitRequest struct {
 func CommitUnit(req CommitRequest, http *gorequest.SuperAgent, cfg *Config) (str string, err []error) {
 	r, body, errs := AugmentRequest(
 		http.Post(cfg.Endpoint+"/v1/units/commit"), cfg).Send(req).EndBytes()
+
+	if errs != nil {
+		return "", errs
+	}
 
 	if r.StatusCode/100 != 2 {
 		resp := string(body[:])

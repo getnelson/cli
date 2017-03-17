@@ -21,6 +21,10 @@ func ListDatacenters(http *gorequest.SuperAgent, cfg *Config) (list []Datacenter
 	r, bytes, errs := AugmentRequest(
 		http.Get(cfg.Endpoint+"/v1/datacenters"), cfg).EndBytes()
 
+	if errs != nil {
+		return nil, errs
+	}
+
 	if r.StatusCode/100 != 2 {
 		errs = append(errs, errors.New("Bad response from Nelson server"))
 		return nil, errs

@@ -118,6 +118,10 @@ func RemoveLoadBalancer(guid string, http *gorequest.SuperAgent, cfg *Config) (s
 	r, body, errs := AugmentRequest(
 		http.Delete(cfg.Endpoint+"/v1/loadbalancers/"+guid), cfg).EndBytes()
 
+	if errs != nil {
+		return "", errs
+	}
+
 	if r.StatusCode/100 != 2 {
 		resp := string(body[:])
 		errs = append(errs, errors.New("Unexpected response from Nelson server"))
@@ -132,6 +136,10 @@ func RemoveLoadBalancer(guid string, http *gorequest.SuperAgent, cfg *Config) (s
 func CreateLoadBalancer(req LoadbalancerCreate, http *gorequest.SuperAgent, cfg *Config) (str string, err []error) {
 	r, body, errs := AugmentRequest(
 		http.Post(cfg.Endpoint+"/v1/loadbalancers"), cfg).Send(req).EndBytes()
+
+	if errs != nil {
+		return "", errs
+	}
 
 	if r.StatusCode/100 != 2 {
 		resp := string(body[:])

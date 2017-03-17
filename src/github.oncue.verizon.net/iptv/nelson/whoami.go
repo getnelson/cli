@@ -21,6 +21,10 @@ func WhoAmI(http *gorequest.SuperAgent, cfg *Config) (resp SessionResponse, err 
 	r, bytes, errs := AugmentRequest(
 		http.Get(cfg.Endpoint+"/session"), cfg).EndBytes()
 
+	if errs != nil {
+		return SessionResponse{}, errs
+	}
+
 	if r.StatusCode/100 != 2 {
 		errs = append(errs, errors.New("Bad response from Nelson server"))
 		return SessionResponse{}, errs
