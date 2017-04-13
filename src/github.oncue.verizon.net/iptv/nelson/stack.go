@@ -226,7 +226,7 @@ func Redeploy(guid string, http *gorequest.SuperAgent, cfg *Config) (str string,
 	}
 }
 
-/////////////////// LISTING STACKs ///////////////////
+/////////////////// LISTING STACKS ///////////////////
 
 /**
  * {
@@ -291,7 +291,7 @@ func ListStacks(delimitedDcs string, delimitedNamespaces string, delimitedStatus
 func PrintListStacks(stacks []Stack) {
 	var tabulized = [][]string{}
 	for _, s := range stacks {
-		tabulized = append(tabulized, []string{s.Guid, s.NamespaceRef, s.StackName, s.Status, s.Plan, s.Workflow, javaEpochToHumanizedTime(s.DeployedAt)})
+		tabulized = append(tabulized, []string{s.Guid, s.NamespaceRef, truncateString(s.StackName, 55), s.Status, s.Plan, s.Workflow, javaEpochToHumanizedTime(s.DeployedAt)})
 	}
 
 	RenderTableToStdout([]string{"GUID", "Namespace", "Stack", "Status", "Plan", "Workflow", "Deployed At"}, tabulized)
