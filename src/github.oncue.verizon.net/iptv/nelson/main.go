@@ -39,6 +39,7 @@ func main() {
 	var selectedVersion string
 	var selectedPort int64
 	var selectedServiceType string
+	var selectedManifest string
 	var selectedTemplate string
 	var stackHash string
 	var description string
@@ -739,6 +740,45 @@ func main() {
 			Name:  "lint",
 			Usage: "Set of commands to lint aspects of your deployment",
 			Subcommands: []cli.Command{
+				{
+					Name:  "manifest",
+					Usage: "Test whether a Nelson manifest file is valid",
+					Flags: []cli.Flag{
+						cli.StringFlag{
+							Name:        "manifest, m",
+							Value:       "",
+							Usage:       "The Nelson manifest file to validate",
+							Destination: &selectedManifest,
+						},
+					},
+					Action: func(c *cli.Context) error {
+						if len(selectedManifest) <= 0 {
+							return cli.NewExitError("You must specify a manifest file to lint.", 1)
+						}
+						manifest, err := ioutil.ReadFile(selectedManifest)
+						if err != nil {
+							return cli.NewExitError("Could not read "+selectedManifest, 1)
+						}
+						manifestBase64 := base64.StdEncoding.EncodeToString(manifest)
+
+						pi.Start()
+						cfg := LoadDefaultConfigOrExit(http)
+						req := LintManifestRequest{
+							Units:    []ManifestUnit{},
+							Manifest: manifestBase64,
+						}
+						msg, errs := LintManifest(req, http, cfg)
+						pi.Stop()
+						if errs != nil {
+							PrintTerminalErrors(errs)
+							fmt.Println(msg)
+							return cli.NewExitError("Manifest validation failed.", 1)
+						} else {
+							fmt.Println(msg)
+						}
+						return nil
+					},
+				},
 				{
 					Name:  "template",
 					Usage: "Test whether a template will render in your container",

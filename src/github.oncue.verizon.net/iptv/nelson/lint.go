@@ -48,3 +48,39 @@ func LintTemplate(req LintTemplateRequest, http *gorequest.SuperAgent, cfg *Conf
 		return resp, errs
 	}
 }
+
+type ManifestUnit struct {
+	Kind string `json:"kind"`
+	Name string `json:"name"`
+}
+
+/*
+ * {
+ *   "units": [{"kind":"howdy-http", "name":"howdy-http@1.2"}],
+ *   "template": "CAgICAgIHBsYW5zOg0KICAgICAgICAgIC0gZGVmYXVsdA==" [Meta: this is random - don't try it]
+ * }
+ */
+type LintManifestRequest struct {
+	Units    []ManifestUnit `json:"units"`
+	Manifest string         `json:"manifest"`
+}
+
+func LintManifest(req LintManifestRequest, http *gorequest.SuperAgent, cfg *Config) (str string, err []error) {
+	r, body, errs := AugmentRequest(http.Post(cfg.Endpoint+"/v1/lint"), cfg).Send(req).EndBytes()
+
+	if errs != nil {
+		return "", errs
+	}
+
+	if r.StatusCode/100 == 2 {
+		return "Nelson manifest validated with no errors.\n", errs
+	} else if r.StatusCode == 400 || r.StatusCode == 504 {
+		resp := string(body[:])
+		errs = append(errs, errors.New(""))
+		return resp, errs
+	} else {
+		resp := string(body[:])
+		errs = append(errs, errors.New("Unexpected response from Nelson server"))
+		return resp, errs
+	}
+}
