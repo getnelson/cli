@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/parnurzeal/gorequest"
+	"strconv"
 )
 
 /*
@@ -37,14 +38,14 @@ func LintTemplate(req LintTemplateRequest, http *gorequest.SuperAgent, cfg *Conf
 		var fail LintTemplateFailure
 		if err := json.Unmarshal(body, &fail); err != nil {
 			resp := string(body[:])
-			errs = append(errs, errors.New("Unexpected response from Nelson server"))
+			errs = append(errs, errors.New("Unexpected response from Nelson server: JSON error"))
 			return resp, errs
 		}
 		errs = append(errs, errors.New(fail.Message))
 		return fail.Details, errs
 	} else {
 		resp := string(body[:])
-		errs = append(errs, errors.New("Unexpected response from Nelson server"))
+		errs = append(errs, errors.New("Unexpected response from Nelson server: HTTP status "+strconv.Itoa(r.StatusCode)))
 		return resp, errs
 	}
 }
@@ -80,7 +81,7 @@ func LintManifest(req LintManifestRequest, http *gorequest.SuperAgent, cfg *Conf
 		return resp, errs
 	} else {
 		resp := string(body[:])
-		errs = append(errs, errors.New("Unexpected response from Nelson server"))
+		errs = append(errs, errors.New("Unexpected response from Nelson server: HTTP status "+strconv.Itoa(r.StatusCode)))
 		return resp, errs
 	}
 }
