@@ -57,7 +57,7 @@ type ManifestUnit struct {
 /*
  * {
  *   "units": [{"kind":"howdy-http", "name":"howdy-http@1.2"}],
- *   "manifest": "CAgICAgIHBsYW5zOg0KICAgICAgICAgIC0gZGVmYXVsdA==" [Meta: this is random - don't try it]
+ *   "manifest": "CAgICAgIHBsYW5zOg0KICAgICAgICAgIC0gZGVmYXVsdA=="
  * }
  */
 type LintManifestRequest struct {
