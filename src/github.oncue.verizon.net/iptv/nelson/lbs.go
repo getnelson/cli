@@ -98,8 +98,8 @@ func PrintListLoadbalancers(lb []Loadbalancer) {
 	for _, l := range lb {
 		routes := ""
 		for i, r := range l.Routes {
-			// 8443 ~> howdy-http@1->default
-			routes = routes + strconv.Itoa(r.LBPort) + " ~> " + r.BackendName + "@" + strconv.Itoa(r.BackendMajorVersion) + "->" + r.BackendPortReference
+			// 8443 ~> howdy-http->default
+			routes = routes + strconv.Itoa(r.LBPort) + " ~> " + r.BackendName + "->" + r.BackendPortReference
 
 			// if not the last element, lets bang on a comma
 			if i == len(l.Routes) {
