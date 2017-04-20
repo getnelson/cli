@@ -17,7 +17,7 @@ install-dev: install
 release: format test package
 
 compile: format
-	GOOS=${TARGET_PLATFORM} GOARCH=amd64 CGO_ENABLED=0 gb build -ldflags "-X main.globalBuildVersion=${TRAVIS_BUILD_NUMBER}"
+	GOOS=${TARGET_PLATFORM} GOARCH=amd64 CGO_ENABLED=0 gb build -ldflags "-X main.globalBuildVersion=${CLI_VERSION}"
 
 watch:
 	fswatch
