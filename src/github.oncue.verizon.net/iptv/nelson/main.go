@@ -744,6 +744,10 @@ func main() {
 					Name:  "manifest",
 					Usage: "Test whether a Nelson manifest file is valid",
 					Flags: []cli.Flag{
+						cli.StringSliceFlag{
+							Name:  "unit, u",
+							Usage: "Units to be deployed",
+						},
 						cli.StringFlag{
 							Name:        "manifest, m",
 							Value:       "",
@@ -760,11 +764,22 @@ func main() {
 							return cli.NewExitError("Could not read "+selectedManifest, 1)
 						}
 						manifestBase64 := base64.StdEncoding.EncodeToString(manifest)
-
+						var unitNames []string = c.StringSlice("unit")
+						var manifestUnits []ManifestUnit = []ManifestUnit{}
+						for i := 0; i < len(unitNames); i++ {
+							var n string = unitNames[i]
+							manifestUnits = append(
+								manifestUnits,
+								ManifestUnit{
+									Name: n,
+									Kind: n,
+								},
+							)
+						}
 						pi.Start()
 						cfg := LoadDefaultConfigOrExit(http)
 						req := LintManifestRequest{
-							Units:    []ManifestUnit{},
+							Units:    manifestUnits,
 							Manifest: manifestBase64,
 						}
 						msg, errs := LintManifest(req, http, cfg)

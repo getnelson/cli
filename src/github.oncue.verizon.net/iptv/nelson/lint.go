@@ -50,11 +50,6 @@ func LintTemplate(req LintTemplateRequest, http *gorequest.SuperAgent, cfg *Conf
 	}
 }
 
-type ManifestUnit struct {
-	Kind string `json:"kind"`
-	Name string `json:"name"`
-}
-
 /*
  * {
  *   "units": [{"kind":"howdy-http", "name":"howdy-http@1.2"}],
@@ -64,6 +59,11 @@ type ManifestUnit struct {
 type LintManifestRequest struct {
 	Units    []ManifestUnit `json:"units"`
 	Manifest string         `json:"manifest"`
+}
+
+type ManifestUnit struct {
+	Kind string `json:"kind"`
+	Name string `json:"name"`
 }
 
 func LintManifest(req LintManifestRequest, http *gorequest.SuperAgent, cfg *Config) (str string, err []error) {
