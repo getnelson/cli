@@ -44,6 +44,8 @@ func main() {
 	var stackHash string
 	var description string
 	var selectedNoGrace bool
+	var repository string
+	var owner string
 
 	app.Flags = []cli.Flag{
 		cli.BoolFlag{
@@ -116,6 +118,98 @@ func main() {
 							return cli.NewExitError("Unable to list datacenters.", 1)
 						} else {
 							PrintListDatacenters(r)
+						}
+						return nil
+					},
+				},
+			},
+		},
+		////////////////////////////// REPOS //////////////////////////////////
+		{
+			Name:    "repos",
+			Aliases: []string{"repo"},
+			Usage:   "Commands for enabling and disabling project repositories",
+			Subcommands: []cli.Command{
+				{
+					Name:  "enable",
+					Usage: "Enable a project repository for use with Nelson",
+					Flags: []cli.Flag{
+						cli.StringFlag{
+							Name:        "repository, repo, r",
+							Value:       "",
+							Usage:       "GitHub repository to be enabled",
+							Destination: &repository,
+						},
+						cli.StringFlag{
+							Name:        "owner, o",
+							Value:       "",
+							Usage:       "Organization or user that owns the GitHub repository",
+							Destination: &owner,
+						},
+					},
+					Action: func(c *cli.Context) error {
+						if len(owner) > 0 {
+							if len(repository) > 0 {
+								req := EnableRepoRequest{
+									Owner: owner,
+									Repo:  repository,
+								}
+								pi.Start()
+								cfg := LoadDefaultConfigOrExit(http)
+								r, e := Enable(req, http, cfg)
+								pi.Stop()
+								if e != nil {
+									return cli.NewExitError("Unable to enable project "+req.Owner+"/"+req.Repo+". Response was:\n"+r, 1)
+								} else {
+									fmt.Println(r)
+								}
+							} else {
+								return cli.NewExitError("You must supply a --repository or --repo or -r argument to specify the repository", 1)
+							}
+						} else {
+							return cli.NewExitError("You must supply a --owner or -o argument to specify the repository owner", 1)
+						}
+						return nil
+					},
+				},
+				{
+					Name:  "disable",
+					Usage: "Disable a project repository for use with Nelson",
+					Flags: []cli.Flag{
+						cli.StringFlag{
+							Name:        "repository, repo, r",
+							Value:       "",
+							Usage:       "GitHub repository to be disabled",
+							Destination: &repository,
+						},
+						cli.StringFlag{
+							Name:        "owner, o",
+							Value:       "",
+							Usage:       "Organization or user that owns the GitHub repository",
+							Destination: &owner,
+						},
+					},
+					Action: func(c *cli.Context) error {
+						if len(owner) > 0 {
+							if len(repository) > 0 {
+								req := EnableRepoRequest{
+									Owner: owner,
+									Repo:  repository,
+								}
+								pi.Start()
+								cfg := LoadDefaultConfigOrExit(http)
+								r, e := Disable(req, http, cfg)
+								pi.Stop()
+								if e != nil {
+									return cli.NewExitError("Unable to disable project "+req.Owner+"/"+req.Repo+". Response was:\n"+r, 1)
+								} else {
+									fmt.Println(r)
+								}
+							} else {
+								return cli.NewExitError("You must supply a --repository or --repo or -r argument to specify the repository", 1)
+							}
+						} else {
+							return cli.NewExitError("You must supply a --owner or -o argument to specify the repository owner", 1)
 						}
 						return nil
 					},
