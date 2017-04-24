@@ -131,6 +131,22 @@ func main() {
 			Usage:   "Commands for enabling and disabling project repositories",
 			Subcommands: []cli.Command{
 				{
+					Name:  "list",
+					Usage: "List enabled/disabled statuses for project repositories",
+					Action: func(c *cli.Context) error {
+						pi.Start()
+						cfg := LoadDefaultConfigOrExit(http)
+						r, e := ListRepos(http, cfg)
+						pi.Stop()
+						if e != nil {
+							return cli.NewExitError("Unable to list project statuses. Sorry!", 1)
+						} else {
+							PrintListRepos(r)
+						}
+						return nil
+					},
+				},
+				{
 					Name:  "enable",
 					Usage: "Enable a project repository for use with Nelson",
 					Flags: []cli.Flag{
