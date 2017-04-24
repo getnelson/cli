@@ -100,17 +100,17 @@ func PrintListRepos(repos []RepoSummary) {
 		var enabled bool = x.Hook != nil && x.Hook.IsActive
 		tabulized = append(tabulized, []string{
 			x.Repository,
-			formatEnabled(enabled),
 			x.Owner,
 			x.Access,
+			formatEnabled(enabled),
 		})
 	}
 
 	RenderTableToStdout([]string{
 		"Repository",
-		"Status",
 		"Owner",
 		"Access",
+		"Status",
 	}, tabulized)
 }
 
