@@ -34,8 +34,8 @@ type RepoSummary struct {
 	Access     string    `json:"access"`
 }
 
-func ListRepos(http *gorequest.SuperAgent, cfg *Config) (list []RepoSummary, err []error) {
-	uri := cfg.Endpoint + "/v1/repos?owner=iptv"
+func ListRepos(owner string, http *gorequest.SuperAgent, cfg *Config) (list []RepoSummary, err []error) {
+	uri := cfg.Endpoint + "/v1/repos?owner=" + owner
 	r, body, errs := AugmentRequest(http.Get(uri), cfg).EndBytes()
 
 	if errs != nil {

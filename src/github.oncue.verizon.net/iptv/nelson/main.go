@@ -133,10 +133,18 @@ func main() {
 				{
 					Name:  "list",
 					Usage: "List enabled/disabled statuses for project repositories",
+					Flags: []cli.Flag{
+						cli.StringFlag{
+							Name:        "owner, o",
+							Value:       "iptv",
+							Usage:       "Organization or user that owns the GitHub repository",
+							Destination: &owner,
+						},
+					},
 					Action: func(c *cli.Context) error {
 						pi.Start()
 						cfg := LoadDefaultConfigOrExit(http)
-						r, e := ListRepos(http, cfg)
+						r, e := ListRepos(owner, http, cfg)
 						pi.Stop()
 						if e != nil {
 							return cli.NewExitError("Unable to list project statuses. Sorry!", 1)
