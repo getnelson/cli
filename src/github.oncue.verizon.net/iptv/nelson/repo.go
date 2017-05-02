@@ -8,15 +8,15 @@ import (
 
 /**
  * {
- * 	"repository": "xs4s",
- * 	"slug": "iptv/xs4s",
- * 	"id": 8272,
- * 	"hook": {
- *    "is_active": true,
- *    "id": 3775
- *  },
- * 	"owner": "iptv",
- * 	"access": "push"
+ * 	 "repository": "xs4s",
+ * 	 "slug": "iptv/xs4s",
+ * 	 "id": 8272,
+ * 	 "hook": {
+ *     "is_active": true,
+ *     "id": 3775
+ *   },
+ * 	 "owner": "iptv",
+ * 	 "access": "push"
  * }
  */
 
@@ -118,6 +118,6 @@ func formatEnabled(enabled bool) string {
 	if enabled {
 		return "enabled"
 	} else {
-		return "unenabled"
+		return "disabled"
 	}
 }
