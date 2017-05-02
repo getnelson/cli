@@ -136,22 +136,26 @@ func main() {
 					Flags: []cli.Flag{
 						cli.StringFlag{
 							Name:        "owner, o",
-							Value:       "iptv",
+							Value:       "",
 							Usage:       "Organization or user that owns the GitHub repository",
 							Destination: &owner,
 						},
 					},
 					Action: func(c *cli.Context) error {
-						pi.Start()
-						cfg := LoadDefaultConfigOrExit(http)
-						r, e := ListRepos(owner, http, cfg)
-						pi.Stop()
-						if e != nil {
-							return cli.NewExitError("Unable to list project statuses. Sorry!", 1)
+						if len(owner) > 0 {
+							pi.Start()
+							cfg := LoadDefaultConfigOrExit(http)
+							r, e := ListRepos(owner, http, cfg)
+							pi.Stop()
+							if e != nil {
+								return cli.NewExitError("Unable to list project statuses. Sorry!", 1)
+							} else {
+								PrintListRepos(r)
+								return nil
+							}
 						} else {
-							PrintListRepos(r)
+							return cli.NewExitError("You must supply a --owner or -o argument to specify the repository owner", 1)
 						}
-						return nil
 					},
 				},
 				{
