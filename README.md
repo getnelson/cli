@@ -63,6 +63,16 @@ $ nelson login
 $ nelson login --disable-tls --token 1f3f3f3f3 nelson.local:9000
 ```
 
+### Repository Operations
+
+```
+# enable a repo for use with nelson
+$ nelson repo enable --owner iptv --repo howdy
+
+# disable a repo 
+$ nelson repo disable --owner iptv --repo howdy
+```
+
 ### Datacenter Operations
 
 ```
