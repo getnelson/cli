@@ -879,7 +879,7 @@ func main() {
 					},
 					Action: func(c *cli.Context) error {
 						if len(selectedManifest) <= 0 {
-							return cli.NewExitError("You must specify a manifest file to lint.", 1)
+							selectedManifest = ".nelson.yml"
 						}
 						manifest, err := ioutil.ReadFile(selectedManifest)
 						if err != nil {
