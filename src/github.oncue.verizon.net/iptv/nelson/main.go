@@ -879,10 +879,8 @@ func main() {
 					},
 					Action: func(c *cli.Context) error {
 						if len(selectedManifest) <= 0 {
-							return cli.NewExitError("You must specify a manifest file to lint.", 1)
-						} else {
-						    fmt.Println("No manifest explicitly provided: assuming .nelson.yml in current directory.")
-						    selectedManifest = ".nelson.yml"
+							fmt.Println("No manifest explicitly provided: assuming .nelson.yml in current directory.")
+							selectedManifest = ".nelson.yml"
 						}
 						manifest, err := ioutil.ReadFile(selectedManifest)
 						if err != nil {
