@@ -879,7 +879,6 @@ func main() {
 					},
 					Action: func(c *cli.Context) error {
 						if len(selectedManifest) <= 0 {
-							fmt.Println("No manifest explicitly provided: assuming .nelson.yml in current directory.")
 							selectedManifest = ".nelson.yml"
 						}
 						manifest, err := ioutil.ReadFile(selectedManifest)
