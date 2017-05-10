@@ -94,7 +94,7 @@ func isValidGUID(in string) bool {
 }
 
 func isValidCommaDelimitedList(str string) bool {
-	match, _ := regexp.MatchString(`^([a-z0-9\\-]+,?)+$`, str)
+	match, _ := regexp.MatchString(`^([a-z0-9/\\-]+,?)+$`, str)
 	return match
 }
 
