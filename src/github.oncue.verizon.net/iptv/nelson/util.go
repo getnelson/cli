@@ -23,7 +23,7 @@ func AugmentRequest(c *gorequest.SuperAgent, cfg *Config) *gorequest.SuperAgent 
 		AddCookie(cfg.GetAuthCookie()).
 		Set("Content-type", "application/json").
 		Set("User-Agent", UserAgentString(globalBuildVersion)).
-		Timeout(5*time.Second).
+		Timeout(10*time.Second).
 		Retry(3, 1*time.Second, http.StatusBadGateway, http.StatusInternalServerError).
 		SetCurlCommand(globalEnableCurl).
 		SetDebug(globalEnableDebug)
