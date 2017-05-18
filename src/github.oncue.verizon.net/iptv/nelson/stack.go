@@ -186,15 +186,15 @@ func PrintInspectStack(s StackSummary) {
 
 		if len(s.Dependencies.Outbound) != 0 {
 			for _, w := range s.Dependencies.Outbound {
-				dependencies = append(dependencies, []string{w.Guid, w.StackName, w.Type, JavaEpochToDateStr(w.DeployedAt), yellow("OUTBOUND")})
+				dependencies = append(dependencies, []string{w.Guid, w.StackName, w.Type, JavaEpochToDateStr(w.DeployedAt), yellow("OUTBOUND"), strconv.FormatInt(w.Weight, 10)})
 			}
 		}
 		if len(s.Dependencies.Inbound) != 0 {
 			for _, w := range s.Dependencies.Inbound {
-				dependencies = append(dependencies, []string{w.Guid, w.StackName, w.Type, JavaEpochToDateStr(w.DeployedAt), green("INBOUND")})
+				dependencies = append(dependencies, []string{w.Guid, w.StackName, w.Type, JavaEpochToDateStr(w.DeployedAt), green("INBOUND"), strconv.FormatInt(w.Weight, 10)})
 			}
 		}
-		RenderTableToStdout([]string{"GUID", "Stack", "Type", "Deployed At", "Direction"}, dependencies)
+		RenderTableToStdout([]string{"GUID", "Stack", "Type", "Deployed At", "Direction", "Weight"}, dependencies)
 	}
 
 	//>>>>>>>>>>> status history
@@ -249,6 +249,7 @@ type Stack struct {
 	Type         string `json:"type,omitempty"`
 	NamespaceRef string `json:"namespace,omitempty"`
 	Status       string `json:"status"`
+	Weight       int64  `json:"weight,omitempty"`
 }
 
 func ListStacks(delimitedDcs string, delimitedNamespaces string, delimitedStatuses string, http *gorequest.SuperAgent, cfg *Config) (list []Stack, err []error) {
