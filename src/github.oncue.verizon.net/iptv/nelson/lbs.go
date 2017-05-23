@@ -3,8 +3,10 @@ package main
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/parnurzeal/gorequest"
 	"strconv"
+	"time"
 )
 
 /*
@@ -38,10 +40,12 @@ type Loadbalancer struct {
 	Name         string              `json:"name"`
 	Routes       []LoadbalancerRoute `json:"routes"`
 	Guid         string              `json:"guid"`
-	DeployTime   int64               `json:"deploy_time"`
+	DeployTime   int                 `json:"deploy_time"`
 	Datacenter   string              `json:"datacenter"`
-	NamespaceRef string              `json:"namespace"`
+	Namespace    string              `json:"namespace"`
 	Address      string              `json:"address"`
+	Version      int                 `json:"major_version"`
+	Dependencies DependencyArray     `json:"dependencies"`
 }
 
 /*
@@ -54,9 +58,19 @@ type Loadbalancer struct {
  */
 type LoadbalancerRoute struct {
 	BackendPortReference string `json:"backend_port_reference"`
-	BackendMajorVersion  int    `json:"backend_major_version"`
 	BackendName          string `json:"backend_name"`
 	LBPort               int    `json:"lb_port"`
+}
+
+type DependencyArray struct {
+	Outbound []LoadbalancerDependencyOutbound `json:"outbound"`
+}
+
+type LoadbalancerDependencyOutbound struct {
+	DeployTime int    `json:"deployed_at"`
+	Type       string `json:"type"`
+	StackName  string `json:"stack_name"`
+	Guid       string `json:"guid"`
 }
 
 //////////////////////// LIST ////////////////////////
@@ -106,10 +120,69 @@ func PrintListLoadbalancers(lb []Loadbalancer) {
 				routes = routes + ", "
 			}
 		}
-		tabulized = append(tabulized, []string{l.Guid, l.Datacenter, l.NamespaceRef, l.Name, routes, l.Address})
+		tabulized = append(tabulized, []string{l.Guid, l.Datacenter, l.Namespace, l.Name, routes, l.Address})
 	}
 
 	RenderTableToStdout([]string{"GUID", "Datacenter", "Namespace", "Name", "Routes", "Address"}, tabulized)
+}
+
+func InspectLoadBalancer(guid string, http *gorequest.SuperAgent, cfg *Config) (lb Loadbalancer, err []error) {
+	uri := "/v1/loadbalancers/" + guid
+	r, bytes, errs := AugmentRequest(
+		http.Get(cfg.Endpoint+uri), cfg).EndBytes()
+
+	if errs != nil {
+		return Loadbalancer{}, errs
+	}
+
+	if r.StatusCode/100 != 2 {
+		errs = append(errs, errors.New("bad response from Nelson server"))
+		_ = bytes
+		return Loadbalancer{}, errs
+	} else {
+		var lb Loadbalancer
+		if err := json.Unmarshal(bytes, &lb); err != nil {
+			panic(err)
+		}
+		return lb, errs
+	}
+	return Loadbalancer{}, errs
+}
+
+func PrintInspectLoadbalancer(lb Loadbalancer) {
+	var tabulized = [][]string{}
+	tabulized = append(tabulized, []string{"GUID:", lb.Guid})
+	tabulized = append(tabulized, []string{"NAME:", lb.Name})
+	tabulized = append(tabulized, []string{"ADDRESS:", lb.Address})
+	tabulized = append(tabulized, []string{"NAMESPACE:", lb.Namespace})
+	tabulized = append(tabulized, []string{"DATECENTER:", lb.Datacenter})
+	tabulized = append(tabulized, []string{"VERSION:", strconv.FormatInt(int64(lb.Version), 10)})
+	tabulized = append(tabulized, []string{"TIMESTAMP:", time.Unix(int64(lb.DeployTime)/1000, 0).Format(time.RFC3339)})
+	fmt.Println("===>> Loadbalancer Information")
+	RenderTableToStdout([]string{"Parameter", "Value"}, tabulized)
+	if len(lb.Routes) != 0 {
+		fmt.Println("")
+		fmt.Println("===>> Routes")
+		var routes = [][]string{}
+
+		var w LoadbalancerRoute
+		for _, w = range lb.Routes {
+			routes = append(routes, []string{w.BackendPortReference, w.BackendName, strconv.FormatInt(int64(w.LBPort), 10)})
+		}
+		RenderTableToStdout([]string{"Reference", "Unit", "Port"}, routes)
+	}
+
+	if len(lb.Dependencies.Outbound) != 0 {
+		fmt.Println("")
+		fmt.Println("===>> Outbound Dependencies")
+		var dependencies = [][]string{}
+
+		var r LoadbalancerDependencyOutbound
+		for _, r = range lb.Dependencies.Outbound {
+			dependencies = append(dependencies, []string{time.Unix(int64(r.DeployTime)/1000, 0).Format(time.RFC3339), r.Type, r.StackName, r.Guid})
+		}
+		RenderTableToStdout([]string{"Timestamp", "Type", "Stack-Name", "GUID"}, dependencies)
+	}
 }
 
 //////////////////////// REMOVE ////////////////////////
