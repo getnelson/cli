@@ -857,6 +857,54 @@ func main() {
 				},
 			},
 		},
+		{
+			Name:    "namespaces",
+			Aliases: []string{"ns", "namespace"},
+			Usage:   "Set of commands to obtain details about available namespaces",
+			Subcommands: []cli.Command{
+				{
+					Name:  "create",
+					Usage: "create namespace",
+					Flags: []cli.Flag{
+						cli.StringFlag{
+							Name:        "datacenter, dc",
+							Value:       "",
+							Usage:       "The datacenter for the namespace",
+							Destination: &selectedDatacenter,
+						},
+						cli.StringFlag{
+							Name:        "namespace, ns",
+							Value:       "",
+							Usage:       "The namespace to create",
+							Destination: &selectedNamespace,
+						},
+					},
+					Action: func(c *cli.Context) error {
+						if len(selectedDatacenter) > 0 &&
+							len(selectedNamespace) > 0 {
+
+							req := NamespaceRequest{
+								Namespace: selectedNamespace,
+							}
+
+							pi.Start()
+							cfg := LoadDefaultConfigOrExit(http)
+							res, e := CreateNamespace(req, selectedDatacenter, http, cfg)
+							pi.Stop()
+							if e != nil {
+								PrintTerminalErrors(e)
+								return cli.NewExitError("Unable to create the specified namespace.", 1)
+							} else {
+								fmt.Println(res)
+							}
+						} else {
+							return cli.NewExitError("You must specify the following switches: \n\t--datacenter <string> \n\t--namespace <string>", 1)
+						}
+						return nil
+					},
+				},
+			},
+		},
 		/////////////////////////// LINT //////////////////////////////
 		{
 			Name:  "lint",
