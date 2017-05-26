@@ -163,6 +163,9 @@ nelson lbs down 04dsq452xvq
 # create a new loadbalancer
 nelson lbs up --name howdy-lb --major-version 1 --datacenter us-east-1 --namespace dev
 nelson lbs up -n howdy-lb -mv 1 -d us-east-1 -ns dev
+
+# get info about a loadbalancer
+nelson lbs inspect -guid 04dsq452xvq
 ```
 
 ## Lint operations

@@ -34,6 +34,7 @@ func main() {
 	var disableTLS bool
 	var selectedDatacenter string
 	var selectedNamespace string
+	var selectedLoadbalancer string
 	var selectedStatus string
 	var selectedUnitPrefix string
 	var selectedVersion string
@@ -851,6 +852,27 @@ func main() {
 							}
 						} else {
 							return cli.NewExitError("You must specify the following switches: \n\t--datacenter <string> \n\t--namespace <string> \n\t--major-version <int> \n\t--name <string>", 1)
+						}
+						return nil
+					},
+				},
+				{
+					Name:  "inspect",
+					Usage: "inspect the specified loadbalancer",
+					Action: func(c *cli.Context) error {
+						selectedLoadbalancer = c.Args().First()
+						if len(selectedLoadbalancer) == 0 {
+							return cli.NewExitError("you must specify a loadbalancer guid as the first argument", 1)
+						}
+						pi.Start()
+						cfg := LoadDefaultConfigOrExit(http)
+						lb, e := InspectLoadBalancer(selectedLoadbalancer, http, cfg)
+						pi.Stop()
+						if e != nil {
+							PrintTerminalErrors(e)
+							return cli.NewExitError("Unable to inspect loadbalancer right now, Sorry!", 1)
+						} else {
+							PrintInspectLoadbalancer(lb)
 						}
 						return nil
 					},
