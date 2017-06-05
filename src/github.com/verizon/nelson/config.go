@@ -118,7 +118,7 @@ func (c *Config) GetAuthCookie() *http.Cookie {
 		Name:       "nelson.session",
 		Value:      c.ConfigSession.Token,
 		Path:       "/",
-		Domain:     "nelson-beta.oncue.verizon.net",
+		Domain:     "nelson.yourcompany.com",
 		Expires:    expire,
 		RawExpires: expire.Format(time.UnixDate),
 		MaxAge:     86400,

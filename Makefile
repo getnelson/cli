@@ -33,7 +33,7 @@ package: test
 	mv ${TAR_NAME} target/${TAR_NAME}
 
 format:
-	go fmt src/github.oncue.verizon.net/iptv/nelson/*.go
+	go fmt src/github.com/verizon/nelson/*.go
 
 clean:
 	rm -rf bin && \
