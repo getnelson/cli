@@ -1,13 +1,13 @@
 # nelson-cli
 
-[![Build Status](https://travis-ci.org/verizon/nelson-cli.svg?branch=master)](https://travis-ci.org/verizon/nelson-cli)
+[![Build Status](https://travis-ci.org/Verizon/nelson-cli.svg?branch=master)](https://travis-ci.org/Verizon/nelson-cli)
 
 ## Getting Started
 
 If you just want to use nelson-cli, then run the following:
 
 ```
-curl -GqL https://nelson.oncue.verizon.net/cli | bash
+curl -GqL https://<replaceme>/cli | bash
 ```
 
 This script will download and install the latest version and put it on your `$PATH`. We do not endorse piping scripts from the wire to `bash`, and you should read the script before executing the command. It will:
@@ -67,10 +67,10 @@ $ nelson login --disable-tls --token 1f3f3f3f3 nelson.local:9000
 
 ```
 # enable a repo for use with nelson
-$ nelson repo enable --owner iptv --repo howdy
+$ nelson repo enable --owner octocat --repo helloworld
 
 # disable a repo 
-$ nelson repo disable --owner iptv --repo howdy
+$ nelson repo disable --owner octocat --repo helloworld
 ```
 
 ### Datacenter Operations
@@ -87,10 +87,10 @@ $ nelson dcs list
 
 ```
 # show the units deployed in a given datacenter
-$ nelson units list --namespaces dev --datacenters us-west-2
+$ nelson units list --namespaces dev --datacenters sacremento
 
 # show the units availabe in several datacenters
-$ nelson units list --namespaces dev --datacenters us-west-2,us-west-1
+$ nelson units list --namespaces dev --datacenters sacremento,nyc
 
 # show the units availabe in all datacenters for a given namespace
 $ nelson units list --namespaces dev
@@ -116,10 +116,10 @@ $ nelson units commit --foo --version 1.2.3 --target qa
 
 ```
 # show the stacks deployed in a given datacenter
-$ nelson stacks list --namespaces dev --datacenters us-west-2
+$ nelson stacks list --namespaces dev --datacenters sacremento
 
 # show the stacks availabe in several datacenters
-$ nelson stacks list --namespaces dev --datacenters us-west-2,us-west-1
+$ nelson stacks list --namespaces dev --datacenters sacremento,nyc
 
 # show the stacks availabe in all datacenters for a given namespace
 $ nelson stacks list --namespaces dev
@@ -141,12 +141,12 @@ $ nelson stacks fs 02481438b432
 
 # manually register a stack
 $ nelson stacks manual \
-  --datacenter us-east-1 \
+  --datacenter sacremento \
   --namespace dev \
-  --service-type zookeeper-iptv-dena \
+  --service-type zookeeper \
   --version 3.4.6 \
-  --hash mtq3otmymzu3oq \
-  --description "dena zookeeper" \
+  --hash fj5xlf53q \
+  --description "some zookeeper" \
   --port 2181
 ```
 
@@ -154,7 +154,7 @@ $ nelson stacks manual \
 
 ```
 # list the loadbalancers
-nelson lbs list -ns dev -d us-east-1
+nelson lbs list -ns dev -d sacremento
 nelson lbs list -ns dev
 
 # remove a loadbalancer
@@ -182,7 +182,7 @@ Given this template at `application.cfg.template`:
 
 ```
 {{with $ns := env "NELSON_ENV"}}
-{{with secret (print "fios/" $ns "/test/creds/howdy-http")}}
+{{with secret (print "someroot/" $ns "/test/creds/howdy-http")}}
 username={{.data.username}}
 {{end}}
 {{end}}
@@ -214,22 +214,6 @@ Rendered output discarded for security reasons.
 ```
 
 The template rendered, but because we don't want to expose any secrets, we get a simple success message.  Congratulations.  Your template should now render correctly when deployed by Nelson.
-
-## Under construction
-
-The following commands are under development or pending documentation:
-
-```
-# list the workflows availabe in the remote nelson
-$ nelson workflows inspect --type job quasar
-
-# inspect a specific unit; showing dependencies and crap
-$ nelson units inspect howdy-batch-0.3
-
-# list me all the deployments, in all datacenters for this unit name
-$ nelson stacks list --unit howdy-batch-0.3
-
-```
 
 ## Development
 
