@@ -42,7 +42,21 @@ func AugmentRequest(c *gorequest.SuperAgent, cfg *Config) *gorequest.SuperAgent 
 		Timeout(60*time.Second).
 		Retry(3, 1*time.Second, http.StatusBadGateway, http.StatusInternalServerError).
 		SetCurlCommand(globalEnableCurl).
-		SetDebug(globalEnableDebug)
+		SetDebug(globalEnableDebug).
+		RedirectPolicy(func(req gorequest.Request, via []gorequest.Request) error {
+			// Copy the Cookie on redirect if the hosts match
+			last := via[0]
+			if req.URL.Host == last.URL.Host {
+				for attr, val := range via[0].Header {
+					if attr == "Cookie" {
+						if _, ok := req.Header[attr]; !ok {
+							req.Header[attr] = val
+						}
+					}
+				}
+			}
+			return nil
+		})
 }
 
 func RenderTableToStdout(headers []string, data [][]string) {

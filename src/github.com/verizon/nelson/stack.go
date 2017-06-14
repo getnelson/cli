@@ -59,7 +59,7 @@ func RegisterManualDeployment(
 		return "", errs
 	}
 
-	if r.StatusCode/100 != 3 {
+	if r.StatusCode/100 != 2 {
 		resp := string(body[:])
 		errs = append(errs, errors.New("Unexpected response from Nelson server"))
 		return resp, errs
