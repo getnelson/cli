@@ -22,6 +22,7 @@ import (
 	"github.com/parnurzeal/gorequest"
 	"gopkg.in/urfave/cli.v1"
 	"io/ioutil"
+	"log"
 	"os"
 	"regexp"
 	"strconv"
@@ -43,6 +44,7 @@ func main() {
 	app.EnableBashCompletion = true
 
 	http := gorequest.New()
+	http.SetLogger(FilterLog(log.New(os.Stderr, "[gorequest]", log.LstdFlags)))
 	pi := ProgressIndicator()
 
 	// switches for the cli
