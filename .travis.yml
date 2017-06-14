@@ -4,7 +4,7 @@ go: 1.8
 
 branches:
   except:
-    - /^*-v[0-9]/
+    - /^*-[0-9]/
 
 install:
   - make install
@@ -13,7 +13,6 @@ before_script:
   - "if [ $TRAVIS_PULL_REQUEST = 'false' ]; then git checkout -qf $TRAVIS_BRANCH; fi"
 
 script:
-  - echo "\"$TRAVIS_TAG\""
   - |
     if [ -z "$TRAVIS_TAG" ]; then
       echo "Using TRAVIS_BUILD_NUMBER as revision..."
@@ -40,7 +39,7 @@ after_success:
     if [ $TRAVIS_BRANCH = 'master' ]; then
       git config --global user.email "builds@travis-ci.com"
       git config --global user.name "Travis CI"
-      git tag v${CLI_VERSION} -a -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER"
+      git tag ${CLI_VERSION} -a -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER"
       git push -q https://$GIT_CREDENTIAL@github.com/Verizon/nelson-cli --tags
     fi
   fi
@@ -49,7 +48,7 @@ deploy:
   provider: releases
   skip_cleanup: true
   file_glob: true
-  file: target/*.tar.gz
+  file: target/*
   api_key:
     secure: oJ095mwH0Eic/2MnKOBG0/4FwvFag7lz356vE5pOwXuGP9FQRq9AsuhhCuweRK6wc/cOc4qKEjYXv2TQMF6W716HzGNXJhe72PDX+MSx6QHL+PY2DnUUVaBEl3CG82p0XWAkEeO/pKX/3DjqhehazSVZZNj+s4bGj1I5HzdOQX85yAHtugFeNXmIUbpRTu1M53DpTny4K3dUu9CSyFLA5lqs/uhpIg9FsVkgEaJFijbvgH8kuUyLUSHCDhUD6JQRhhG+f5TYOn6+mOhxC1QLN1kzwh5Kvviw0UfB0h4QPPv6qbuqixwXTzcphWr5Bvvd0vjyd8Dwp5grRqQcUJLI7ACUfbx2C1qEAwgST3BZ45BLyKt51Cf37Yv8ngtjkMqinKh8wmhYU/ibyldc05S5mFR36SZg41BM5wvmQWginLKrb3pOjHIePHAu0LMGGoSKsPoR5lwCD9b4rdajCYlu/glyDh8cfAIWUmfIvKq1eJJJ2Iv/uZGFTQWcc5W4w+EwynUR52HKs5iFbVns/PPqNWeRlGGnFFwKWlCUWX5nriJt7eAF/SPCB1Y/d8TxrE4vwOFQwqtJU3iwMSTCAQymSkh5KQSXd+7NFenUNqZ7SurVDPBNIN1QDU0loFyNJJXXqSu9VYn/aZRn0PQtDUH9gWp/Oy97IzWTMMcZU2jsNlo=
   on:
