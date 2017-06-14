@@ -1,6 +1,8 @@
-# nelson-cli
+# Nelson CLI
 
 [![Build Status](https://travis-ci.org/Verizon/nelson-cli.svg?branch=master)](https://travis-ci.org/Verizon/nelson-cli)
+
+A handy tool for interacting with your instalation of [Nelson](https://github.com/Verizon/nelson)
 
 ## Getting Started
 
