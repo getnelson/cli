@@ -30,9 +30,10 @@ package: test
 	mv bin/nelson-${TARGET_PLATFORM}-amd64 ./nelson && \
 	tar -zcvf ${TAR_NAME} nelson && \
 	rm nelson && \
+	sha1sum ${TAR_NAME} > ${TAR_NAME}.sha1 && \
+	shasum -c ${TAR_NAME}.sha1 && \
 	mv ${TAR_NAME} target/${TAR_NAME} && \
-	sha1sum target/${TAR_NAME} > target/${TAR_NAME}.sha1 && \
-	sha1sum --check target/${TAR_NAME}.sha1
+	mv ${TAR_NAME}.sha1 target/${TAR_NAME}.sha1
 
 format:
 	go fmt src/github.com/verizon/nelson/*.go

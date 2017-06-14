@@ -9,7 +9,7 @@ A handy tool for interacting with your instalation of [Nelson](https://github.co
 If you just want to use nelson-cli, then run the following:
 
 ```
-curl -GqL https://<replaceme>/cli | bash
+curl -GqL https://raw.githubusercontent.com/Verizon/nelson-cli/master/scripts/install | bash
 ```
 
 This script will download and install the latest version and put it on your `$PATH`. We do not endorse piping scripts from the wire to `bash`, and you should read the script before executing the command. It will:
