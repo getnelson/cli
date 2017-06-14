@@ -52,7 +52,7 @@
 		{
 			"importpath": "github.com/parnurzeal/gorequest",
 			"repository": "https://github.com/parnurzeal/gorequest",
-			"revision": "ea779001e09326d30d455dbf37bc0d08c49941a2",
+			"revision": "5bf13be198787abbed057fb7c4007f372083a0f5",
 			"branch": "develop"
 		},
 		{
