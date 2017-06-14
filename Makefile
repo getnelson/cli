@@ -26,7 +26,7 @@ test: compile
 	gb test -v
 
 package: test
-	mkdir target && \
+	mkdir -p target && \
 	mv bin/nelson-${TARGET_PLATFORM}-amd64 ./nelson && \
 	tar -zcvf ${TAR_NAME} nelson && \
 	rm nelson && \
