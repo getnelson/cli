@@ -31,7 +31,7 @@ env:
 # this version which will in turn trigger another build that the github release
 # will be cut from.
 after_success:
-  - |
+- |
   if [ $TRAVIS_PULL_REQUEST = 'false' ]; then
     if [ $TRAVIS_BRANCH = 'master' ]; then
       git config --global user.email "builds@travis-ci.com"
