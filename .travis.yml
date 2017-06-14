@@ -9,6 +9,9 @@ before_script:
 script:
   - export OUTPUT_NAME=`make -s tar`
   - make release
+  - stat target/${OUTPUT_NAME}
+  - ll
+  - ll target
 
 matrix:
   include:
