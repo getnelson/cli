@@ -85,6 +85,14 @@ $ nelson datacenters list
 $ nelson dcs list
 ```
 
+### Namespace Operations
+
+```
+# create an entirely new namespace
+$ nelson namespace create --datacenter dc123 --namespace foobar
+$ nelson ns create --dc dc123 --ns foobar
+```
+
 ### Unit Operations
 
 ```
@@ -132,16 +140,22 @@ $ nelson stacks list --namespaces dev --statuses deploying,ready,deprecated
 # show the stacks that have been terminated by nelson in a given namespace
 $ nelson stacks list --namespaces dev --statuses terminated
 
-# redeploy a very specific deployment id
-$ nelson stacks redeploy b8ff485a0306
-
-# inspect a very specific deployment
+# inspect a very specific deployment and show more detailed routing information
 $ nelson stacks inspect b8ff485a0306
+
+# redeploy a very specific deployment id.
+# this spawns a new stack using the exact same container image
+$ nelson stacks redeploy b8ff485a0306
 
 # show the deployment log for a given deployment id
 $ nelson stacks fs 02481438b432
+$ nelson stacks logs 02481438b432
 
-# manually register a stack
+# show the current *runtime* status as seen by consul and nomad
+$ nelson stacks runtime 02481438b432
+
+# manually register a stack - only needed to inform Nelson about 
+# something you setup out of band (e.g. some static database)
 $ nelson stacks manual \
   --datacenter sacremento \
   --namespace dev \
