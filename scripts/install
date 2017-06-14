@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 ### Fetches and installs the latest nelson-cli from github.com
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
@@ -26,7 +28,9 @@ curl -sSL ${ARTIFACT_URL} -o ${ARTIFACT_BASE}.tar.gz
 echo "====>> Checking shasum"
 SHA_URL=$(fetch_from_github | grep 'sha1')
 
-curl -sSL $SHA_URL -o ${ARTIFACT_BASE}.tar.gz.sha1
+curl -sSL $SHA_URL -o nelson.tar.gz.sha1
+SHA1=$(cat nelson.tar.gz.sha1 | awk '{print $1}')
+echo "$SHA1  ${ARTIFACT_BASE}.tar.gz" > ${ARTIFACT_BASE}.tar.gz.sha1
 shasum -c ${ARTIFACT_BASE}.tar.gz.sha1
 
 echo "====>> Extracting..."

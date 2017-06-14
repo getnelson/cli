@@ -47,12 +47,12 @@ func TestStackSummaryJsonUnmarshaling(t *testing.T) {
   "statuses": [
     {
       "timestamp": "2016-07-14T22:30:22.358Z",
-      "message": "inventory-inventory deployed to perryman",
+      "message": "foo deployed to sacremento",
       "status": "ready"
     },
     {
       "timestamp": "2016-07-14T22:30:22.310Z",
-      "message": "writing alert definitions to perryman's consul",
+      "message": "writing alert definitions to sacremento's consul",
       "status": "deploying"
     },
     {
@@ -62,12 +62,12 @@ func TestStackSummaryJsonUnmarshaling(t *testing.T) {
     },
     {
       "timestamp": "2016-07-14T22:30:21.421Z",
-      "message": "instructing perryman's marathon to launch container",
+      "message": "instructing sacremento's marathon to launch container",
       "status": "deploying"
     },
     {
       "timestamp": "2016-07-14T22:29:44.370Z",
-      "message": "replicating docker.iptv.oncue.com/units/inventory-inventory-2.0:2.0.11 to remote registry",
+      "message": "replicating registry.yourcompany.com/units/foo-2.0:2.0.11 to remote registry",
       "status": "deploying"
     },
     {
@@ -76,19 +76,18 @@ func TestStackSummaryJsonUnmarshaling(t *testing.T) {
       "status": "pending"
     }
   ],
-  "stack_name": "inventory-inventory--2-0-11--8gufie2b",
+  "stack_name": "foo--2-0-11--8gufie2b",
   "deployed_at": 1468535384221,
-  "unit": "inventory-inventory",
-  "type": "service",
+  "unit": "foo",
   "expiration": 1469928212871,
   "dependencies": {
     "outbound": [
       {
         "workflow": "manual",
         "guid": "1a69395e919d",
-        "stack_name": "dev-iptv-cass-dev--4-8-4--mtq2odqzndc0mg",
+        "stack_name": "dev-cass-dev--4-8-4--mtq2odqzndc0mg",
         "deployed_at": 1468518896093,
-        "unit": "dev-iptv-cass-dev",
+        "unit": "dev-cass-dev",
         "type": "service"
       }
     ],
