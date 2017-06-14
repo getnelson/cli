@@ -1,5 +1,7 @@
 language: go
 
+go: 1.8
+
 branches:
   except:
     - /^*-v[0-9]/
@@ -20,15 +22,8 @@ script:
       echo "Using TRAVIS_TAG as revision..."
       export CLI_VERSION="${TRAVIS_TAG}"
     fi
-  - export OUTPUT_NAME=`make -s tar`
-  - make release
-
-matrix:
-  include:
-    # - go: 1.8
-      # env: TARGET_PLATFORM=linux
-    - go: 1.8
-      env: TARGET_PLATFORM=darwin
+  - TARGET_PLATFORM=darwin make release
+  - TARGET_PLATFORM=linux make release
 
 env:
   global:
@@ -53,7 +48,8 @@ after_success:
 deploy:
   provider: releases
   skip_cleanup: true
-  file: target/${OUTPUT_NAME}
+  file_glob: true
+  file: target/*.tar.gz
   api_key:
     secure: oJ095mwH0Eic/2MnKOBG0/4FwvFag7lz356vE5pOwXuGP9FQRq9AsuhhCuweRK6wc/cOc4qKEjYXv2TQMF6W716HzGNXJhe72PDX+MSx6QHL+PY2DnUUVaBEl3CG82p0XWAkEeO/pKX/3DjqhehazSVZZNj+s4bGj1I5HzdOQX85yAHtugFeNXmIUbpRTu1M53DpTny4K3dUu9CSyFLA5lqs/uhpIg9FsVkgEaJFijbvgH8kuUyLUSHCDhUD6JQRhhG+f5TYOn6+mOhxC1QLN1kzwh5Kvviw0UfB0h4QPPv6qbuqixwXTzcphWr5Bvvd0vjyd8Dwp5grRqQcUJLI7ACUfbx2C1qEAwgST3BZ45BLyKt51Cf37Yv8ngtjkMqinKh8wmhYU/ibyldc05S5mFR36SZg41BM5wvmQWginLKrb3pOjHIePHAu0LMGGoSKsPoR5lwCD9b4rdajCYlu/glyDh8cfAIWUmfIvKq1eJJJ2Iv/uZGFTQWcc5W4w+EwynUR52HKs5iFbVns/PPqNWeRlGGnFFwKWlCUWX5nriJt7eAF/SPCB1Y/d8TxrE4vwOFQwqtJU3iwMSTCAQymSkh5KQSXd+7NFenUNqZ7SurVDPBNIN1QDU0loFyNJJXXqSu9VYn/aZRn0PQtDUH9gWp/Oy97IzWTMMcZU2jsNlo=
   on:
