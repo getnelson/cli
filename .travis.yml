@@ -11,6 +11,15 @@ before_script:
   - "if [ $TRAVIS_PULL_REQUEST = 'false' ]; then git checkout -qf $TRAVIS_BRANCH; fi"
 
 script:
+  - echo "\"$TRAVIS_TAG\""
+  - |
+    if [ -z "$TRAVIS_TAG" ]; then
+      echo "Using TRAVIS_BUILD_NUMBER as revision..."
+      export CLI_VERSION="${CLI_FEATURE_VERSION}.${TRAVIS_BUILD_NUMBER}";
+    else
+      echo "Using TRAVIS_TAG as revision..."
+      export CLI_VERSION="${TRAVIS_TAG}"
+    fi
   - export OUTPUT_NAME=`make -s tar`
   - make release
 
