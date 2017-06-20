@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/Verizon/nelson-cli.svg?branch=master)](https://travis-ci.org/Verizon/nelson-cli)
 
-A handy tool for interacting with your instalation of [Nelson](https://github.com/Verizon/nelson)
+A handy tool for interacting with your installation of [Nelson](https://github.com/Verizon/nelson)
 
 ## Getting Started
 
@@ -49,7 +49,7 @@ $ nelson whoami
 # display info for the currently deployed Nelson
 $ nelson system version
 
-# list the available clean policies on this remote nelson
+# list the available clean-up policies on this remote nelson
 $ nelson system cleanup-policies
 
 # fully explicit login
@@ -99,13 +99,13 @@ $ nelson ns create --dc dc123 --ns foobar
 # show the units deployed in a given datacenter
 $ nelson units list --namespaces dev --datacenters sacremento
 
-# show the units availabe in several datacenters
+# show the units available in several datacenters
 $ nelson units list --namespaces dev --datacenters sacremento,nyc
 
-# show the units availabe in all datacenters for a given namespace
+# show the units available in all datacenters for a given namespace
 $ nelson units list --namespaces dev
 
-# show the units availabe in all datacenters for a given namespace and status
+# show the units available in all datacenters for a given namespace and status
 $ nelson units list --namespaces dev --statuses deploying,ready,deprecated
 
 # show the units that have been terminated by nelson in a given namespace
@@ -128,13 +128,13 @@ $ nelson units commit --foo --version 1.2.3 --target qa
 # show the stacks deployed in a given datacenter
 $ nelson stacks list --namespaces dev --datacenters sacremento
 
-# show the stacks availabe in several datacenters
+# show the stacks available in several datacenters
 $ nelson stacks list --namespaces dev --datacenters sacremento,nyc
 
-# show the stacks availabe in all datacenters for a given namespace
+# show the stacks available in all datacenters for a given namespace
 $ nelson stacks list --namespaces dev
 
-# show the stacks availabe in all datacenters for a given namespace and status
+# show the stacks available in all datacenters for a given namespace and status
 $ nelson stacks list --namespaces dev --statuses deploying,ready,deprecated
 
 # show the stacks that have been terminated by nelson in a given namespace
@@ -243,4 +243,4 @@ The template rendered, but because we don't want to expose any secrets, we get a
 1. `alias fswatch="$GOPATH/bin/fswatch"`
 1. `make watch`
 
-This should give continous compilation without the tedious need to constantly restart `gb build`
+This should give continuous compilation without the tedious need to constantly restart `gb build`
