@@ -586,6 +586,28 @@ func main() {
 					},
 				},
 				{
+					Name:  "reverse",
+					Usage: "Reverse an in-progress traffic shift",
+					Action: func(c *cli.Context) error {
+						selectedGuid := c.Args().First()
+						if len(selectedGuid) > 0 && isValidGUID(selectedGuid) {
+							pi.Start()
+							cfg := LoadDefaultConfigOrExit(http)
+							res, e := ReverseTrafficShift(selectedGuid, http, cfg)
+							pi.Stop()
+							if e != nil {
+								PrintTerminalErrors(e)
+								return cli.NewExitError("Unable to reverse traffic shift.", 1)
+							} else {
+								fmt.Println(res)
+							}
+						} else {
+							return cli.NewExitError("You must specify a valid stack guid for the in-progress traffic shift's target deployment.", 1)
+						}
+						return nil
+					},
+				},
+				{
 					Name:  "manual",
 					Usage: "Register a manual deployment",
 					Flags: []cli.Flag{

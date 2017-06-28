@@ -68,6 +68,38 @@ func RegisterManualDeployment(
 	}
 }
 
+/////////////////// REVERSE ///////////////////
+type ReverseTrafficShiftErr struct {
+	Message string `json:"message"`
+}
+
+func ReverseTrafficShift(
+	guid string,
+	http *gorequest.SuperAgent, cfg *Config) (string, []error) {
+
+	r, body, errs := AugmentRequest(
+		http.Post(cfg.Endpoint+"/v1/deployments/"+guid+"/trafficshift/reverse"), cfg).EndBytes()
+
+	if errs != nil {
+		return "", errs
+	}
+
+	if r.StatusCode/100 != 2 {
+		resp := string(body[:])
+		errs = append(errs, errors.New("Bad response from Nelson server. Status code: "+strconv.Itoa(r.StatusCode)))
+
+		var er ReverseTrafficShiftErr
+		if err := json.Unmarshal(body, &er); err == nil {
+			errs = append(errs, errors.New(er.Message))
+		}
+
+		return resp, errs
+	} else {
+		return "Traffic shift reversed.", errs
+	}
+
+}
+
 /////////////////// INSPECT ///////////////////
 
 /*
