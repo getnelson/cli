@@ -1,6 +1,7 @@
 # Nelson CLI
 
 [![Build Status](https://travis-ci.org/Verizon/nelson-cli.svg?branch=master)](https://travis-ci.org/Verizon/nelson-cli)
+[![Latest Release](https://img.shields.io/github/release/verizon/nelson-cli.svg)](https://github.com/Verizon/nelson-cli/releases)
 
 A handy tool for interacting with your installation of [Nelson](https://github.com/Verizon/nelson)
 
