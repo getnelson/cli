@@ -34,12 +34,20 @@ import (
 	"time"
 )
 
+func GetTimeout(input int) time.Duration {
+	if input == 0 {
+		return time.Duration(60) * time.Second
+	} else {
+		return time.Duration(input) * time.Second
+	}
+}
+
 func AugmentRequest(c *gorequest.SuperAgent, cfg *Config) *gorequest.SuperAgent {
 	return c.
 		AddCookie(cfg.GetAuthCookie()).
 		Set("Content-type", "application/json").
 		Set("User-Agent", UserAgentString(globalBuildVersion)).
-		Timeout(60*time.Second).
+		Timeout(GetTimeout(globalTimeoutSeconds)).
 		Retry(3, 1*time.Second, http.StatusBadGateway, http.StatusInternalServerError).
 		SetCurlCommand(globalEnableCurl).
 		SetDebug(globalEnableDebug).

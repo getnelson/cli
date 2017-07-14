@@ -30,6 +30,7 @@ import (
 	"time"
 )
 
+var globalTimeoutSeconds int
 var globalEnableDebug bool
 var globalEnableCurl bool
 var globalBuildVersion string
@@ -67,6 +68,11 @@ func main() {
 	var owner string
 
 	app.Flags = []cli.Flag{
+		cli.IntFlag{
+			Name:        "timeout",
+			Usage:       "Request timeout in seconds",
+			Destination: &globalTimeoutSeconds,
+		},
 		cli.BoolFlag{
 			Name:        "debug",
 			Usage:       "Enable debug mode on the network requests",
