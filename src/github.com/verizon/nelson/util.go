@@ -154,7 +154,7 @@ func getVersionForMode(globalBuildVersion string) string {
 	if len(globalBuildVersion) == 0 {
 		return "dev"
 	} else {
-		return "0.5." + globalBuildVersion
+		return globalBuildVersion
 	}
 }
 
