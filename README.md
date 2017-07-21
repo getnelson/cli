@@ -208,7 +208,7 @@ username={{.data.username}}
 Lint it as `howdy-http` unit, using resource `test`:
 
 ```
-$ nelson lint template -u howdy-http -r test -t application.cfg.template
+$ nelson lint template -u <nelson-unit-name> -r <resource-name> -t <path-to>/application.cfg.template
 template rendering failed
 2017/02/15 18:54:15.496679 [INFO] consul-template v0.18.1 (9c62737)
 2017/02/15 18:54:15.496716 [INFO] (runner) creating new runner (dry: true, once: true)
@@ -225,7 +225,7 @@ Template linting failed.
 Oops.  Line 3 of the template should be `.Data`, not `.data`.  Fix it and try again:
 
 ```
-$ nelson lint template -u howdy-http -r test -t application.cfg.template
+$ nelson lint template -u <nelson-unit-name> -r <resource-name> -t <path-to>/application.cfg.template
 Template rendered successfully.
 Rendered output discarded for security reasons.
 ```
