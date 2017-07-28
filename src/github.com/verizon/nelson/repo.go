@@ -50,6 +50,21 @@ type RepoSummary struct {
 	Access     string    `json:"access"`
 }
 
+func SyncRepos(http *gorequest.SuperAgent, cfg *Config) []error{
+  uri := cfg.Endpoint + "/v1/profile/sync"
+	r, _ , errs := AugmentRequest(http.Post(uri), cfg).EndBytes()
+
+  if errs != nil{
+    return errs
+  }
+
+	if r.StatusCode/100 != 2 {
+		errs = append(errs, errors.New("Unexpected response from Nelson server"))
+		return errs
+	}
+  return nil
+}
+
 func ListRepos(owner string, http *gorequest.SuperAgent, cfg *Config) (list []RepoSummary, err []error) {
 	uri := cfg.Endpoint + "/v1/repos?owner=" + owner
 	r, body, errs := AugmentRequest(http.Get(uri), cfg).EndBytes()

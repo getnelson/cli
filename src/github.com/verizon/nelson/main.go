@@ -156,6 +156,22 @@ func main() {
 			Usage:   "Commands for enabling and disabling project repositories",
 			Subcommands: []cli.Command{
 				{
+					Name:  "sync",
+					Usage: "Synchronize the available repositories with GitHub",
+					Action: func(c *cli.Context) error {
+						pi.Start()
+						cfg := LoadDefaultConfigOrExit(http)
+						e := SyncRepos(http, cfg)
+						pi.Stop()
+						if e != nil {
+              fmt.Println(e)
+							return cli.NewExitError("Unable to synchronize repositories.", 1)
+						}
+            fmt.Println("Successfully synchronized repositories.")
+						return nil
+          },
+				},
+				{
 					Name:  "list",
 					Usage: "List enabled/disabled statuses for project repositories",
 					Flags: []cli.Flag{
