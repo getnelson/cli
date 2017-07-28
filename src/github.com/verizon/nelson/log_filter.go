@@ -38,7 +38,7 @@ func (f FilteredLog) SetPrefix(s string) {
 
 func (f FilteredLog) Printf(format string, v ...interface{}) {
 	s := fmt.Sprintf(format, v)
-  f.logger.Println(sanitizer.ReplaceAllString(s, "\"Cookie: nelson.session=<redacted>\""))
+	f.logger.Println(sanitizer.ReplaceAllString(s, "\"Cookie: nelson.session=<redacted>\""))
 }
 
 func (f FilteredLog) Println(v ...interface{}) {

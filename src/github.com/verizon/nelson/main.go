@@ -164,12 +164,12 @@ func main() {
 						e := SyncRepos(http, cfg)
 						pi.Stop()
 						if e != nil {
-              fmt.Println(e)
+							fmt.Println(e)
 							return cli.NewExitError("Unable to synchronize repositories.", 1)
 						}
-            fmt.Println("Successfully synchronized repositories.")
+						fmt.Println("Successfully synchronized repositories.")
 						return nil
-          },
+					},
 				},
 				{
 					Name:  "list",
