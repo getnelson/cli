@@ -40,7 +40,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "nelson-cli"
 	app.Version = CurrentVersion()
-	app.Copyright = "© " + strconv.Itoa(year) + " Verizon Labs"
+	app.Copyright = "© " + strconv.Itoa(year) + " Nelson Project"
 	app.Usage = "remote control for the Nelson deployment system"
 	app.EnableBashCompletion = true
 
