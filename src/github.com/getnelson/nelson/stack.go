@@ -220,7 +220,7 @@ func PrintInspectStack(s StackSummary) {
 	}
 
 	fmt.Println("===>> Stack Information")
-	RenderTableToStdout([]string{"Paramater", "Value"}, tabulized)
+	RenderTableToStdout([]string{"Parameter", "Value"}, tabulized)
 
 	//>>>>>>>>>>> dependency information
 
@@ -442,18 +442,18 @@ func PrintStackRuntime(r StackRuntime) {
 	var tabulized = [][]string{}
 	tabulized = append(tabulized, []string{"STATUS:", r.CurrentStatus})
 	tabulized = append(tabulized, []string{"EXPIRES:", JavaEpochToDateStr(r.ExpiresAt)})
-	RenderTableToStdout([]string{"Paramater", "Value"}, tabulized)
+	RenderTableToStdout([]string{"Parameter", "Value"}, tabulized)
 	fmt.Println("")
 
-	// >>>>>>>>> Scheudler Summary
+	// >>>>>>>>> Scheduler Summary
 	tabulized = [][]string{}
 	tabulized = append(tabulized, []string{"PENDING:", strconv.Itoa(r.Scheduler.Pending)})
 	tabulized = append(tabulized, []string{"RUNNING:", strconv.Itoa(r.Scheduler.Running)})
 	tabulized = append(tabulized, []string{"COMPLETED:", strconv.Itoa(r.Scheduler.Completed)})
 	tabulized = append(tabulized, []string{"FAILED:", strconv.Itoa(r.Scheduler.Failed)})
 
-	fmt.Println("==>> Scheudler")
-	RenderTableToStdout([]string{"Paramater", "Value"}, tabulized)
+	fmt.Println("==>> Scheduler")
+	RenderTableToStdout([]string{"Parameter", "Value"}, tabulized)
 
 	// >>>>>>>>> Consul Health
 	tabulized = [][]string{}
