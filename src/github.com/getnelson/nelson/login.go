@@ -19,6 +19,7 @@ package main
 import (
 	"encoding/json"
 	"github.com/parnurzeal/gorequest"
+	"strings"
 )
 
 type CreateSessionRequest struct {
@@ -67,7 +68,11 @@ func createSession(client *gorequest.SuperAgent, githubToken string, baseURL str
 		EndBytes()
 
 	if len(errs) > 0 {
-		panic(errs)
+		errStrs := make([]string, len(errs))
+		for i, e := range errs {
+			errStrs[i] = e.Error()
+		}
+		panic(strings.Join(errStrs, "\n"))
 	}
 
 	var result Session
