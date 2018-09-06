@@ -18,9 +18,7 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/parnurzeal/gorequest"
-	"os"
 )
 
 type CreateSessionRequest struct {
@@ -69,10 +67,7 @@ func createSession(client *gorequest.SuperAgent, githubToken string, baseURL str
 		EndBytes()
 
 	if len(errs) > 0 {
-		for _, err := range errs {
-			fmt.Fprintln(os.Stderr, fmt.Sprintf("%+v", err))
-		}
-		panic("Error trying to login to Nelson!")
+		panic(errs)
 	}
 
 	var result Session
