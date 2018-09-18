@@ -125,6 +125,48 @@ func main() {
 				return nil
 			},
 		},
+		////////////////////////////// BLUEPRINTS //////////////////////////////////
+		{
+			Name:    "blueprints",
+			Aliases: []string{"bp", "blueprint"},
+			Usage:   "Set of commands for working with Nelson blueprints",
+			Subcommands: []cli.Command{
+				{
+					Name:  "proof",
+					Usage: "Given a blueprint template, have Nelson generate an example rendered output",
+					Flags: []cli.Flag{
+						cli.StringFlag{
+							Name:        "source, file, f",
+							Value:       "",
+							Usage:       "The blueprint template file to proof",
+							Destination: &selectedManifest,
+						},
+					},
+					Action: func(c *cli.Context) error {
+						if len(selectedManifest) <= 0 {
+							return cli.NewExitError("No blueprint template file specified.", 1)
+						}
+						manifest, err := ioutil.ReadFile(selectedManifest)
+						if err != nil {
+							return cli.NewExitError("Could not read "+selectedManifest, 1)
+						}
+						manifestBase64 := base64.StdEncoding.EncodeToString(manifest)
+						wire := ProofBlueprintWire{Content: manifestBase64}
+						pi.Start()
+						cfg := LoadDefaultConfigOrExit(http)
+						r, e := ProofBlueprint(wire, http, cfg)
+						pi.Stop()
+						if e != nil {
+							return cli.NewExitError("Unable to proof blueprint.", 1)
+						} else {
+							fmt.Println(r)
+							// PrintListDatacenters(r)
+						}
+						return nil
+					},
+				},
+			},
+		},
 		////////////////////////////// DATACENTER //////////////////////////////////
 		{
 			Name:    "datacenters",
