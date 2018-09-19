@@ -181,7 +181,7 @@ func main() {
 							Name:        "description, d",
 							Value:       "",
 							Usage:       "Description of Blueprint templte",
-							Destination: &selectedName,
+							Destination: &description,
 						},
 						cli.StringFlag{
 							Name:        "source, file, f",
@@ -217,6 +217,44 @@ func main() {
 						} else {
 							fmt.Println("Successfully created blueprint "+r.Name+"@"+r.Revision+".")
 							fmt.Println("@HEAD will point to revision "+r.Revision+" until future revisions are committed.")
+						}
+						return nil
+					},
+				},
+				{
+					Name:  "inspect",
+					Usage: "Yield the template for a given revision",
+					Flags: []cli.Flag{
+						cli.StringFlag{
+							Name:        "name, n",
+							Value:       "",
+							Usage:       "Name of Blueprint",
+							Destination: &selectedName,
+						},
+						cli.StringFlag{
+							Name:        "revision, r",
+							Value:       "",
+							Usage:       "Specific revision of Blueprint template; e.g HEAD, 3, 5",
+							Destination: &selectedVersion,
+						},
+					},
+					Action: func(c *cli.Context) error {
+						var bpName string
+						namedRevision := c.Args().First()
+						if len(namedRevision) > 0 && len(selectedName) < 1 {
+							bpName = namedRevision
+						} else {
+							bpName = selectedName+"@"+selectedVersion
+						}
+
+						pi.Start()
+						cfg := LoadDefaultConfigOrExit(http)
+						r, e := InspectBlueprint(bpName, http, cfg)
+						pi.Stop()
+						if e != nil {
+							return cli.NewExitError("Unable to create blueprint.", 1)
+						} else {
+							fmt.Println(r.Template)
 						}
 						return nil
 					},

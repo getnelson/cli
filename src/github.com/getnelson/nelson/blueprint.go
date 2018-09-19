@@ -24,6 +24,8 @@ import (
 	"strconv"
 )
 
+/////////////////// PROOFING BLUEPRINTS ///////////////////
+
 /*
  * {
  *   "content": "CAgICAgIHBsYW5zOg0KICAgICAgICAgIC0gZGVmYXVsdA=="
@@ -60,6 +62,8 @@ func ProofBlueprint(req ProofBlueprintWire, http *gorequest.SuperAgent, cfg *Con
 	}
 }
 
+/////////////////// CREATING BLUEPRINTS ///////////////////
+
 /*
  * {
  *    "name": "use-nvidia-1080ti",
@@ -88,6 +92,34 @@ func CreateBlueprint(req CreateBlueprintRequest, http *gorequest.SuperAgent, cfg
 
 	r, body, errs := AugmentRequest(
 		http.Post(cfg.Endpoint+"/v1/blueprints"), cfg).Send(req).EndBytes()
+
+	var result CreateBlueprintResponse
+
+	if errs != nil {
+		return result, errs
+	}
+
+	if r.StatusCode/100 != 2 {
+		errs = append(errs, errors.New("Unexpectedly recieved a "+strconv.Itoa(r.StatusCode)+" reponse from the server."))
+		return result, errs
+	} else {
+		if err := json.Unmarshal(body, &result); err != nil {
+			errs = append(errs, errors.New("Unexpected response from Nelson server"))
+		}
+		return result, errs
+	}
+}
+
+/////////////////// LISTING BLUEPRINTS ///////////////////
+
+// func ListBlueprints(http *gorequest.SuperAgent, cfg *Config) (out CreateBlueprintResponse, err []error) {
+// }
+
+/////////////////// INSPECTING BLUEPRINTS ///////////////////
+
+func InspectBlueprint(namedRevision string, http *gorequest.SuperAgent, cfg *Config) (out CreateBlueprintResponse, err []error) {
+	r, body, errs := AugmentRequest(
+		http.Get(cfg.Endpoint+"/v1/blueprints/"+namedRevision), cfg).EndBytes()
 
 	var result CreateBlueprintResponse
 

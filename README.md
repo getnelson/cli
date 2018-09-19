@@ -94,6 +94,22 @@ $ nelson namespace create --datacenter dc123 --namespace foobar
 $ nelson ns create --dc dc123 --ns foobar
 ```
 
+### Blueprint Operations
+
+```
+# proof a template before commiting it to nelson
+$ nelson blueprint proof -f /path/to/gpu-kubernetes.mustache
+
+# create a blueprint from a template on your client host
+$ nelson blueprint create -n somename -f /path/to/gpu-kubernetes.mustache
+
+# inspect a template
+nelson blueprint inspect -n cpu-cron-job
+nelson blueprint inspect -n cpu-cron-job -r HEAD
+nelson blueprint inspect cpu-cron-job@HEAD
+nelson blueprint inspect cpu-cron-job@6
+```
+
 ### Unit Operations
 
 ```
