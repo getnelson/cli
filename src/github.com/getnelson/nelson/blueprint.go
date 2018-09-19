@@ -59,3 +59,49 @@ func ProofBlueprint(req ProofBlueprintWire, http *gorequest.SuperAgent, cfg *Con
 		return "", errs
 	}
 }
+
+/*
+ * {
+ *    "name": "use-nvidia-1080ti",
+ *    "description": "only scheudle on nodes with nvida 1080ti hardware"
+ *    "sha256": "1e34a423ebe1fafeda8277386ede3263b01357e490b124b69bc0bfb493e64140"
+ *    "template": "<base64 encoded template>"
+ * }
+ */
+type CreateBlueprintResponse struct {
+	Name 				string `json:"name"`
+	Description string `json:"description"`
+	Revision	  string `json:"revision"`
+	Sha256 			string `json:"sha256"`
+	Template		string `json:"template"`
+	CreatedAt 	int64  `json:"created_at"`
+}
+
+type CreateBlueprintRequest struct {
+	Name 				string `json:"name"`
+	Description string `json:"description"`
+	Sha256 			string `json:"sha256"`
+	Template		string `json:"template"`
+}
+
+func CreateBlueprint(req CreateBlueprintRequest, http *gorequest.SuperAgent, cfg *Config) (out CreateBlueprintResponse, err []error) {
+
+	r, body, errs := AugmentRequest(
+		http.Post(cfg.Endpoint+"/v1/blueprints"), cfg).Send(req).EndBytes()
+
+	var result CreateBlueprintResponse
+
+	if errs != nil {
+		return result, errs
+	}
+
+	if r.StatusCode/100 != 2 {
+		errs = append(errs, errors.New("Unexpectedly recieved a "+strconv.Itoa(r.StatusCode)+" reponse from the server."))
+		return result, errs
+	} else {
+		if err := json.Unmarshal(body, &result); err != nil {
+			errs = append(errs, errors.New("Unexpected response from Nelson server"))
+		}
+		return result, errs
+	}
+}
