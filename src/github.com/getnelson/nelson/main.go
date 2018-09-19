@@ -17,6 +17,7 @@
 package main
 
 import (
+	"crypto/sha256"
 	"encoding/base64"
 	"fmt"
 	"github.com/parnurzeal/gorequest"
@@ -66,6 +67,7 @@ func main() {
 	var selectedNoGrace bool
 	var repository string
 	var owner string
+	var selectedName string
 
 	app.Flags = []cli.Flag{
 		cli.IntFlag{
@@ -138,7 +140,7 @@ func main() {
 						cli.StringFlag{
 							Name:        "source, file, f",
 							Value:       "",
-							Usage:       "The blueprint template file to proof",
+							Usage:       "Path to the blueprint template file to proof",
 							Destination: &selectedManifest,
 						},
 					},
@@ -161,6 +163,98 @@ func main() {
 						} else {
 							fmt.Println(r)
 							// PrintListDatacenters(r)
+						}
+						return nil
+					},
+				},
+				{
+					Name:  "create",
+					Usage: "Commit the template to Nelson",
+					Flags: []cli.Flag{
+						cli.StringFlag{
+							Name:        "name, n",
+							Value:       "",
+							Usage:       "Name of Blueprint",
+							Destination: &selectedName,
+						},
+						cli.StringFlag{
+							Name:        "description, d",
+							Value:       "",
+							Usage:       "Description of Blueprint templte",
+							Destination: &description,
+						},
+						cli.StringFlag{
+							Name:        "source, file, f",
+							Value:       "",
+							Usage:       "Path to the Blueprint template file",
+							Destination: &selectedManifest,
+						},
+					},
+					Action: func(c *cli.Context) error {
+						if len(selectedManifest) <= 0 {
+							return cli.NewExitError("No blueprint template file specified.", 1)
+						}
+						manifest, err := ioutil.ReadFile(selectedManifest)
+						if err != nil {
+							return cli.NewExitError("Could not read "+selectedManifest, 1)
+						}
+						sum := sha256.Sum256(manifest)
+						sha := fmt.Sprintf("%x", sum)
+						manifestBase64 := base64.StdEncoding.EncodeToString(manifest)
+						wire := CreateBlueprintRequest{
+							Name:        selectedName,
+							Description: description,
+							Sha256:      sha,
+							Template:    manifestBase64,
+						}
+
+						pi.Start()
+						cfg := LoadDefaultConfigOrExit(http)
+						r, e := CreateBlueprint(wire, http, cfg)
+						pi.Stop()
+						if e != nil {
+							return cli.NewExitError("Unable to create blueprint.", 1)
+						} else {
+							fmt.Println("Successfully created blueprint " + r.Name + "@" + r.Revision + ".")
+							fmt.Println("@HEAD will point to revision " + r.Revision + " until future revisions are committed.")
+						}
+						return nil
+					},
+				},
+				{
+					Name:  "inspect",
+					Usage: "Yield the template for a given revision",
+					Flags: []cli.Flag{
+						cli.StringFlag{
+							Name:        "name, n",
+							Value:       "",
+							Usage:       "Name of Blueprint",
+							Destination: &selectedName,
+						},
+						cli.StringFlag{
+							Name:        "revision, r",
+							Value:       "",
+							Usage:       "Specific revision of Blueprint template; e.g HEAD, 3, 5",
+							Destination: &selectedVersion,
+						},
+					},
+					Action: func(c *cli.Context) error {
+						var bpName string
+						namedRevision := c.Args().First()
+						if len(namedRevision) > 0 && len(selectedName) < 1 {
+							bpName = namedRevision
+						} else {
+							bpName = selectedName + "@" + selectedVersion
+						}
+
+						pi.Start()
+						cfg := LoadDefaultConfigOrExit(http)
+						r, e := InspectBlueprint(bpName, http, cfg)
+						pi.Stop()
+						if e != nil {
+							return cli.NewExitError("Unable to create blueprint.", 1)
+						} else {
+							fmt.Println(r.Template)
 						}
 						return nil
 					},
