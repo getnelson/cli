@@ -73,19 +73,19 @@ func ProofBlueprint(req ProofBlueprintWire, http *gorequest.SuperAgent, cfg *Con
  * }
  */
 type CreateBlueprintResponse struct {
-	Name 				string `json:"name"`
+	Name        string `json:"name"`
 	Description string `json:"description"`
-	Revision	  string `json:"revision"`
-	Sha256 			string `json:"sha256"`
-	Template		string `json:"template"`
-	CreatedAt 	int64  `json:"created_at"`
+	Revision    string `json:"revision"`
+	Sha256      string `json:"sha256"`
+	Template    string `json:"template"`
+	CreatedAt   int64  `json:"created_at"`
 }
 
 type CreateBlueprintRequest struct {
-	Name 				string `json:"name"`
+	Name        string `json:"name"`
 	Description string `json:"description"`
-	Sha256 			string `json:"sha256"`
-	Template		string `json:"template"`
+	Sha256      string `json:"sha256"`
+	Template    string `json:"template"`
 }
 
 func CreateBlueprint(req CreateBlueprintRequest, http *gorequest.SuperAgent, cfg *Config) (out CreateBlueprintResponse, err []error) {

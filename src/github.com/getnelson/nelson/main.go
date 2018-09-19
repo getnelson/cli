@@ -17,6 +17,7 @@
 package main
 
 import (
+	"crypto/sha256"
 	"encoding/base64"
 	"fmt"
 	"github.com/parnurzeal/gorequest"
@@ -28,7 +29,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-  "crypto/sha256"
 )
 
 var globalTimeoutSeconds int
@@ -201,11 +201,11 @@ func main() {
 						sum := sha256.Sum256(manifest)
 						sha := fmt.Sprintf("%x", sum)
 						manifestBase64 := base64.StdEncoding.EncodeToString(manifest)
-						wire := CreateBlueprintRequest {
-							Name: selectedName,
+						wire := CreateBlueprintRequest{
+							Name:        selectedName,
 							Description: description,
-							Sha256: sha,
-							Template: manifestBase64,
+							Sha256:      sha,
+							Template:    manifestBase64,
 						}
 
 						pi.Start()
@@ -215,8 +215,8 @@ func main() {
 						if e != nil {
 							return cli.NewExitError("Unable to create blueprint.", 1)
 						} else {
-							fmt.Println("Successfully created blueprint "+r.Name+"@"+r.Revision+".")
-							fmt.Println("@HEAD will point to revision "+r.Revision+" until future revisions are committed.")
+							fmt.Println("Successfully created blueprint " + r.Name + "@" + r.Revision + ".")
+							fmt.Println("@HEAD will point to revision " + r.Revision + " until future revisions are committed.")
 						}
 						return nil
 					},
@@ -244,7 +244,7 @@ func main() {
 						if len(namedRevision) > 0 && len(selectedName) < 1 {
 							bpName = namedRevision
 						} else {
-							bpName = selectedName+"@"+selectedVersion
+							bpName = selectedName + "@" + selectedVersion
 						}
 
 						pi.Start()
