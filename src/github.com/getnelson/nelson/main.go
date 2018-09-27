@@ -438,7 +438,7 @@ func main() {
 							Destination: &selectedDatacenter,
 						},
 						cli.StringFlag{
-							Name:        "namespaces, ns",
+							Name:        "namespaces, ns, n",
 							Value:       "",
 							Usage:       "Restrict list of units to a particular namespace",
 							Destination: &selectedNamespace,
@@ -461,7 +461,7 @@ func main() {
 								return cli.NewExitError("You supplied an argument for 'namespaces' but it was not a valid comma-delimited list.", 1)
 							}
 						} else {
-							return cli.NewExitError("You must supply --namespaces or -ns argument to specify the namesapce(s) as a comma delimted form. i.e. dev,qa,prod or just dev", 1)
+							return cli.NewExitError("You must supply --namespaces, -ns or -n argument to specify the namesapce(s) as a comma delimted form. i.e. dev,qa,prod or just dev", 1)
 						}
 						if len(selectedStatus) > 0 {
 							if !isValidCommaDelimitedList(selectedStatus) {
@@ -633,7 +633,7 @@ func main() {
 							Destination: &selectedDatacenter,
 						},
 						cli.StringFlag{
-							Name:        "namespaces, ns",
+							Name:        "namespaces, ns, n",
 							Value:       "",
 							Usage:       "Restrict list of units to a particular namespace",
 							Destination: &selectedNamespace,
@@ -656,7 +656,7 @@ func main() {
 								return cli.NewExitError("You supplied an argument for 'namespaces' but it was not a valid comma-delimited list.", 1)
 							}
 						} else {
-							return cli.NewExitError("You must supply --namespaces or -ns argument to specify the namesapce(s) as a comma delimted form. i.e. dev,qa,prod or just dev", 1)
+							return cli.NewExitError("You must supply --namespaces, -ns or -n argument to specify the namesapce(s) as a comma delimted form. i.e. dev,qa,prod or just dev", 1)
 						}
 						if len(selectedStatus) > 0 {
 							if !isValidCommaDelimitedList(selectedStatus) {
@@ -937,7 +937,7 @@ func main() {
 							Destination: &selectedDatacenter,
 						},
 						cli.StringFlag{
-							Name:        "namespaces, ns",
+							Name:        "namespaces, ns, n",
 							Value:       "",
 							Usage:       "Restrict list of loadbalancers to a particular namespace",
 							Destination: &selectedNamespace,
@@ -954,7 +954,7 @@ func main() {
 								return cli.NewExitError("You supplied an argument for 'namespaces' but it was not a valid comma-delimited list.", 1)
 							}
 						} else {
-							return cli.NewExitError("You must supply --namespaces or -ns argument to specify the namesapce(s) as a comma delimted form. i.e. dev,qa,prod or just dev", 1)
+							return cli.NewExitError("You must supply --namespaces, -ns or -n argument to specify the namesapce(s) as a comma delimted form. i.e. dev,qa,prod or just dev", 1)
 						}
 
 						pi.Start()
@@ -1093,7 +1093,7 @@ func main() {
 							Destination: &selectedDatacenter,
 						},
 						cli.StringFlag{
-							Name:        "namespace, ns",
+							Name:        "namespace, ns, n",
 							Value:       "",
 							Usage:       "The namespace to create",
 							Destination: &selectedNamespace,
