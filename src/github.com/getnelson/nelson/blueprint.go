@@ -72,7 +72,7 @@ func ProofBlueprint(req ProofBlueprintWire, http *gorequest.SuperAgent, cfg *Con
  *    "template": "<base64 encoded template>"
  * }
  */
-type CreateBlueprintResponse struct {
+type BlueprintResponse struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	Revision    string `json:"revision"`
@@ -88,12 +88,12 @@ type CreateBlueprintRequest struct {
 	Template    string `json:"template"`
 }
 
-func CreateBlueprint(req CreateBlueprintRequest, http *gorequest.SuperAgent, cfg *Config) (out CreateBlueprintResponse, err []error) {
+func CreateBlueprint(req CreateBlueprintRequest, http *gorequest.SuperAgent, cfg *Config) (out BlueprintResponse, err []error) {
 
 	r, body, errs := AugmentRequest(
 		http.Post(cfg.Endpoint+"/v1/blueprints"), cfg).Send(req).EndBytes()
 
-	var result CreateBlueprintResponse
+	var result BlueprintResponse
 
 	if errs != nil {
 		return result, errs
@@ -112,16 +112,43 @@ func CreateBlueprint(req CreateBlueprintRequest, http *gorequest.SuperAgent, cfg
 
 /////////////////// LISTING BLUEPRINTS ///////////////////
 
-// func ListBlueprints(http *gorequest.SuperAgent, cfg *Config) (out CreateBlueprintResponse, err []error) {
-// }
+func ListBlueprints(http *gorequest.SuperAgent, cfg *Config) (list []BlueprintResponse, err []error) {
+	uri := cfg.Endpoint + "/v1/blueprints"
+	r, body, errs := AugmentRequest(http.Get(uri), cfg).EndBytes()
+
+	if errs != nil {
+		return nil, errs
+	}
+
+	if r.StatusCode/100 != 2 {
+		errs = append(errs, errors.New("Unexpected response from Nelson server"))
+		return nil, errs
+	} else {
+		var list []BlueprintResponse
+		if err := json.Unmarshal(body, &list); err != nil {
+			panic(err)
+		}
+		return list, errs
+	}
+}
+
+func PrintListBlueprints(bps []BlueprintResponse) {
+	var tabulized = [][]string{}
+	for _, r := range bps {
+		name := r.Name + "@" + r.Revision
+		tabulized = append(tabulized, []string{name, r.Description, r.Sha256, javaEpochToHumanizedTime(r.CreatedAt)})
+	}
+
+	RenderTableToStdout([]string{"Reference", "Description", "Sha256", "Created"}, tabulized)
+}
 
 /////////////////// INSPECTING BLUEPRINTS ///////////////////
 
-func InspectBlueprint(namedRevision string, http *gorequest.SuperAgent, cfg *Config) (out CreateBlueprintResponse, err []error) {
+func InspectBlueprint(namedRevision string, http *gorequest.SuperAgent, cfg *Config) (out BlueprintResponse, err []error) {
 	r, body, errs := AugmentRequest(
 		http.Get(cfg.Endpoint+"/v1/blueprints/"+namedRevision), cfg).EndBytes()
 
-	var result CreateBlueprintResponse
+	var result BlueprintResponse
 
 	if errs != nil {
 		return result, errs

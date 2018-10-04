@@ -259,6 +259,22 @@ func main() {
 						return nil
 					},
 				},
+				{
+					Name:  "list",
+					Usage: "List all the available blueprints",
+					Action: func(c *cli.Context) error {
+						pi.Start()
+						cfg := LoadDefaultConfigOrExit(http)
+						r, e := ListBlueprints(http, cfg)
+						pi.Stop()
+						if e != nil {
+							return cli.NewExitError("Unable to list blueprints.", 1)
+						} else {
+							PrintListBlueprints(r)
+						}
+						return nil
+					},
+				},
 			},
 		},
 		////////////////////////////// DATACENTER //////////////////////////////////
