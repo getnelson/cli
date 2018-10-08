@@ -1,7 +1,7 @@
 # Nelson CLI
 
-[![Build Status](https://travis-ci.org/getnelson/nelson-cli.svg?branch=master)](https://travis-ci.org/getnelson/nelson-cli)
-[![Latest Release](https://img.shields.io/github/release/getnelson/nelson-cli.svg)](https://github.com/getnelson/nelson-cli/releases)
+[![Build Status](https://travis-ci.org/getnelson/cli.svg?branch=master)](https://travis-ci.org/getnelson/cli)
+[![Latest Release](https://img.shields.io/github/release/getnelson/cli.svg)](https://github.com/getnelson/cli/releases)
 
 A handy tool for interacting with your installation of [Nelson](https://github.com/getnelson/nelson)
 
@@ -10,7 +10,7 @@ A handy tool for interacting with your installation of [Nelson](https://github.c
 If you just want to use nelson-cli, then run the following:
 
 ```
-curl -GqL https://raw.githubusercontent.com/getnelson/nelson-cli/master/scripts/install | bash
+curl -GqL https://raw.githubusercontent.com/getnelson/cli/master/scripts/install | bash
 ```
 
 This script will download and install the latest version and put it on your `$PATH`. We do not endorse piping scripts from the wire to `bash`, and you should read the script before executing the command. It will:
