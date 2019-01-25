@@ -211,9 +211,16 @@ func RemoveLoadBalancer(guid string, http *gorequest.SuperAgent, cfg *Config) (s
 		return "", errs
 	}
 
-	if r.StatusCode/100 != 2 {
+	rcode := r.StatusCode / 100
+	if rcode != 2 {
 		resp := string(body[:])
-		errs = append(errs, errors.New("Unexpected response from Nelson server"))
+		if rcode == 4 {
+			errs = append(errs, errors.New("The request was invalid: "+resp))
+		} else if rcode == 5 {
+			errs = append(errs, errors.New("Nelson server appears to be having trouble completing this request. Please seek assistance from an administrator. "+resp))
+		} else {
+			errs = append(errs, errors.New("Unexpected response from Nelson server"))
+		}
 		return resp, errs
 	} else {
 		return "Requested removal of " + guid, errs
@@ -230,9 +237,17 @@ func CreateLoadBalancer(req LoadbalancerCreate, http *gorequest.SuperAgent, cfg 
 		return "", errs
 	}
 
-	if r.StatusCode/100 != 2 {
+	rcode := r.StatusCode / 100
+	if rcode != 2 {
 		resp := string(body[:])
-		errs = append(errs, errors.New("Unexpected response from Nelson server"))
+		if rcode == 4 {
+			errs = append(errs, errors.New("The request was invalid: "+resp))
+		} else if rcode == 5 {
+			errs = append(errs, errors.New("Nelson server appears to be having trouble completing this request. Please seek assistance from an administrator. "+resp))
+		} else {
+			errs = append(errs, errors.New("Unexpected response from Nelson server"))
+		}
+
 		return resp, errs
 	} else {
 		return "Loadbalancer has been created.", errs
