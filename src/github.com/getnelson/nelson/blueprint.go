@@ -100,6 +100,7 @@ func CreateBlueprint(req CreateBlueprintRequest, http *gorequest.SuperAgent, cfg
 	}
 
 	if r.StatusCode/100 != 2 {
+		errs = append(errs, errors.New(string(body[:])))
 		errs = append(errs, errors.New("Unexpectedly recieved a "+strconv.Itoa(r.StatusCode)+" reponse from the server."))
 		return result, errs
 	} else {

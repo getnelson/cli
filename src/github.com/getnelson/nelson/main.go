@@ -213,6 +213,7 @@ func main() {
 						r, e := CreateBlueprint(wire, http, cfg)
 						pi.Stop()
 						if e != nil {
+							PrintTerminalErrors(e)
 							return cli.NewExitError("Unable to create blueprint.", 1)
 						} else {
 							fmt.Println("Successfully created blueprint " + r.Name + "@" + r.Revision + ".")
@@ -252,6 +253,7 @@ func main() {
 						r, e := InspectBlueprint(bpName, http, cfg)
 						pi.Stop()
 						if e != nil {
+							PrintTerminalErrors(e)
 							return cli.NewExitError("Unable to create blueprint.", 1)
 						} else {
 							fmt.Println(r.Template)
