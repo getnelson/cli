@@ -506,19 +506,19 @@ func main() {
 						cli.StringFlag{
 							Name:        "unit, u",
 							Value:       "",
-							Usage:       "The specific unit you want to deprecate.",
+							Usage:       "The unit you want to commit.",
 							Destination: &selectedUnitPrefix,
 						},
 						cli.StringFlag{
 							Name:        "version, v",
 							Value:       "",
-							Usage:       "The feature version series you want to deprecate. For example 1.2.3 or 5.3.12",
+							Usage:       "The version you want to commit. For example 1.2.3 or 5.3.12",
 							Destination: &selectedVersion,
 						},
 						cli.StringFlag{
 							Name:        "target, t",
 							Value:       "",
-							Usage:       "The target namespace you want to commit this unit too.",
+							Usage:       "The target namespace you want to commit this unit@version to.",
 							Destination: &selectedNamespace,
 						},
 					},
