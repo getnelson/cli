@@ -540,7 +540,11 @@ func main() {
 								unitWithVersion := selectedUnitPrefix + "@" + selectedVersion
 
 								if e != nil {
-									return cli.NewExitError("Unable to commit "+unitWithVersion+" to '"+selectedNamespace+"'. Response was:\n"+r, 1)
+									errors := ""
+									for _, ee := range e {
+										errors += fmt.Sprintf("%s\n", ee.Error())
+									}
+									return cli.NewExitError(fmt.Sprintf("Unable to commit %s to '%s'. Response was:\n%s\nErrors:\n%s", unitWithVersion, selectedNamespace, r, errors), 1)
 								} else {
 									fmt.Println("===>> Commited " + unitWithVersion + " to '" + selectedNamespace + "'.")
 								}
