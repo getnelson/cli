@@ -45,6 +45,5 @@ deploy:
   file: target/*
   body: ${BODY}
   on:
-    tags: true
     repo: getnelson/cli
     branch: master
