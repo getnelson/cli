@@ -20,9 +20,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/url"
+	"strconv"
+
 	"github.com/fatih/color"
 	"github.com/parnurzeal/gorequest"
-	"strconv"
 )
 
 /////////////////// MANUAL DEPLOYMENT ///////////////////
@@ -300,23 +302,28 @@ type Stack struct {
 	Weight       int64  `json:"weight,omitempty"`
 }
 
-func ListStacks(delimitedDcs string, delimitedNamespaces string, delimitedStatuses string, http *gorequest.SuperAgent, cfg *Config) (list []Stack, err []error) {
+func ListStacks(delimitedDcs string, delimitedNamespaces string, delimitedStatuses string, unit string, http *gorequest.SuperAgent, cfg *Config) (list []Stack, err []error) {
 	uri := "/v1/deployments?"
+	qs := url.Values{}
 	// set the datacenters if specified
 	if isValidCommaDelimitedList(delimitedDcs) {
-		uri = uri + "dc=" + delimitedDcs + "&"
+		qs.Set("dc", delimitedDcs)
 	}
 	if isValidCommaDelimitedList(delimitedStatuses) {
-		uri = uri + "status=" + delimitedStatuses + "&"
+		qs.Set("status", delimitedStatuses)
 	} else {
 		// if the user didnt specify statuses, they probally want all the stacks except historical terminated ones.
-		uri = uri + "status=pending,deploying,warming,ready,deprecated,failed&"
+		qs.Set("status", "pending,deploying,warming,ready,deprecated,failed")
 	}
 	if isValidCommaDelimitedList(delimitedNamespaces) {
-		uri = uri + "ns=" + delimitedNamespaces
+		qs.Set("ns", delimitedNamespaces)
 	} else {
-		uri = uri + "ns=dev,qa,prod"
+		qs.Set("ns", "dev,qa,prod")
 	}
+	if unit != "" {
+		qs.Set("unit", unit)
+	}
+	uri = uri + qs.Encode()
 
 	r, bytes, errs := AugmentRequest(
 		http.Get(cfg.Endpoint+uri), cfg).EndBytes()
