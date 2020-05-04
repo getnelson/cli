@@ -20,8 +20,6 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"fmt"
-	"github.com/parnurzeal/gorequest"
-	"gopkg.in/urfave/cli.v1"
 	"io/ioutil"
 	"log"
 	"os"
@@ -29,6 +27,9 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/parnurzeal/gorequest"
+	"gopkg.in/urfave/cli.v1"
 )
 
 var globalTimeoutSeconds int
@@ -56,6 +57,7 @@ func main() {
 	var selectedNamespace string
 	var selectedLoadbalancer string
 	var selectedStatus string
+	var selectedUnit string
 	var selectedUnitPrefix string
 	var selectedVersion string
 	var selectedPort int64
@@ -645,8 +647,8 @@ func main() {
 						cli.StringFlag{
 							Name:        "unit, u",
 							Value:       "",
-							Usage:       "Only list stacks that match a specified unit prefix",
-							Destination: &selectedUnitPrefix,
+							Usage:       "Only list stacks that match the specified unit",
+							Destination: &selectedUnit,
 						},
 						cli.StringFlag{
 							Name:        "datacenters, d",
@@ -688,7 +690,7 @@ func main() {
 
 						pi.Start()
 						cfg := LoadDefaultConfigOrExit(http)
-						r, e := ListStacks(selectedDatacenter, selectedNamespace, selectedStatus, http, cfg)
+						r, e := ListStacks(selectedDatacenter, selectedNamespace, selectedStatus, selectedUnit, http, cfg)
 						pi.Stop()
 						if e != nil {
 							PrintTerminalErrors(e)
