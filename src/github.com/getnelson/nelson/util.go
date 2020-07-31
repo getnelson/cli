@@ -122,7 +122,7 @@ func PrintTerminalErrors(errs []error) {
 	}
 
 	for _, e := range errs {
-		fmt.Println(e)
+		_, _ = fmt.Fprintln(os.Stderr, e)
 	}
 }
 
