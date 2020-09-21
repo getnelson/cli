@@ -123,8 +123,13 @@ func main() {
 				// fmt.Println("token: ", userGithubToken)
 				// fmt.Println("host: ", host)
 				pi.Start()
-				Login(http, userGithubToken, host, disableTLS)
+				errs := Login(http, userGithubToken, host, disableTLS)
 				pi.Stop()
+				if len(errs) != 0 {
+					PrintTerminalErrors(errs)
+					return cli.NewExitError("Login failed.", 1)
+				}
+
 				fmt.Println("Successfully logged in to " + host)
 				return nil
 			},
