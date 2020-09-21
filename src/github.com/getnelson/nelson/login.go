@@ -18,7 +18,7 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
+
 	"github.com/parnurzeal/gorequest"
 )
 
@@ -36,9 +36,9 @@ type Session struct {
 
 func Login(client *gorequest.SuperAgent, githubToken string, nelsonHost string, disableTLS bool) []error {
 	baseURL := createEndpointURL(nelsonHost, !disableTLS)
-	e, sess := createSession(client, githubToken, baseURL)
-	if e != nil {
-		return []error{e}
+	sess, errs := createSession(client, githubToken, baseURL)
+	if errs != nil {
+		return errs
 	}
 	writeConfigFile(sess, baseURL, defaultConfigPath()) // TIM: side-effect, discarding errors seems wrong
 	return nil
@@ -56,7 +56,7 @@ func createEndpointURL(host string, useTLS bool) string {
 }
 
 /* TODO: any error handling here... would be nice */
-func createSession(client *gorequest.SuperAgent, githubToken string, baseURL string) (error, Session) {
+func createSession(client *gorequest.SuperAgent, githubToken string, baseURL string) (Session, []error) {
 	ver := CreateSessionRequest{AccessToken: githubToken}
 	url := baseURL + "/auth/github"
 	_, bytes, errs := client.
@@ -65,22 +65,17 @@ func createSession(client *gorequest.SuperAgent, githubToken string, baseURL str
 		Send(ver).
 		SetCurlCommand(globalEnableCurl).
 		SetDebug(globalEnableDebug).
+		Timeout(GetTimeout(globalTimeoutSeconds)).
 		EndBytes()
 
 	if len(errs) > 0 {
-		errStrs := make([]string, len(errs))
-		for i, e := range errs {
-			errStrs[i] = e.Error()
-			fmt.Print(e.Error())
-		}
-
-		return errs[0], Session{}
+		return Session{}, errs
 	}
 
 	var result Session
 	if err := json.Unmarshal(bytes, &result); err != nil {
-		return err, Session{}
+		return Session{}, []error{err}
 	}
 
-	return nil, result
+	return result, nil
 }
